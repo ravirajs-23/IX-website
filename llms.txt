@@ -1,0 +1,42 @@
+# IncubXperts
+
+> IncubXperts is an AI-native engineering and software partner. We help enterprises adopt AI with purpose-built strategy, build agentic solutions, automate workflows, and modernize cloud infrastructure. Founded in India, with offices in Pune, India (HQ) and Delaware, USA. 150+ experts, 95% client retention rate, 55% CAGR since 2021.
+
+## Company
+
+- Legal name: IncubXperts TechnoConsulting Pvt. Ltd. (India) / IncubXperts Inc. (USA, Delaware)
+- Founded: as a private limited organization in India; incorporated in Delaware, USA in 2020
+- Headquarters: Pune, Maharashtra, India. Secondary registered entity: Wilmington, Delaware, USA.
+- Employees: 150+
+- Leadership: Anish Betawadkar (Co-Founder & Director), Dr. Preetam Tiwari (Co-Founder & Director), Rahul Bagal (Co-Founder & Director), Amit Dhandal (Co-Founder & Director)
+- Contact: engage@incubxperts.com (business), careers@incubxperts.com (careers)
+
+## Services
+
+- **AI Adoption & Strategy**: Purpose-built AI adoption strategy — feasibility assessment, high-impact opportunity identification, adoption roadmaps, pilot design and scaling, TCO optimization, governance and compliance.
+- **Agentic Solutions**: Autonomous AI agents that think, decide, and act on real-world tasks.
+- **Workflow Automation**: AI-driven automation of business workflows.
+- **AI-Augmented Product Engineering**: Software product engineering augmented by AI tooling with human-led precision.
+- **AI-Augmented QA**: AI-assisted software testing and validation.
+- **Predictive Analytics & BI**: Turning data into actionable business intelligence.
+- **MVP in 10 Days**: Rapid AI-accelerated MVP development.
+- **Cloud & AI Infrastructure**: Cloud infrastructure design for AI workloads, including AI-first architecture and governance.
+- **Global Capacity Center (GCC)**: Dedicated global capacity center services for SMB and mid-market companies.
+
+## Industries Served
+
+Fintech, Healthcare, Public Safety, Social Networking, Hospitality, Legal, Manufacturing, Environment & Sustainability.
+
+## Technology Stack
+
+AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (Anthropic), Dynamics 365 CRM, SharePoint, Power BI, Power Apps.
+
+## Pages
+
+- [Home](/index.html): Overview of services, AI Lab products, testimonials, and company stats.
+- [About Us](/about.html): Company history, milestones, leadership team, engagement models, differentiators.
+- [Services](/services.html): Full list of services with a detailed breakdown of AI Adoption & Strategy.
+- [Leadership](/team.html): Founding leadership team profiles.
+- [Blog](/blog.html): Articles on GCC strategy, automation, and AI-era software services.
+- [Careers](/careers.html): Open roles and company culture.
+- [Contact](/contact.html): Office addresses and contact form for business and career enquiries.
