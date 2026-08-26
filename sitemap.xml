@@ -28,4 +28,13 @@
     <loc>https://www.incubxperts.com/contact.html</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://www.incubxperts.com/case-studies.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.incubxperts.com/case-studies/from-chaos-to-clarity.html</loc>
+    <priority>0.6</priority>
+    <lastmod>2026-01-01</lastmod>
+  </url>
 </urlset>

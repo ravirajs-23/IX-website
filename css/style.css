@@ -309,6 +309,9 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 /* ---------- Blog ---------- */
 .blog-card .date { font-size: 0.82rem; color: var(--color-primary); font-weight: 700; margin-bottom: 8px; }
 
+/* ---------- Case studies (flowing-narrative fallback, no ## sections) ---------- */
+.case-body { max-width: 760px; margin: 0 auto; }
+
 /* ---------- Footer ---------- */
 .site-footer { background: var(--color-dark); color: #b7bfd6; padding: 64px 0 24px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.3fr; gap: 32px; }

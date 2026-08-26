@@ -1,0 +1,12 @@
+{
+  "name": "incubxperts-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "IncubXperts corporate website — static HTML/CSS/JS with a small build script for case-study pages.",
+  "scripts": {
+    "build:case-studies": "node scripts/build-case-studies.js"
+  },
+  "dependencies": {
+    "marked": "12.0.2"
+  }
+}
