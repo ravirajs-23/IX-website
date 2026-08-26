@@ -60,6 +60,11 @@ function safeJsonLd(obj) {
  * Everything else (comma-separated lists, numbered stat1/stat2/... pairs)
  * is handled by the caller via plain key lookups. No block scalars, no
  * nested structures — see the plan doc for why.
+ *
+ * IMPORTANT: do NOT wrap values in quotes ("like this") — this is not YAML,
+ * quotes are not stripped and will end up literally in the output. A colon
+ * inside a value (e.g. a title with a subtitle) is fine as-is: only the
+ * FIRST colon on the line is treated as the key/value delimiter.
  */
 function parseFrontMatter(raw) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);

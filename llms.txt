@@ -32,6 +32,11 @@ Fintech, Healthcare, Public Safety, Social Networking, Hospitality, Legal, Manuf
 AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (Anthropic), Dynamics 365 CRM, SharePoint, Power BI, Power Apps.
 
 <!-- CASE-STUDIES:START -->
+## Case Stories
+
+- [AI-Powered Trivia Quiz: Transforming Learning with Intelligent Gamification](/case-studies/ai-trivia-quiz-gamified-learning.html): An AI-powered trivia platform integrated with Slack and Microsoft Teams, using NLP and gamification to boost student engagement and retention.
+- [7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment](/case-studies/ai-credit-risk-assessment-platform.html): An AI-driven web and mobile platform that modernized credit risk assessment workflows, replacing outdated legacy systems with automation, predictive analytics, and fraud detection.
+- [An AI Assistant that Provides Pinpoint Insights Through Natural Language Queries](/case-studies/ai-assistant-natural-language-insights.html): An AI-driven data assistant that lets users query complex dashboards in plain English and get instant, precise insights and visualizations.
 <!-- CASE-STUDIES:END -->
 
 ## Pages

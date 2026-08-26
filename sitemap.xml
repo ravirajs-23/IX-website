@@ -33,8 +33,18 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.incubxperts.com/case-studies/from-chaos-to-clarity.html</loc>
+    <loc>https://www.incubxperts.com/case-studies/ai-trivia-quiz-gamified-learning.html</loc>
     <priority>0.6</priority>
-    <lastmod>2026-01-01</lastmod>
+    <lastmod>2026-08-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.incubxperts.com/case-studies/ai-credit-risk-assessment-platform.html</loc>
+    <priority>0.6</priority>
+    <lastmod>2026-08-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.incubxperts.com/case-studies/ai-assistant-natural-language-insights.html</loc>
+    <priority>0.6</priority>
+    <lastmod>2026-08-26</lastmod>
   </url>
 </urlset>
