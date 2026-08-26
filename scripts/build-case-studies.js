@@ -84,6 +84,12 @@ function parseFrontMatter(raw) {
   return { data, body: body.trim() };
 }
 
+/** OG/Twitter image tags need a fully-qualified URL — prefix root-relative paths. */
+function toAbsoluteUrl(pathOrUrl) {
+  if (!pathOrUrl) return null;
+  return pathOrUrl.startsWith("http") ? pathOrUrl : `${SITE_URL}${pathOrUrl}`;
+}
+
 function truncate(str, max) {
   if (str.length <= max) return str;
   return str.slice(0, max - 1).trimEnd() + "…";
@@ -179,7 +185,10 @@ function loadCaseStudies() {
       publishDate: data.publishDate,
       heroSummary: data.heroSummary,
       metaDescription: data.metaDescription,
-      ogImage: data.ogImage || null,
+      heroImage: data.heroImage || null,
+      // ogImage falls back to heroImage when not explicitly given, so a
+      // story only needs one image field in the common case.
+      ogImage: data.ogImage || data.heroImage || null,
       tags,
       stats,
       benefits,
@@ -244,6 +253,18 @@ function renderBody(rawBody) {
 <section class="section">
   <div class="container">
     <div class="timeline">${items}
+    </div>
+  </div>
+</section>`;
+}
+
+function renderHeroBannerBlock(heroImage, title) {
+  if (!heroImage) return "";
+  return `
+<section class="section" style="padding-bottom:0;">
+  <div class="container">
+    <div class="case-hero-banner">
+      <img src="${escapeHtml(heroImage)}" alt="${escapeHtml(title)}" />
     </div>
   </div>
 </section>`;
@@ -319,20 +340,25 @@ function renderTestimonialBlock(testimonial) {
 </section>`;
 }
 
-function renderOtherStoriesBlock(currentSlug, allStories, max = 3) {
-  const others = allStories.filter((s) => s.slug !== currentSlug).slice(0, max);
-  if (!others.length) return "";
-  const cards = others
-    .map(
-      (s) => `
+/** Shared listing-style card, used by both the index page and "Other Case Stories". */
+function renderStoryCard(s) {
+  const thumb = s.heroImage
+    ? `<div class="card-thumb"><img src="${escapeHtml(s.heroImage)}" alt="${escapeHtml(s.title)}" /></div>`
+    : "";
+  return `
       <div class="card blog-card">
+        ${thumb}
         <div class="date">${escapeHtml(s.category)}</div>
         <h3><a href="/case-studies/${s.slug}.html">${escapeHtml(s.title)}</a></h3>
         <p>${escapeHtml(s.heroSummary)}</p>
         <a href="/case-studies/${s.slug}.html">Read the Story &rarr;</a>
-      </div>`
-    )
-    .join("");
+      </div>`;
+}
+
+function renderOtherStoriesBlock(currentSlug, allStories, max = 3) {
+  const others = allStories.filter((s) => s.slug !== currentSlug).slice(0, max);
+  if (!others.length) return "";
+  const cards = others.map(renderStoryCard).join("");
   return `
 <section class="section">
   <div class="container">
@@ -367,9 +393,10 @@ function buildDetailPage(story, template, allStories) {
   const canonicalUrl = `${SITE_URL}/case-studies/${story.slug}.html`;
   const pageTitle = `${story.title} | IncubXperts Case Study`;
 
-  const imageMetaBlock = story.ogImage
-    ? `<meta property="og:image" content="${escapeHtml(story.ogImage)}" />\n<meta name="twitter:image" content="${escapeHtml(
-        story.ogImage
+  const absoluteOgImage = toAbsoluteUrl(story.ogImage);
+  const imageMetaBlock = absoluteOgImage
+    ? `<meta property="og:image" content="${escapeHtml(absoluteOgImage)}" />\n<meta name="twitter:image" content="${escapeHtml(
+        absoluteOgImage
       )}" />\n`
     : "";
 
@@ -387,6 +414,7 @@ function buildDetailPage(story, template, allStories) {
   const jsonLdBlock = `<script type="application/ld+json">\n${safeJsonLd(jsonLd)}\n</script>\n`;
 
   const mainContent = [
+    renderHeroBannerBlock(story.heroImage, story.title),
     renderTagsBlock(story.tags),
     renderBody(story.body),
     renderBenefitsBlock(story.benefits),
@@ -429,17 +457,7 @@ function buildIndexPage(stories, template) {
   const metaDescription =
     "Real client success stories from IncubXperts — AI adoption, agentic solutions, cloud transformation, and more.";
 
-  const cards = stories
-    .map(
-      (s) => `
-      <div class="card blog-card">
-        <div class="date">${escapeHtml(s.category)}</div>
-        <h3><a href="/case-studies/${s.slug}.html">${escapeHtml(s.title)}</a></h3>
-        <p>${escapeHtml(s.heroSummary)}</p>
-        <a href="/case-studies/${s.slug}.html">Read the Story &rarr;</a>
-      </div>`
-    )
-    .join("\n");
+  const cards = stories.map(renderStoryCard).join("\n");
 
   const mainContent = stories.length
     ? `

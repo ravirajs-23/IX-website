@@ -7,6 +7,7 @@
 slug: ai-trivia-quiz-gamified-learning
 title: AI-Powered Trivia Quiz: Transforming Learning with Intelligent Gamification
 category: Social Networking
+heroImage: /images/case-studies/ai-trivia-quiz-gamified-learning.svg
 client: Educational institutions seeking an interactive, automated way to generate trivia quizzes and analyze student performance
 publishDate: 2026-08-26
 heroSummary: An AI-powered trivia platform integrated with Slack and Microsoft Teams, using NLP and gamification to boost student engagement and retention.

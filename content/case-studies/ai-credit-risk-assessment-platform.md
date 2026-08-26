@@ -7,6 +7,7 @@
 slug: ai-credit-risk-assessment-platform
 title: 7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment
 category: Fintech
+heroImage: /images/case-studies/ai-credit-risk-assessment-platform.svg
 client: A financial services company managing over half of the national credit risk assessment market
 publishDate: 2026-08-26
 heroSummary: An AI-driven web and mobile platform that modernized credit risk assessment workflows, replacing outdated legacy systems with automation, predictive analytics, and fraud detection.
