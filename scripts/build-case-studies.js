@@ -258,6 +258,18 @@ function renderBody(rawBody) {
 </section>`;
 }
 
+/** Visible disclaimer for underscore-prefixed test/demo content — never for real stories. */
+function renderDemoNoticeBlock() {
+  return `
+<section class="section" style="padding-bottom:0;">
+  <div class="container">
+    <div class="testimonial-card" style="border-color:#e0a800;background:#fff8e6;">
+      <p style="color:#7a5b00;font-style:normal;"><strong>Demo content</strong> &mdash; this case study is a fictional example used to test the page template. No real client, engagement, or figures are represented.</p>
+    </div>
+  </div>
+</section>`;
+}
+
 function renderHeroBannerBlock(heroImage, title) {
   if (!heroImage) return "";
   return `
@@ -345,10 +357,12 @@ function renderStoryCard(s) {
   const thumb = s.heroImage
     ? `<div class="card-thumb"><img src="${escapeHtml(s.heroImage)}" alt="${escapeHtml(s.title)}" /></div>`
     : "";
+  const isDemo = s.sourceFile.startsWith("_");
+  const dateLabel = isDemo ? `${escapeHtml(s.category)} &middot; Demo` : escapeHtml(s.category);
   return `
       <div class="card blog-card">
         ${thumb}
-        <div class="date">${escapeHtml(s.category)}</div>
+        <div class="date">${dateLabel}</div>
         <h3><a href="/case-studies/${s.slug}.html">${escapeHtml(s.title)}</a></h3>
         <p>${escapeHtml(s.heroSummary)}</p>
         <a href="/case-studies/${s.slug}.html">Read the Story &rarr;</a>
@@ -413,7 +427,9 @@ function buildDetailPage(story, template, allStories) {
   };
   const jsonLdBlock = `<script type="application/ld+json">\n${safeJsonLd(jsonLd)}\n</script>\n`;
 
+  const isDemo = story.sourceFile.startsWith("_");
   const mainContent = [
+    isDemo ? renderDemoNoticeBlock() : "",
     renderHeroBannerBlock(story.heroImage, story.title),
     renderTagsBlock(story.tags),
     renderBody(story.body),
@@ -514,10 +530,12 @@ function fillTemplate(template, replacements) {
 // ---------------------------------------------------------------------------
 
 function buildSitemap(stories) {
+  // Underscore-prefixed test/example content shouldn't be indexed.
+  const indexable = stories.filter((s) => !s.sourceFile.startsWith("_"));
   const urls = [
     ...STATIC_PAGES.map((p) => `  <url>\n    <loc>${SITE_URL}${p.loc}</loc>\n    <priority>${p.priority}</priority>\n  </url>`),
     `  <url>\n    <loc>${SITE_URL}/case-studies.html</loc>\n    <priority>0.7</priority>\n  </url>`,
-    ...stories.map(
+    ...indexable.map(
       (s) =>
         `  <url>\n    <loc>${SITE_URL}/case-studies/${s.slug}.html</loc>\n    <priority>0.6</priority>\n    <lastmod>${s.publishDate}</lastmod>\n  </url>`
     ),
@@ -536,9 +554,10 @@ const LLMS_START = "<!-- CASE-STUDIES:START -->";
 const LLMS_END = "<!-- CASE-STUDIES:END -->";
 
 function buildLlmsBlock(stories) {
-  // Skip anything from an _EXAMPLE-prefixed source file so placeholder
-  // content never leaks into the public-facing llms.txt.
-  const real = stories.filter((s) => !s.sourceFile.startsWith("_EXAMPLE"));
+  // Skip anything from an underscore-prefixed source file (the convention
+  // for _EXAMPLE/_TEST/etc. non-real content) so it never leaks into the
+  // public-facing llms.txt.
+  const real = stories.filter((s) => !s.sourceFile.startsWith("_"));
   if (!real.length) {
     return `${LLMS_START}\n${LLMS_END}`;
   }
