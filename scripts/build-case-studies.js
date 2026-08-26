@@ -149,9 +149,22 @@ function loadCaseStudies() {
       stats.push({ value, label });
     }
 
-    const industryTags = data.industryTags
-      ? data.industryTags.split(",").map((t) => t.trim()).filter(Boolean)
+    const tags = data.tags
+      ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
       : [];
+
+    // Benefits: numbered title+description pairs benefit1..benefit6, stop at
+    // first missing number. This is the "headline + full sentence" shape
+    // used on the live site's "Benefits & Impacts" section — distinct from
+    // the short number+label `stats` block above, which the two can coexist
+    // alongside for pages that also want a single standout metric.
+    const benefits = [];
+    for (let i = 1; i <= 6; i++) {
+      const title = data[`benefit${i}Title`];
+      const description = data[`benefit${i}Description`];
+      if (!title || !description) break;
+      benefits.push({ title, description });
+    }
 
     stories.push({
       slug: data.slug,
@@ -162,8 +175,9 @@ function loadCaseStudies() {
       heroSummary: data.heroSummary,
       metaDescription: data.metaDescription,
       ogImage: data.ogImage || null,
-      industryTags,
+      tags,
       stats,
+      benefits,
       testimonial:
         testimonialGiven.length === testimonialFields.length
           ? {
@@ -243,6 +257,29 @@ function renderTagsBlock(tags) {
 </section>`;
 }
 
+function renderBenefitsBlock(benefits) {
+  if (!benefits.length) return "";
+  const cards = benefits
+    .map(
+      (b) => `
+      <div class="card">
+        <h3>${escapeHtml(b.title)}</h3>
+        <p>${escapeHtml(b.description)}</p>
+      </div>`
+    )
+    .join("");
+  return `
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Benefits &amp; Impacts</span>
+    </div>
+    <div class="grid grid-3">${cards}
+    </div>
+  </div>
+</section>`;
+}
+
 function renderStatsBlock(stats) {
   if (!stats.length) return "";
   const items = stats
@@ -277,6 +314,33 @@ function renderTestimonialBlock(testimonial) {
 </section>`;
 }
 
+function renderOtherStoriesBlock(currentSlug, allStories, max = 3) {
+  const others = allStories.filter((s) => s.slug !== currentSlug).slice(0, max);
+  if (!others.length) return "";
+  const cards = others
+    .map(
+      (s) => `
+      <div class="card blog-card">
+        <div class="date">${escapeHtml(s.category)}</div>
+        <h3><a href="/case-studies/${s.slug}.html">${escapeHtml(s.title)}</a></h3>
+        <p>${escapeHtml(s.heroSummary)}</p>
+        <a href="/case-studies/${s.slug}.html">Read the Story &rarr;</a>
+      </div>`
+    )
+    .join("");
+  return `
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Other Case Stories</span>
+      <h2>See Our Work in Action</h2>
+    </div>
+    <div class="grid grid-3">${cards}
+    </div>
+  </div>
+</section>`;
+}
+
 function renderCtaBand() {
   return `
 <section class="section section-alt">
@@ -294,7 +358,7 @@ function renderCtaBand() {
 // Build one detail page
 // ---------------------------------------------------------------------------
 
-function buildDetailPage(story, template) {
+function buildDetailPage(story, template, allStories) {
   const canonicalUrl = `${SITE_URL}/case-studies/${story.slug}.html`;
   const pageTitle = `${story.title} | IncubXperts Case Study`;
 
@@ -318,10 +382,12 @@ function buildDetailPage(story, template) {
   const jsonLdBlock = `<script type="application/ld+json">\n${safeJsonLd(jsonLd)}\n</script>\n`;
 
   const mainContent = [
-    renderTagsBlock(story.industryTags),
+    renderTagsBlock(story.tags),
     renderBody(story.body),
+    renderBenefitsBlock(story.benefits),
     renderStatsBlock(story.stats),
     renderTestimonialBlock(story.testimonial),
+    renderOtherStoriesBlock(story.slug, allStories),
     renderCtaBand(),
   ]
     .filter(Boolean)
@@ -493,7 +559,7 @@ function main() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   for (const story of stories) {
-    const html = buildDetailPage(story, template);
+    const html = buildDetailPage(story, template, stories);
     const outPath = path.join(OUTPUT_DIR, `${story.slug}.html`);
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✓ wrote case-studies/${story.slug}.html`);
