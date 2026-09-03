@@ -335,9 +335,28 @@ async function fetchStrapiCaseStudies() {
     throw new Error(`Strapi API request failed: ${res.status} ${res.statusText} (${STRAPI_URL}/api/case-stories)`);
   }
   const json = await res.json();
-  const entries = json.data || [];
-  console.log(`✓ fetched ${entries.length} case-stor${entries.length === 1 ? "y" : "ies"} from Strapi (${STRAPI_URL})`);
-  return entries.map(mapStrapiEntryToStory);
+  const rawEntries = json.data || [];
+  console.log(`✓ fetched ${rawEntries.length} case-stor${rawEntries.length === 1 ? "y" : "ies"} from Strapi (${STRAPI_URL})`);
+
+  // Defensive: an entry missing required fields (e.g. an empty/unset slug,
+  // which is possible if it was published before Strapi's uid field had a
+  // chance to auto-generate) must never reach the template — skip it with
+  // a clear warning rather than silently emitting a broken page/URL.
+  const valid = [];
+  for (const entry of rawEntries) {
+    const missing = ["slug", "Title"].filter((f) => !entry[f]);
+    if (missing.length) {
+      console.warn(
+        `⚠ Skipping Strapi entry id=${entry.id} — missing required field(s): ${missing.join(
+          ", "
+        )}. Fix it in the Strapi admin (Content Manager → Case Stories → id ${entry.id}).`
+      );
+      continue;
+    }
+    valid.push(entry);
+  }
+
+  return valid.map(mapStrapiEntryToStory);
 }
 
 // ---------------------------------------------------------------------------
