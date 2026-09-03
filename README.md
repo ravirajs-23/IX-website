@@ -137,6 +137,57 @@ automatically. If it isn't connected yet, see "Deployment" below.
 
 ---
 
+## Content source #2: Strapi (optional)
+
+Case studies can also come from a Strapi CMS instance instead of a local
+`.md` file — both sources are read and merged automatically every build.
+This is read-only from the site's side: nothing here ever writes back to
+Strapi.
+
+**Setup:**
+1. Copy `.env.example` to `.env` (gitignored — never commit real tokens)
+2. Fill in `STRAPI_URL` and `STRAPI_API_TOKEN` (a Strapi API Token — read
+   access is enough)
+3. Run `npm run build:case-studies` as normal
+
+If those env vars aren't set, the Strapi source is silently skipped — the
+build still works purely off local `.md` files. This is what happens on
+Vercel today, since those env vars aren't configured there.
+
+**How a Strapi `case-story` entry maps onto the site:**
+
+| Strapi field | Maps to |
+|---|---|
+| `Title` | title |
+| `slug` | URL slug |
+| `BGImage` | heroImage (banner + listing thumbnail + social image) |
+| `TagsCommaSeparated` | tags (pill row) |
+| `CaseDetailsMarkdown` (if set) else `CaseDetails` (Blocks) | body — same `## Heading`-splits-into-sections convention as the `.md` files |
+| `master_industry_types` (first one) | category/breadcrumb — falls back to "General" if empty |
+| `case_benefits_and_impacts` (relation) | benefits (with optional icon from `IconImage`) |
+| `testimonials` (relation, first one only — see note below) | testimonial |
+| `SEOdescription` / `OGdescription` | metaDescription / heroSummary |
+| `OGimage` (falls back to `BGImage`) | social-share image |
+
+**Known limitations of the current mapping** (fine for now, worth revisiting
+if they become real gaps):
+- Only the *first* linked testimonial renders, even if a Strapi entry has
+  several — the template supports one testimonial block per page.
+- No numeric `stats` block equivalent exists in the Strapi schema yet — that
+  block just doesn't render for Strapi-sourced stories.
+- Strapi's `case-story` schema has no `client` field, and the current
+  template doesn't display one anyway, so it's left blank for Strapi
+  entries.
+- If a slug collides between a local `.md` file and a Strapi entry, the
+  build fails loudly rather than silently picking one — rename one of them.
+
+**Production Strapi**: not wired up yet. When ready, add
+`STRAPI_PROD_URL`/`STRAPI_PROD_API_TOKEN` to `.env` (placeholders already in
+`.env.example`) and extend `fetchStrapiCaseStudies()` in
+`scripts/build-case-studies.js` to also query the prod instance.
+
+---
+
 ## Editing the other pages
 
 The 7 hand-written pages (`index.html`, `about.html`, etc.) aren't part of

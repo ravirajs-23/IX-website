@@ -2,13 +2,23 @@
 /**
  * build-case-studies.js
  *
- * Reads every Markdown+front-matter file in content/case-studies/, fills the
- * shared templates/template.html, and writes:
+ * Case studies can come from TWO sources, merged together:
+ *   1. Markdown+front-matter files in content/case-studies/
+ *   2. A Strapi CMS instance (read-only), via its REST API
+ *
+ * Both are normalized into the same internal "story" shape and rendered
+ * through the same templates/template.html, producing:
  *   - case-studies/<slug>.html   (one detail page per story)
  *   - case-studies.html          (the listing/index page)
  *
  * Also keeps sitemap.xml and llms.txt in sync with the current set of
  * case-study pages. See the plan doc for the full design rationale.
+ *
+ * Strapi env vars (optional — set in .env, see .env.example):
+ *   STRAPI_URL         e.g. http://localhost:1337
+ *   STRAPI_API_TOKEN   a Strapi API token (read access is enough)
+ * If unset, the Strapi source is silently skipped — the script still works
+ * purely off local .md files.
  *
  * Usage: node scripts/build-case-studies.js   (or: npm run build:case-studies)
  */
@@ -25,6 +35,25 @@ const INDEX_OUTPUT_PATH = path.join(ROOT, "case-studies.html");
 const SITEMAP_PATH = path.join(ROOT, "sitemap.xml");
 const LLMS_PATH = path.join(ROOT, "llms.txt");
 const SITE_URL = "https://www.incubxperts.com";
+
+/** Minimal .env loader — no dependency. Real env vars (e.g. from Vercel) always win. */
+function loadDotEnv() {
+  const envPath = path.join(ROOT, ".env");
+  if (!fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const idx = trimmed.indexOf("=");
+    if (idx === -1) continue;
+    const key = trimmed.slice(0, idx).trim();
+    const value = trimmed.slice(idx + 1).trim();
+    if (key && !(key in process.env)) process.env[key] = value;
+  }
+}
+loadDotEnv();
+
+const STRAPI_URL = process.env.STRAPI_URL || "";
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || "";
 
 const STATIC_PAGES = [
   { loc: "/", priority: "1.0" },
@@ -93,6 +122,17 @@ function toAbsoluteUrl(pathOrUrl) {
 function truncate(str, max) {
   if (str.length <= max) return str;
   return str.slice(0, max - 1).trimEnd() + "…";
+}
+
+/** Resolve a Strapi media field (single media) to a usable URL, or null. */
+function resolveMediaUrl(media) {
+  if (!media) return null;
+  // Strapi v5 returns media fields as a plain object with `.url`; be
+  // defensive about the v4-style `{ data: { attributes: { url } } }` shape
+  // too, in case of an older/differently-configured instance.
+  const url = media.url || media?.data?.attributes?.url || null;
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -200,7 +240,7 @@ function loadCaseStudies() {
               role: data.testimonialRole,
             }
           : null,
-      body,
+      bodyHtml: renderMarkdownBody(body),
       sourceFile: file,
     });
   }
@@ -211,23 +251,139 @@ function loadCaseStudies() {
 }
 
 // ---------------------------------------------------------------------------
-// Render a story's Markdown body into the Challenge/Solution/Results shape
+// Load case studies from Strapi (optional second content source)
 // ---------------------------------------------------------------------------
 
-function renderBody(rawBody) {
+/** Map one Strapi case-story API entry into the same internal story shape. */
+function mapStrapiEntryToStory(entry) {
+  const industry =
+    entry.master_industry_types?.[0]?.IndustryName ||
+    entry.master_industries_types?.[0]?.IndustryName ||
+    "General";
+
+  const heroImage = resolveMediaUrl(entry.BGImage);
+  const ogImage = resolveMediaUrl(entry.OGimage) || heroImage;
+
+  const heroSummary = entry.OGdescription || entry.SEOdescription || entry.Title;
+  const metaDescription = entry.SEOdescription || entry.OGdescription || truncate(heroSummary, 155);
+
+  const benefits = (entry.case_benefits_and_impacts || []).map((b) => ({
+    title: b.Title,
+    description: b.ShortDescription,
+    icon: resolveMediaUrl(b.IconImage),
+  }));
+
+  const firstTestimonial = (entry.testimonials || [])[0];
+  const testimonial = firstTestimonial
+    ? {
+        quote: firstTestimonial.Testimonial,
+        author: firstTestimonial.TestimonyName,
+        role: [firstTestimonial.Designation, firstTestimonial.Company].filter(Boolean).join(", "),
+      }
+    : null;
+
+  let bodyHtml = "";
+  if (entry.CaseDetailsMarkdown && entry.CaseDetailsMarkdown.trim()) {
+    bodyHtml = renderMarkdownBody(entry.CaseDetailsMarkdown);
+  } else if (Array.isArray(entry.CaseDetails) && entry.CaseDetails.length) {
+    bodyHtml = renderStrapiBlocksBody(entry.CaseDetails);
+  } else {
+    console.warn(`⚠ Strapi entry "${entry.Title}" (slug: ${entry.slug}) has no CaseDetails content.`);
+  }
+
+  return {
+    slug: entry.slug,
+    title: entry.Title,
+    category: industry,
+    // Strapi's case-story schema has no dedicated "client" field (and the
+    // current template doesn't render one), so this is left empty here.
+    client: "",
+    publishDate: (entry.publishedAt || entry.createdAt || "").slice(0, 10),
+    heroSummary,
+    metaDescription,
+    heroImage,
+    ogImage,
+    tags: (entry.TagsCommaSeparated || "").split(",").map((t) => t.trim()).filter(Boolean),
+    // No dedicated numeric-stat equivalent in the Strapi schema today.
+    stats: [],
+    benefits,
+    testimonial,
+    bodyHtml,
+    sourceFile: `strapi:${entry.slug}`,
+  };
+}
+
+async function fetchStrapiCaseStudies() {
+  if (!STRAPI_URL || !STRAPI_API_TOKEN) {
+    console.log("ℹ STRAPI_URL/STRAPI_API_TOKEN not set — skipping the Strapi content source.");
+    return [];
+  }
+
+  const params = new URLSearchParams();
+  params.set("populate[case_benefits_and_impacts][populate]", "IconImage");
+  params.set("populate[testimonials]", "true");
+  params.set("populate[BGImage]", "true");
+  params.set("populate[OGimage]", "true");
+  params.set("populate[master_industry_types]", "true");
+  params.set("populate[master_industries_types]", "true");
+  params.set("pagination[pageSize]", "100");
+
+  const res = await fetch(`${STRAPI_URL}/api/case-stories?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
+  });
+  if (!res.ok) {
+    throw new Error(`Strapi API request failed: ${res.status} ${res.statusText} (${STRAPI_URL}/api/case-stories)`);
+  }
+  const json = await res.json();
+  const entries = json.data || [];
+  console.log(`✓ fetched ${entries.length} case-stor${entries.length === 1 ? "y" : "ies"} from Strapi (${STRAPI_URL})`);
+  return entries.map(mapStrapiEntryToStory);
+}
+
+// ---------------------------------------------------------------------------
+// Body rendering — shared by both content sources (Markdown, Strapi Blocks).
+// Each source's parser produces the same normalized shape:
+//   { sections: [{heading, html}], flatHtml: string|null }
+// `flatHtml` is used when there are no section headings at all.
+// ---------------------------------------------------------------------------
+
+function wrapSectionsHtml(sections) {
+  const items = sections
+    .map(
+      (s) => `
+    <div class="timeline-item">
+      <h3>${escapeHtml(s.heading)}</h3>
+      ${s.html}
+    </div>`
+    )
+    .join("\n");
+  return `
+<section class="section">
+  <div class="container">
+    <div class="timeline">${items}
+    </div>
+  </div>
+</section>`;
+}
+
+function wrapFlatHtml(html) {
+  return `
+<section class="section">
+  <div class="container">
+    <div class="case-body">
+      ${html}
+    </div>
+  </div>
+</section>`;
+}
+
+/** Render a Markdown body (## headings become sections) into final HTML. */
+function renderMarkdownBody(rawBody) {
   const headingRe = /^##\s+(.+)$/gm;
   const matches = [...rawBody.matchAll(headingRe)];
 
   if (matches.length === 0) {
-    // No ## sections — flowing narrative fallback.
-    return `
-<section class="section">
-  <div class="container">
-    <div class="case-body">
-      ${marked.parse(rawBody)}
-    </div>
-  </div>
-</section>`;
+    return wrapFlatHtml(marked.parse(rawBody));
   }
 
   const sections = [];
@@ -238,24 +394,113 @@ function renderBody(rawBody) {
     const sectionMarkdown = rawBody.slice(start, end).trim();
     sections.push({ heading, html: marked.parse(sectionMarkdown) });
   }
+  return wrapSectionsHtml(sections);
+}
 
-  const items = sections
-    .map(
-      (s) => `
-    <div class="timeline-item">
-      <h3>${escapeHtml(s.heading)}</h3>
-      ${s.html}
-    </div>`
-    )
-    .join("\n");
+/**
+ * Render Strapi's "Blocks" rich-text JSON format into final HTML.
+ * Level-2 headings become section breaks (matching the Markdown convention);
+ * everything else renders as flowing prose. Best-effort: an unrecognized
+ * node type is skipped rather than crashing the whole build.
+ */
+/**
+ * Strapi's Blocks editor often produces one single-item "list" node per
+ * bullet (pressing Enter between bullets splits them) rather than one list
+ * node with many list-items — merge adjacent same-format lists back into
+ * one, and drop empty paragraph nodes (blank lines), so the output looks
+ * like a normal bullet list instead of several stacked one-item lists.
+ */
+function preprocessBlocks(blocks) {
+  const merged = [];
+  for (const node of blocks) {
+    if (node.type === "paragraph") {
+      const text = (node.children || []).map((c) => c.text || "").join("").trim();
+      if (!text) continue;
+    }
+    const prev = merged[merged.length - 1];
+    if (node.type === "list" && prev && prev.type === "list" && prev.format === node.format) {
+      prev.children = [...(prev.children || []), ...(node.children || [])];
+      continue;
+    }
+    merged.push({ ...node });
+  }
+  return merged;
+}
 
-  return `
-<section class="section">
-  <div class="container">
-    <div class="timeline">${items}
-    </div>
-  </div>
-</section>`;
+function renderStrapiBlocksBody(rawBlocks) {
+  if (!Array.isArray(rawBlocks) || !rawBlocks.length) return "";
+  const blocks = preprocessBlocks(rawBlocks);
+
+  function inlineToHtml(children) {
+    if (!Array.isArray(children)) return "";
+    return children
+      .map((node) => {
+        if (node.type === "link") {
+          return `<a href="${escapeHtml(node.url || "")}">${inlineToHtml(node.children)}</a>`;
+        }
+        // Plain text leaf node, possibly with formatting marks.
+        let text = escapeHtml(node.text || "");
+        if (node.code) text = `<code>${text}</code>`;
+        if (node.bold) text = `<strong>${text}</strong>`;
+        if (node.italic) text = `<em>${text}</em>`;
+        if (node.underline) text = `<u>${text}</u>`;
+        if (node.strikethrough) text = `<s>${text}</s>`;
+        return text;
+      })
+      .join("");
+  }
+
+  function blockToHtml(node) {
+    switch (node.type) {
+      case "paragraph":
+        return `<p>${inlineToHtml(node.children)}</p>`;
+      case "heading": {
+        // A sub-heading appearing *within* a section (level-2 splits happen
+        // before this is ever called) — render one level down from the
+        // section's own <h3> so it doesn't compete visually.
+        const level = Math.min(Math.max((node.level || 3) + 1, 4), 6);
+        return `<h${level}>${inlineToHtml(node.children)}</h${level}>`;
+      }
+      case "list": {
+        const tag = node.format === "ordered" ? "ol" : "ul";
+        const items = (node.children || [])
+          .map((li) => `<li>${inlineToHtml(li.children)}</li>`)
+          .join("");
+        return `<${tag}>${items}</${tag}>`;
+      }
+      case "quote":
+        return `<blockquote><p>${inlineToHtml(node.children)}</p></blockquote>`;
+      case "code":
+        return `<pre><code>${escapeHtml((node.children || []).map((c) => c.text || "").join(""))}</code></pre>`;
+      case "image": {
+        const src = resolveMediaUrl(node.image) || "";
+        const alt = escapeHtml(node.image?.alternativeText || "");
+        return src ? `<img src="${escapeHtml(src)}" alt="${alt}" />` : "";
+      }
+      default:
+        return "";
+    }
+  }
+
+  function headingText(node) {
+    return (node.children || []).map((c) => c.text || "").join("").trim();
+  }
+
+  const sectionBreaks = blocks
+    .map((node, i) => ({ node, i }))
+    .filter(({ node }) => node.type === "heading" && node.level === 2);
+
+  if (sectionBreaks.length === 0) {
+    return wrapFlatHtml(blocks.map(blockToHtml).join("\n"));
+  }
+
+  const sections = sectionBreaks.map(({ node, i }, idx) => {
+    const start = i + 1;
+    const end = idx + 1 < sectionBreaks.length ? sectionBreaks[idx + 1].i : blocks.length;
+    const html = blocks.slice(start, end).map(blockToHtml).join("\n");
+    return { heading: headingText(node), html };
+  });
+  return wrapSectionsHtml(sections);
 }
 
 /** Visible disclaimer for underscore-prefixed test/demo content — never for real stories. */
@@ -298,13 +543,17 @@ function renderTagsBlock(tags) {
 function renderBenefitsBlock(benefits) {
   if (!benefits.length) return "";
   const cards = benefits
-    .map(
-      (b) => `
+    .map((b) => {
+      const icon = b.icon
+        ? `<div class="icon"><img src="${escapeHtml(b.icon)}" alt="" style="width:28px;height:28px;object-fit:contain;" /></div>`
+        : "";
+      return `
       <div class="card">
+        ${icon}
         <h3>${escapeHtml(b.title)}</h3>
         <p>${escapeHtml(b.description)}</p>
-      </div>`
-    )
+      </div>`;
+    })
     .join("");
   return `
 <section class="section section-alt">
@@ -432,7 +681,7 @@ function buildDetailPage(story, template, allStories) {
     isDemo ? renderDemoNoticeBlock() : "",
     renderHeroBannerBlock(story.heroImage, story.title),
     renderTagsBlock(story.tags),
-    renderBody(story.body),
+    story.bodyHtml || "",
     renderBenefitsBlock(story.benefits),
     renderStatsBlock(story.stats),
     renderTestimonialBlock(story.testimonial),
@@ -594,9 +843,25 @@ function updateLlmsTxt(stories) {
 // Main
 // ---------------------------------------------------------------------------
 
-function main() {
+async function main() {
   const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
-  const stories = loadCaseStudies();
+
+  const localStories = loadCaseStudies();
+  const strapiStories = await fetchStrapiCaseStudies();
+
+  // Duplicate slugs across the two sources are a build error, same as a
+  // duplicate within one source (already checked inside loadCaseStudies).
+  const seen = new Map();
+  for (const s of [...localStories, ...strapiStories]) {
+    if (seen.has(s.slug)) {
+      throw new Error(
+        `Duplicate slug "${s.slug}" found in both ${seen.get(s.slug)} and ${s.sourceFile} — slugs must be unique across local .md files and Strapi entries.`
+      );
+    }
+    seen.set(s.slug, s.sourceFile);
+  }
+
+  const stories = [...localStories, ...strapiStories].sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -620,4 +885,7 @@ function main() {
   console.log("\nDone.");
 }
 
-main();
+main().catch((err) => {
+  console.error(err.message || err);
+  process.exit(1);
+});
