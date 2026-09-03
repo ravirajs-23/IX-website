@@ -34,6 +34,7 @@ AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (
 <!-- CASE-STUDIES:START -->
 ## Case Stories
 
+- [Ravi's Test case story](/case-studies/Ravi-7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment.html): Ravi's Test case story
 - [7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment](/case-studies/7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment.html): How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.
 - [An AI Assistant that Provides Pinpoint Insights Through Natural Language Queries](/case-studies/ai-assistant-natural-language-insights.html): An AI-driven data assistant that lets users query complex dashboards in plain English and get instant, precise insights and visualizations.
 - [AI-Powered Trivia Quiz: Transforming Learning with Intelligent Gamification](/case-studies/ai-trivia-quiz-gamified-learning.html): An AI-powered trivia platform integrated with Slack and Microsoft Teams, using NLP and gamification to boost student engagement and retention.
