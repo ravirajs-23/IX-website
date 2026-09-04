@@ -328,10 +328,20 @@ async function fetchStrapiCaseStudies() {
   params.set("populate[master_industries_types]", "true");
   params.set("pagination[pageSize]", "100");
 
-  const res = await fetch(`${STRAPI_URL}/api/case-stories?${params.toString()}`, {
-    headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
-  });
+  let res;
+  try {
+    res = await fetch(`${STRAPI_URL}/api/case-stories?${params.toString()}`, {
+      headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
+    });
+  } catch (err) {
+    // Strapi is configured but unreachable right now (e.g. not running
+    // locally) — don't fail the whole build over it, just skip this source.
+    console.warn(`⚠ Could not reach Strapi at ${STRAPI_URL} (${err.message}) — skipping the Strapi content source.`);
+    return [];
+  }
   if (!res.ok) {
+    // A real HTTP-level error (bad token, wrong path, etc.) is worth
+    // failing loudly for, unlike "the server just isn't running".
     throw new Error(`Strapi API request failed: ${res.status} ${res.statusText} (${STRAPI_URL}/api/case-stories)`);
   }
   const json = await res.json();
@@ -370,7 +380,7 @@ function wrapSectionsHtml(sections) {
   const items = sections
     .map(
       (s) => `
-    <div class="timeline-item">
+    <div class="cs-content-section">
       <h3>${escapeHtml(s.heading)}</h3>
       ${s.html}
     </div>`
@@ -378,9 +388,7 @@ function wrapSectionsHtml(sections) {
     .join("\n");
   return `
 <section class="section">
-  <div class="container">
-    <div class="timeline">${items}
-    </div>
+  <div class="container">${items}
   </div>
 </section>`;
 }
@@ -389,7 +397,7 @@ function wrapFlatHtml(html) {
   return `
 <section class="section">
   <div class="container">
-    <div class="case-body">
+    <div class="cs-content-section" style="max-width:820px;margin:0 auto;">
       ${html}
     </div>
   </div>
@@ -534,27 +542,37 @@ function renderDemoNoticeBlock() {
 </section>`;
 }
 
-function renderHeroBannerBlock(heroImage, title) {
-  if (!heroImage) return "";
+/** Detail-page hero: story image as background (or flat gray fallback), breadcrumb, title, tag chips. */
+function renderDetailHeroSection(story) {
+  const bgStyle = story.heroImage ? ` style="background-image:url('${escapeHtml(story.heroImage)}');"` : "";
+  const chips = story.tags.length
+    ? `<div class="cs-chip-row">${story.tags.map((t) => `<span class="cs-chip">${escapeHtml(t)}</span>`).join("")}</div>`
+    : "";
   return `
-<section class="section" style="padding-bottom:0;">
-  <div class="container">
-    <div class="case-hero-banner">
-      <img src="${escapeHtml(heroImage)}" alt="${escapeHtml(title)}" />
+<section class="cs-hero"${bgStyle}>
+  <div class="cs-hero-inner">
+    <div class="cs-breadcrumb">
+      <a href="/index.html">Home</a><span class="sep">&rsaquo;</span>
+      <a href="/case-studies.html">Case Stories</a><span class="sep">&rsaquo;</span>
+      <span>Case Story Detail</span>
     </div>
+    <h1>${escapeHtml(story.title)}</h1>
+    ${chips}
   </div>
 </section>`;
 }
 
-function renderTagsBlock(tags) {
-  if (!tags.length) return "";
-  const pills = tags.map((t) => `<span class="tag-pill">${escapeHtml(t)}</span>`).join("\n      ");
+/** Listing-page hero: fixed background image, title, subtitle — no per-story data. */
+function renderListingHeroSection() {
   return `
-<section class="section" style="padding-top:0;">
-  <div class="container">
-    <div class="pill-row">
-      ${pills}
+<section class="cs-hero" style="background-image:url('/images/case-studies/_listing-hero-bg.webp');">
+  <div class="cs-hero-inner">
+    <div class="cs-breadcrumb">
+      <a href="/index.html">Home</a><span class="sep">&rsaquo;</span>
+      <span>Case Stories</span>
     </div>
+    <h1>Case Stories</h1>
+    <p class="cs-hero-sub">See our work in action</p>
   </div>
 </section>`;
 }
@@ -563,11 +581,9 @@ function renderBenefitsBlock(benefits) {
   if (!benefits.length) return "";
   const cards = benefits
     .map((b) => {
-      const icon = b.icon
-        ? `<div class="icon"><img src="${escapeHtml(b.icon)}" alt="" style="width:28px;height:28px;object-fit:contain;" /></div>`
-        : "";
+      const icon = b.icon ? `<img class="icon" src="${escapeHtml(b.icon)}" alt="" />` : "";
       return `
-      <div class="card">
+      <div class="cs-benefit">
         ${icon}
         <h3>${escapeHtml(b.title)}</h3>
         <p>${escapeHtml(b.description)}</p>
@@ -577,29 +593,8 @@ function renderBenefitsBlock(benefits) {
   return `
 <section class="section section-alt">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Benefits &amp; Impacts</span>
-    </div>
-    <div class="grid grid-3">${cards}
-    </div>
-  </div>
-</section>`;
-}
-
-function renderStatsBlock(stats) {
-  if (!stats.length) return "";
-  const items = stats
-    .map(
-      (s) => `
-      <div class="stat"><div class="num">${escapeHtml(s.value)}</div><div class="label">${escapeHtml(
-        s.label
-      )}</div></div>`
-    )
-    .join("");
-  return `
-<section class="section section-alt">
-  <div class="container">
-    <div class="stats">${items}
+    <div class="cs-section-label">Benefits &amp; Impacts</div>
+    <div class="cs-benefit-grid">${cards}
     </div>
   </div>
 </section>`;
@@ -610,31 +605,32 @@ function renderTestimonialBlock(testimonial) {
   return `
 <section class="section">
   <div class="container">
-    <div class="testimonial-card" style="max-width:720px;margin:0 auto;">
-      <p>&ldquo;${escapeHtml(testimonial.quote)}&rdquo;</p>
-      <div class="testimonial-meta">${escapeHtml(testimonial.author)} <span>${escapeHtml(
-        testimonial.role
-      )}</span></div>
+    <div class="cs-testimonial">
+      <div class="quote-mark">&ldquo;</div>
+      <p>${escapeHtml(testimonial.quote)}</p>
+      <div class="meta">${escapeHtml(testimonial.author)} <span>${escapeHtml(testimonial.role)}</span></div>
     </div>
   </div>
 </section>`;
 }
 
-/** Shared listing-style card, used by both the index page and "Other Case Stories". */
+/** Shared card, used by the listing grid and "Other Case Stories" — matches the live site's card exactly. */
 function renderStoryCard(s) {
-  const thumb = s.heroImage
-    ? `<div class="card-thumb"><img src="${escapeHtml(s.heroImage)}" alt="${escapeHtml(s.title)}" /></div>`
-    : "";
+  const media = s.heroImage
+    ? `<img src="${escapeHtml(s.heroImage)}" alt="${escapeHtml(s.title)}" />`
+    : `<div class="cs-card-noimg"></div>`;
   const isDemo = s.sourceFile.startsWith("_");
-  const dateLabel = isDemo ? `${escapeHtml(s.category)} &middot; Demo` : escapeHtml(s.category);
+  const tagLabel = isDemo ? `${escapeHtml(s.category)} &middot; Demo` : escapeHtml(s.category);
   return `
-      <div class="card blog-card">
-        ${thumb}
-        <div class="date">${dateLabel}</div>
-        <h3><a href="/case-studies/${s.slug}.html">${escapeHtml(s.title)}</a></h3>
-        <p>${escapeHtml(s.heroSummary)}</p>
-        <a href="/case-studies/${s.slug}.html">Read the Story &rarr;</a>
-      </div>`;
+      <a class="cs-card" href="/case-studies/${s.slug}.html" data-category="${escapeHtml(s.category)}" data-title="${escapeHtml(s.title)}">
+        ${media}
+        <div class="cs-card-body">
+          <div class="cs-tag">${tagLabel}</div>
+          <h3>${escapeHtml(s.title)}</h3>
+          <p>${escapeHtml(s.heroSummary)}</p>
+          <span class="cs-read-more">READ MORE</span>
+        </div>
+      </a>`;
 }
 
 function renderOtherStoriesBlock(currentSlug, allStories, max = 3) {
@@ -644,11 +640,8 @@ function renderOtherStoriesBlock(currentSlug, allStories, max = 3) {
   return `
 <section class="section">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Other Case Stories</span>
-      <h2>See Our Work in Action</h2>
-    </div>
-    <div class="grid grid-3">${cards}
+    <div class="cs-section-label">Other Case Stories</div>
+    <div class="cs-card-grid">${cards}
     </div>
   </div>
 </section>`;
@@ -698,11 +691,8 @@ function buildDetailPage(story, template, allStories) {
   const isDemo = story.sourceFile.startsWith("_");
   const mainContent = [
     isDemo ? renderDemoNoticeBlock() : "",
-    renderHeroBannerBlock(story.heroImage, story.title),
-    renderTagsBlock(story.tags),
     story.bodyHtml || "",
     renderBenefitsBlock(story.benefits),
-    renderStatsBlock(story.stats),
     renderTestimonialBlock(story.testimonial),
     renderOtherStoriesBlock(story.slug, allStories),
     renderCtaBand(),
@@ -722,9 +712,7 @@ function buildDetailPage(story, template, allStories) {
     TWITTER_TITLE: escapeHtml(pageTitle),
     TWITTER_DESCRIPTION: escapeHtml(story.metaDescription),
     JSONLD_BLOCK: jsonLdBlock,
-    BREADCRUMB: escapeHtml(story.category),
-    HERO_TITLE: escapeHtml(story.title),
-    HERO_SUMMARY: escapeHtml(story.heroSummary),
+    HERO_SECTION: renderDetailHeroSection(story),
     MAIN_CONTENT: mainContent,
   };
 
@@ -741,14 +729,27 @@ function buildIndexPage(stories, template) {
   const metaDescription =
     "Real client success stories from IncubXperts — AI adoption, agentic solutions, cloud transformation, and more.";
 
+  const categories = [...new Set(stories.map((s) => s.category))].sort();
+  const pills = [
+    `<button class="cs-filter-pill active" data-filter="All">All</button>`,
+    ...categories.map((c) => `<button class="cs-filter-pill" data-filter="${escapeHtml(c)}">${escapeHtml(c)}</button>`),
+  ].join("");
+
   const cards = stories.map(renderStoryCard).join("\n");
 
   const mainContent = stories.length
     ? `
 <section class="section">
   <div class="container">
-    <div class="grid grid-3">${cards}
+    <div class="cs-filter-bar">
+      <div class="cs-filter-pills">${pills}
+      </div>
+      <input class="cs-search" type="search" placeholder="Search" aria-label="Search case stories" />
     </div>
+    <div class="cs-section-label">Case Stories</div>
+    <div class="cs-card-grid">${cards}
+    </div>
+    <div class="cs-view-more-wrap"><button class="cs-view-more" hidden>VIEW MORE</button></div>
   </div>
 </section>
 ${renderCtaBand()}`
@@ -772,9 +773,7 @@ ${renderCtaBand()}`;
     TWITTER_TITLE: escapeHtml(pageTitle),
     TWITTER_DESCRIPTION: escapeHtml(metaDescription),
     JSONLD_BLOCK: "",
-    BREADCRUMB: "Case Stories",
-    HERO_TITLE: "Success Delivered, Trust Earned",
-    HERO_SUMMARY: "Real outcomes from real client partnerships across AI adoption, agentic solutions, and cloud transformation.",
+    HERO_SECTION: renderListingHeroSection(),
     MAIN_CONTENT: mainContent,
   };
 

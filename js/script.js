@@ -29,4 +29,56 @@ document.addEventListener("DOMContentLoaded", () => {
       form.reset();
     });
   });
+
+  // Case Stories listing: category filter pills + search + "view more" reveal.
+  const filterBar = document.querySelector(".cs-filter-bar");
+  if (filterBar) {
+    const cards = [...document.querySelectorAll(".cs-card-grid .cs-card")];
+    const pills = [...filterBar.querySelectorAll(".cs-filter-pill")];
+    const searchInput = filterBar.querySelector(".cs-search");
+    const viewMoreBtn = document.querySelector(".cs-view-more");
+    const PAGE_SIZE = 6;
+    let activeCategory = "All";
+    let visibleCount = PAGE_SIZE;
+
+    function matches(card, query) {
+      const cat = card.dataset.category || "";
+      const title = (card.dataset.title || "").toLowerCase();
+      const matchesCategory = activeCategory === "All" || cat === activeCategory;
+      const matchesSearch = !query || title.includes(query);
+      return matchesCategory && matchesSearch;
+    }
+
+    function applyFilters() {
+      const query = (searchInput?.value || "").trim().toLowerCase();
+      let shown = 0;
+      cards.forEach((card) => {
+        const isMatch = matches(card, query);
+        const withinPage = isMatch && shown < visibleCount;
+        if (isMatch) shown++;
+        card.hidden = !withinPage;
+      });
+      if (viewMoreBtn) viewMoreBtn.hidden = shown <= visibleCount;
+    }
+
+    pills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        pills.forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        activeCategory = pill.dataset.filter;
+        visibleCount = PAGE_SIZE;
+        applyFilters();
+      });
+    });
+    searchInput?.addEventListener("input", () => {
+      visibleCount = PAGE_SIZE;
+      applyFilters();
+    });
+    viewMoreBtn?.addEventListener("click", () => {
+      visibleCount += PAGE_SIZE;
+      applyFilters();
+    });
+
+    applyFilters();
+  }
 });
