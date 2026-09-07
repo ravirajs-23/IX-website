@@ -99,6 +99,13 @@ function truncate(str, max) {
   return str.slice(0, max - 1).trimEnd() + "…";
 }
 
+const MEDIA_MIRROR_DIR = path.join(ROOT, "images", "case-studies", "strapi");
+// Populated by mirrorAllStrapiMedia() before any rendering happens — maps
+// an absolute Strapi media URL to the root-relative local path it was
+// downloaded to. Keeps resolveMediaUrl() synchronous (it's called from deep
+// inside recursive, sync render functions) despite the download being async.
+const mediaMirrorMap = new Map();
+
 /** Resolve a Strapi media field (single media) to a usable URL, or null. */
 function resolveMediaUrl(media) {
   if (!media) return null;
@@ -107,7 +114,82 @@ function resolveMediaUrl(media) {
   // too, in case of an older/differently-configured instance.
   const url = media.url || media?.data?.attributes?.url || null;
   if (!url) return null;
-  return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
+  const absolute = url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
+  // Media actually hosted on this Strapi instance (as opposed to some
+  // future external/CDN URL) is mirrored into this repo at build time — see
+  // mirrorAllStrapiMedia() — so the live site never depends on Strapi's own
+  // URL (today, just localhost) being reachable by an actual visitor. Only
+  // the *build* needs Strapi reachable, same as the API call itself.
+  if (absolute.startsWith(STRAPI_URL) && mediaMirrorMap.has(absolute)) {
+    return mediaMirrorMap.get(absolute);
+  }
+  return absolute;
+}
+
+/** Every media object ({url, mime, ...}) referenced anywhere in one Strapi
+ * entry, including inline images inside CaseDetails Blocks content — so
+ * mirrorAllStrapiMedia() can download all of them up front. */
+function collectMediaObjects(entry) {
+  const media = [];
+  if (entry.BGImage) media.push(entry.BGImage);
+  if (entry.OGimage) media.push(entry.OGimage);
+  if (entry.CaseDetailsImageVideo) media.push(entry.CaseDetailsImageVideo);
+  for (const b of entry.case_benefits_and_impacts || []) {
+    if (b.IconImage) media.push(b.IconImage);
+  }
+  if (Array.isArray(entry.CaseDetails)) {
+    for (const node of entry.CaseDetails) {
+      if (node.type === "image" && node.image) media.push(node.image);
+    }
+  }
+  return media;
+}
+
+/**
+ * Downloads every Strapi-hosted media file referenced by these entries into
+ * images/case-studies/strapi/ and records the mapping in mediaMirrorMap.
+ * Must run (and be awaited) before any story is mapped/rendered.
+ *
+ * Without this, a relative Strapi media URL resolves to e.g.
+ * "http://localhost:1337/uploads/photo.webp" — fine for previewing on the
+ * same machine as Strapi, completely broken for an actual site visitor.
+ * A failed download is logged and left as the raw (broken) URL rather than
+ * failing the whole build, since a bad image shouldn't block a text fix.
+ */
+async function mirrorAllStrapiMedia(entries) {
+  const seen = new Set();
+  for (const entry of entries) {
+    for (const media of collectMediaObjects(entry)) {
+      const rawUrl = media.url || media?.data?.attributes?.url || null;
+      if (!rawUrl) continue;
+      const absoluteUrl = rawUrl.startsWith("http") ? rawUrl : `${STRAPI_URL}${rawUrl}`;
+      if (!absoluteUrl.startsWith(STRAPI_URL) || seen.has(absoluteUrl)) continue;
+      seen.add(absoluteUrl);
+
+      const filename = path.basename(new URL(absoluteUrl).pathname);
+      const localPath = path.join(MEDIA_MIRROR_DIR, filename);
+      const publicPath = `/images/case-studies/strapi/${filename}`;
+
+      if (fs.existsSync(localPath)) {
+        mediaMirrorMap.set(absoluteUrl, publicPath);
+        continue;
+      }
+
+      try {
+        const res = await fetch(absoluteUrl);
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        const buf = Buffer.from(await res.arrayBuffer());
+        fs.mkdirSync(MEDIA_MIRROR_DIR, { recursive: true });
+        fs.writeFileSync(localPath, buf);
+        mediaMirrorMap.set(absoluteUrl, publicPath);
+        console.log(`✓ mirrored ${filename}`);
+      } catch (err) {
+        console.warn(
+          `⚠ Could not mirror Strapi media ${absoluteUrl} (${err.message}) — this image will be broken on the live site until fixed.`
+        );
+      }
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -161,7 +243,10 @@ function mapStrapiEntryToStory(entry) {
 
   return {
     slug: entry.slug,
-    title: entry.Title,
+    // .trim(): Strapi content-entry data can carry incidental leading/
+    // trailing whitespace (e.g. a trailing space left in the Title field)
+    // that would otherwise show up literally in <title>, <h1>, and JSON-LD.
+    title: entry.Title.trim(),
     category: industry,
     // Strapi's case-story schema has no dedicated "client" field (and the
     // current template doesn't render one), so this is left empty here.
@@ -235,6 +320,8 @@ async function fetchStrapiCaseStudies() {
     }
     valid.push(entry);
   }
+
+  await mirrorAllStrapiMedia(valid);
 
   return valid.map(mapStrapiEntryToStory);
 }
