@@ -70,6 +70,17 @@ soon" empty state, and `sitemap.xml`/`llms.txt` simply have no case-study
 entries. A real HTTP-level error from Strapi (bad token, wrong path) still
 fails the build loudly, since that's a config problem worth surfacing.
 
+> ⚠️ **Because of that "zero rather than fail" behavior, `build:case-studies`
+> must only ever be run where Strapi is actually reachable** — today that's
+> your machine, against `http://localhost:1337`. **Never let Vercel run
+> it** (see "Deployment" below for why) — it would silently wipe every case
+> study from the live site, since Vercel's build servers can't reach your
+> local Strapi. The workflow is: run `npm run build:case-studies` locally,
+> check the output looks right, then commit + push the regenerated files.
+> There is currently no build step anywhere that regenerates this content
+> automatically — it's a manual, deliberate step every time Strapi content
+> changes.
+
 **How a Strapi `case-story` entry maps onto the site:**
 
 | Strapi field | Maps to |
@@ -152,10 +163,23 @@ will detect that and re-wrap it automatically.
 ## Deployment
 
 - Repo: https://github.com/ravirajs-23/IX-website
-- Hosting: Vercel, as a static site (no build command needed — generated
-  files are committed to git, same as the hand-written pages)
-- To connect auto-deploy: go to vercel.com/new, import this repo, framework
-  preset "Other", leave build/output settings empty
+- Hosting: Vercel, auto-deploying on every push to `main` (config in
+  [vercel.json](vercel.json): `framework: null`, `outputDirectory: "."`)
+- **Vercel's build command is `npm run build:pages` — deliberately NOT
+  `npm run build:case-studies`.** All generated output (case-study pages,
+  `case-studies.html`, `sitemap.xml`, `llms.txt`) is committed to git and
+  served as-is; Vercel only re-syncs the header/footer partials, which is
+  safe because that step has no external dependency. It must never run
+  `build:case-studies` on Vercel, because Vercel's build servers can't reach
+  your local Strapi instance — that script would then treat Strapi as
+  reachable-but-empty and silently delete every case study from the live
+  site (this happened once, 2026-09-07 — see git history around commit
+  `6fbdaa6`). If Strapi is ever hosted somewhere Vercel *can* reach, revisit
+  this and re-enable it, adding `STRAPI_URL`/`STRAPI_API_TOKEN` as Vercel
+  project env vars first.
+- To connect auto-deploy on a fresh project: go to vercel.com/new, import
+  this repo, framework preset "Other" — the settings in `vercel.json` take
+  over from there.
 
 ## Domain note
 
