@@ -151,6 +151,16 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   position: relative;
 }
 .nav-links a:hover, .nav-links a.active { color: var(--color-primary); }
+/* "AI Lab" renders as gradient text on the live site (verified via computed
+   style — background-clip:text, same as the case-study section headings)
+   rather than the plain nav-link color every other item uses. */
+.nav-links a.nav-ai-lab {
+  background: linear-gradient(270deg, var(--cs-gradient-start), var(--cs-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nav-links a.nav-ai-lab:hover { -webkit-text-fill-color: initial; color: var(--color-primary); background: none; }
 .nav-cta { display: flex; align-items: center; }
 .nav-cta .btn { text-transform: uppercase; }
 
