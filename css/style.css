@@ -163,6 +163,9 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   .nav-links.open a { color: var(--color-text); }
   .nav-links.open a:hover, .nav-links.open a.active { color: var(--color-primary); }
   .nav-toggle { display: flex; }
+  /* Matches the live site: only the hamburger shows once the nav collapses
+     — the CTA button doesn't compete with it for space. */
+  .nav-cta { display: none; }
 }
 
 /* ---------- Hero carousel (homepage) ----------
