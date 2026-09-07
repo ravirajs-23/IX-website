@@ -89,16 +89,37 @@
   </div>
 </header>
 
-<section class="hero">
+<!--
+  Hero carousel — content for all slides lives in the HERO_SLIDES array in
+  js/script.js, not here. The markup below is just slide 1, shown before
+  JS runs (and as a no-JS fallback); once script.js loads it repopulates
+  these same elements on rotation. To add/edit/remove a slide, edit that
+  one array — no HTML changes needed.
+-->
+<section class="hero" id="heroCarousel">
   <div class="container hero-inner">
-    <span class="eyebrow">AI-Native Engineering & Software Partner</span>
-    <h1>Redefine What&rsquo;s Possible with AI</h1>
-    <p>Strategic, value-focused AI adoption tailored for your business — from purpose-built strategy to autonomous agentic solutions and AI-ready cloud infrastructure.</p>
+    <h1 data-hero="title">Redefine What&rsquo;s Possible with AI</h1>
+    <p data-hero="subtitle">Strategic, value-focused AI adoption tailored for your business — from purpose-built strategy to autonomous agentic solutions and AI-ready cloud infrastructure.</p>
     <div class="hero-actions">
-      <a href="services.html" class="btn btn-white">Know More</a>
-      <a href="case-studies.html" class="btn btn-outline" style="border-color:#fff;color:#fff;">Case Stories</a>
+      <a href="services.html" class="btn" style="border:2px solid #fff;color:#fff;background:transparent;">Know More</a>
+      <a href="case-studies.html" class="btn btn-primary">Case Stories</a>
     </div>
   </div>
+  <div class="container hero-slide-meta">
+    <div class="hero-slide-num" data-hero="num">01</div>
+    <div class="hero-slide-tag" data-hero="tag">AI Adoption and Strategy</div>
+    <div class="hero-slide-nav">
+      <button type="button" data-hero-prev aria-label="Previous slide">&#8249;</button>
+      <button type="button" data-hero-next aria-label="Next slide">&#8250;</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hero-progress"><div class="hero-progress-bar" data-hero="progress"></div></div>
+  </div>
+</section>
+
+<section class="innovation-banner">
+  <div class="container"><h2>Purpose-Built AI for Real Impact</h2></div>
 </section>
 
 <section class="section">

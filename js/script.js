@@ -1,5 +1,36 @@
 // IncubXperts — shared site scripts
 
+// Homepage hero carousel content. To add, remove, or edit a slide, just
+// edit this array — renderHeroSlide() below reads it and updates the DOM;
+// no other code or markup needs to change.
+const HERO_SLIDES = [
+  {
+    num: "01",
+    tag: "AI Adoption and Strategy",
+    title: "Redefine What&rsquo;s Possible with AI",
+    subtitle:
+      "Strategic, value-focused AI adoption tailored for your business — from purpose-built strategy to autonomous agentic solutions and AI-ready cloud infrastructure.",
+    image: "/images/hero/slide-1-ai-adoption.webp",
+  },
+  {
+    num: "02",
+    tag: "Agentic Solutions",
+    title: "Where Intelligence Becomes Action",
+    subtitle:
+      "Autonomous AI agents that think, decide, and deliver reliable, real-world outcomes.",
+    image: "/images/hero/slide-2-agentic-solutions.webp",
+  },
+  {
+    num: "03",
+    tag: "Cloud & AI Infrastructure",
+    title: "Architect the Foundations of Intelligence",
+    subtitle:
+      "Modern, scalable, and AI-ready cloud infrastructure built for performance, resilience, and growth.",
+    image: "/images/hero/slide-3-cloud-infra.webp",
+  },
+];
+const HERO_SLIDE_DURATION_MS = 6000;
+
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav-toggle");
   const links = document.querySelector(".nav-links");
@@ -10,11 +41,67 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // Highlight active nav link based on current page
+  // Highlight active nav link based on current page (hrefs may be root-
+  // relative, e.g. "/index.html", so compare with any leading slash stripped).
   const current = window.location.pathname.split("/").pop() || "index.html";
   document.querySelectorAll(".nav-links a").forEach((a) => {
-    if (a.getAttribute("href") === current) a.classList.add("active");
+    const href = (a.getAttribute("href") || "").replace(/^\//, "");
+    if (href === current) a.classList.add("active");
   });
+
+  // Homepage hero carousel — see the HERO_SLIDES array above.
+  const heroSection = document.querySelector("#heroCarousel");
+  if (heroSection) {
+    const els = {
+      title: heroSection.querySelector('[data-hero="title"]'),
+      subtitle: heroSection.querySelector('[data-hero="subtitle"]'),
+      num: heroSection.querySelector('[data-hero="num"]'),
+      tag: heroSection.querySelector('[data-hero="tag"]'),
+      progress: heroSection.querySelector('[data-hero="progress"]'),
+    };
+    let index = 0;
+    let timer = null;
+
+    function renderHeroSlide(i) {
+      const slide = HERO_SLIDES[i];
+      if (!slide) return;
+      if (els.title) els.title.innerHTML = slide.title;
+      if (els.subtitle) els.subtitle.textContent = slide.subtitle;
+      if (els.num) els.num.textContent = slide.num;
+      if (els.tag) els.tag.textContent = slide.tag;
+      heroSection.style.backgroundImage = `url('${slide.image}')`;
+      if (els.progress) {
+        els.progress.style.transition = "none";
+        els.progress.style.width = "0%";
+        // Force reflow so the transition below actually restarts.
+        void els.progress.offsetWidth;
+        els.progress.style.transition = `width ${HERO_SLIDE_DURATION_MS}ms linear`;
+        els.progress.style.width = "100%";
+      }
+    }
+
+    function goTo(i) {
+      index = (i + HERO_SLIDES.length) % HERO_SLIDES.length;
+      renderHeroSlide(index);
+    }
+
+    function restartAutoplay() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => goTo(index + 1), HERO_SLIDE_DURATION_MS);
+    }
+
+    heroSection.querySelector("[data-hero-prev]")?.addEventListener("click", () => {
+      goTo(index - 1);
+      restartAutoplay();
+    });
+    heroSection.querySelector("[data-hero-next]")?.addEventListener("click", () => {
+      goTo(index + 1);
+      restartAutoplay();
+    });
+
+    goTo(0);
+    restartAutoplay();
+  }
 
   // Simple contact/careers form handler (no backend wired up yet)
   const forms = document.querySelectorAll("form[data-form]");

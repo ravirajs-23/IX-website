@@ -1,6 +1,13 @@
 /* ==========================================================================
    IncubXperts — Corporate Website Stylesheet
+
+   Design tokens live in :root below — change a value there to restyle the
+   whole site from one place (e.g. --font-display swaps every heading font,
+   --radius-btn reshapes every button). This is the single source of truth;
+   avoid hardcoding colors/fonts/radii elsewhere in this file.
    ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
   --color-primary: #1868f0;
@@ -13,10 +20,16 @@
   --color-bg-alt: #f5f7fb;
   --color-border: #e4e8f0;
   --radius: 12px;
+  --radius-btn: 8px;
   --shadow: 0 8px 30px rgba(18, 23, 43, 0.08);
   --transition: 0.25s ease;
   --max-width: 1180px;
-  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  /* Body copy vs. headings/labels intentionally use two different font
+     families (matches the live incubxperts.com site) — change either one
+     here to restyle every heading/eyebrow or every paragraph at once. */
+  --font: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Barlow Semi Condensed", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --header-height: 84px;
 }
 
 * { box-sizing: border-box; }
@@ -48,18 +61,18 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 .eyebrow {
   display: inline-block;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-dark);
   margin-bottom: 14px;
 }
 
-h1, h2, h3, h4 { color: var(--color-dark); line-height: 1.2; margin: 0 0 16px; }
-h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 800; }
-h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; }
-h3 { font-size: 1.3rem; font-weight: 700; }
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--color-dark); font-weight: 600; line-height: 1.2; margin: 0 0 16px; }
+h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
+h3 { font-size: 1.3rem; }
 p { margin: 0 0 16px; color: var(--color-text-muted); }
 
 .section-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
@@ -70,7 +83,7 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   align-items: center;
   gap: 8px;
   padding: 14px 28px;
-  border-radius: 999px;
+  border-radius: var(--radius-btn);
   font-weight: 700;
   font-size: 0.95rem;
   border: 2px solid transparent;
@@ -84,22 +97,28 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .btn-white { background: #fff; color: var(--color-primary); }
 .btn-white:hover { background: var(--color-dark); color: #fff; }
 
-/* ---------- Header ---------- */
+/* ---------- Header ----------
+   Transparent, overlaid on the hero (matches the live site — the header
+   isn't sticky there either). Every page starts with a dark hero/page-hero
+   section, so white logo/nav text stays readable everywhere. The mobile
+   dropdown is the one exception: it drops an opaque white panel below the
+   bar, so its links switch back to dark text — see the media query below. */
 .site-header {
-  position: sticky;
+  position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border);
+  background: transparent;
 }
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 18px 0;
+  min-height: var(--header-height);
 }
-.logo { font-size: 1.4rem; font-weight: 800; color: var(--color-dark); }
+.logo { font-size: 1.4rem; font-weight: 800; color: #fff; }
 .logo span { color: var(--color-primary); }
 .nav-links {
   display: flex;
@@ -109,7 +128,7 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .nav-links a {
   font-weight: 600;
   font-size: 0.95rem;
-  color: var(--color-text);
+  color: #fff;
   transition: color var(--transition);
   position: relative;
 }
@@ -124,7 +143,7 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   cursor: pointer;
   padding: 6px;
 }
-.nav-toggle span { width: 26px; height: 3px; background: var(--color-dark); border-radius: 3px; }
+.nav-toggle span { width: 26px; height: 3px; background: #fff; border-radius: 3px; }
 
 @media (max-width: 900px) {
   .nav-links {
@@ -141,34 +160,68 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
     display: none;
   }
   .nav-links.open { display: flex; }
+  .nav-links.open a { color: var(--color-text); }
+  .nav-links.open a:hover, .nav-links.open a.active { color: var(--color-primary); }
   .nav-toggle { display: flex; }
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero carousel (homepage) ----------
+   Populated entirely from the HERO_SLIDES array in js/script.js — add,
+   remove, or edit a slide by editing that array; no HTML/CSS changes
+   needed for a new slide. */
 .hero {
   background: linear-gradient(135deg, var(--color-dark) 0%, #1a2550 60%, var(--color-primary-dark) 100%);
+  background-size: cover;
+  background-position: center;
   color: #fff;
-  padding: 110px 0;
+  padding: calc(var(--header-height) + 64px) 0 64px;
   position: relative;
   overflow: hidden;
+  transition: background-image 0.4s ease;
 }
-.hero::after {
+.hero::before {
+  /* Scrim so slide photography never fights with white text/buttons. */
   content: "";
   position: absolute;
-  right: -120px; top: -120px;
-  width: 420px; height: 420px;
-  background: radial-gradient(circle, rgba(24,104,240,0.35), transparent 70%);
+  inset: 0;
+  background: linear-gradient(100deg, rgba(18, 23, 43, 0.88) 0%, rgba(18, 23, 43, 0.55) 55%, rgba(18, 23, 43, 0.3) 100%);
 }
-.hero-inner { position: relative; z-index: 1; max-width: 720px; }
-.hero .eyebrow { color: #9fc0ff; }
+.hero-inner { position: relative; z-index: 1; max-width: 640px; }
+.hero .eyebrow { color: #fff; }
 .hero h1 { color: #fff; }
 .hero p { color: #cdd6ec; font-size: 1.15rem; }
 .hero-actions { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
 
+.hero-slide-meta { position: relative; z-index: 1; margin-top: 48px; display: flex; align-items: center; gap: 20px; }
+.hero-slide-num { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+.hero-slide-tag { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; flex: 1; }
+.hero-slide-nav { display: flex; gap: 10px; }
+.hero-slide-nav button {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-btn);
+  border: 1px solid rgba(255,255,255,0.5);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.hero-slide-nav button:hover { background: rgba(255,255,255,0.15); }
+.hero-progress { position: relative; z-index: 1; height: 3px; background: rgba(255,255,255,0.2); margin-top: 16px; border-radius: 3px; overflow: hidden; }
+.hero-progress-bar { height: 100%; background: #fff; border-radius: 3px; transition: width 0.3s linear; }
+
+/* ---------- Innovation banner (between hero and next section) ---------- */
+.innovation-banner {
+  background: var(--color-primary) url("/images/hero/innovation-bg.png") center/cover no-repeat;
+  padding: 28px 0;
+  text-align: center;
+}
+.innovation-banner h2 { color: #fff; margin: 0; font-size: 1.5rem; }
+
 .page-hero {
   background: linear-gradient(135deg, var(--color-dark), var(--color-primary-dark));
   color: #fff;
-  padding: 80px 0 60px;
+  padding: calc(var(--header-height) + 56px) 0 60px;
   text-align: center;
 }
 .page-hero h1 { color: #fff; }
@@ -343,7 +396,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .cs-hero-inner {
   position: relative;
   z-index: 1;
-  padding: 56px 24px;
+  padding: calc(var(--header-height) + 40px) 24px 56px;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -543,7 +596,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   .cs-card-grid, .cs-benefit-grid { grid-template-columns: 1fr; }
   .cs-filter-bar { flex-direction: column; align-items: stretch; }
   .cs-search { width: 100%; }
-  .cs-hero-inner { padding: 40px 20px; }
+  .cs-hero-inner { padding: calc(var(--header-height) + 20px) 20px 40px; }
 }
 
 /* ---------- Footer ---------- */
@@ -585,8 +638,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 /* Tablet (≤1024px): tighten section rhythm, keep multi-column grids where they fit */
 @media (max-width: 1024px) {
   .section { padding: 68px 0; }
-  .hero { padding: 88px 0; }
-  .page-hero { padding: 64px 0 48px; }
+  .hero { padding: calc(var(--header-height) + 40px) 0 40px; }
+  .page-hero { padding: calc(var(--header-height) + 32px) 0 48px; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 40px; }
 }
 
@@ -599,9 +652,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 /* Mobile (≤700px) */
 @media (max-width: 700px) {
   .section { padding: 52px 0; }
-  .hero { padding: 64px 0; }
-  .hero::after { width: 260px; height: 260px; right: -80px; top: -80px; }
-  .page-hero { padding: 52px 0 40px; }
+  .hero { padding: calc(var(--header-height) + 24px) 0 32px; }
+  .page-hero { padding: calc(var(--header-height) + 16px) 0 40px; }
   .section-head { margin-bottom: 40px; }
   .cta-band { padding: 40px 22px; }
   .card { padding: 26px 20px; }
