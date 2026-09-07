@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "description": "IncubXperts corporate website — static HTML/CSS/JS with a small build script for case-study pages.",
   "scripts": {
-    "build:case-studies": "node scripts/build-case-studies.js"
+    "build:pages": "node scripts/build-pages.js",
+    "build:case-studies": "node scripts/build-case-studies.js",
+    "build": "npm run build:pages && npm run build:case-studies"
   },
   "dependencies": {
     "marked": "12.0.2"

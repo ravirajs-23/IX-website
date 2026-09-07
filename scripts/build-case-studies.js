@@ -30,6 +30,7 @@ const { marked } = require("marked");
 const ROOT = path.join(__dirname, "..");
 const CONTENT_DIR = path.join(ROOT, "content", "case-studies");
 const TEMPLATE_PATH = path.join(ROOT, "templates", "template.html");
+const PARTIALS_DIR = path.join(ROOT, "templates", "partials");
 const OUTPUT_DIR = path.join(ROOT, "case-studies");
 const INDEX_OUTPUT_PATH = path.join(ROOT, "case-studies.html");
 const SITEMAP_PATH = path.join(ROOT, "sitemap.xml");
@@ -664,7 +665,7 @@ function renderCtaBand() {
 // Build one detail page
 // ---------------------------------------------------------------------------
 
-function buildDetailPage(story, template, allStories) {
+function buildDetailPage(story, template, allStories, partials) {
   const canonicalUrl = `${SITE_URL}/case-studies/${story.slug}.html`;
   const pageTitle = `${story.title} | IncubXperts Case Study`;
 
@@ -712,6 +713,8 @@ function buildDetailPage(story, template, allStories) {
     TWITTER_TITLE: escapeHtml(pageTitle),
     TWITTER_DESCRIPTION: escapeHtml(story.metaDescription),
     JSONLD_BLOCK: jsonLdBlock,
+    HEADER: partials.header,
+    FOOTER: partials.footer,
     HERO_SECTION: renderDetailHeroSection(story),
     MAIN_CONTENT: mainContent,
   };
@@ -723,7 +726,7 @@ function buildDetailPage(story, template, allStories) {
 // Build the listing/index page
 // ---------------------------------------------------------------------------
 
-function buildIndexPage(stories, template) {
+function buildIndexPage(stories, template, partials) {
   const canonicalUrl = `${SITE_URL}/case-studies.html`;
   const pageTitle = "Case Stories | IncubXperts";
   const metaDescription =
@@ -773,6 +776,8 @@ ${renderCtaBand()}`;
     TWITTER_TITLE: escapeHtml(pageTitle),
     TWITTER_DESCRIPTION: escapeHtml(metaDescription),
     JSONLD_BLOCK: "",
+    HEADER: partials.header,
+    FOOTER: partials.footer,
     HERO_SECTION: renderListingHeroSection(),
     MAIN_CONTENT: mainContent,
   };
@@ -863,6 +868,13 @@ function updateLlmsTxt(stories) {
 
 async function main() {
   const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
+  // Single source of truth for header/footer, shared with the hand-written
+  // pages via scripts/build-pages.js — edit templates/partials/*.html, not
+  // this template or any individual page, to change nav/footer content.
+  const partials = {
+    header: fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf8").trim(),
+    footer: fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf8").trim(),
+  };
 
   const localStories = loadCaseStudies();
   const strapiStories = await fetchStrapiCaseStudies();
@@ -884,13 +896,13 @@ async function main() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   for (const story of stories) {
-    const html = buildDetailPage(story, template, stories);
+    const html = buildDetailPage(story, template, stories, partials);
     const outPath = path.join(OUTPUT_DIR, `${story.slug}.html`);
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✓ wrote case-studies/${story.slug}.html`);
   }
 
-  const indexHtml = buildIndexPage(stories, template);
+  const indexHtml = buildIndexPage(stories, template, partials);
   fs.writeFileSync(INDEX_OUTPUT_PATH, indexHtml, "utf8");
   console.log(`✓ wrote case-studies.html (${stories.length} stor${stories.length === 1 ? "y" : "ies"})`);
 

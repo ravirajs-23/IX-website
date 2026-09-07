@@ -30,6 +30,22 @@
   --font: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Barlow Semi Condensed", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --header-height: 84px;
+
+  /* Case-study-page-specific tokens (scoped to .cs- classes, see the
+     "Case Study pages" section below) — kept as separate --cs-* names
+     since the live site's case-study section uses a slightly different
+     blue/text-gray than the rest of the site, not because this needs its
+     own :root block. */
+  --cs-primary: #196cfa;
+  --cs-navy: #042963;
+  --cs-filter-border: #42526e;
+  --cs-text: #424242;
+  --cs-light-blue: #deebff;
+  --cs-font-display: "Barlow Semi Condensed", "Segoe UI", sans-serif;
+  --cs-font-body: "Inter", "Segoe UI", sans-serif;
+  /* Body copy on case-study pages scales 16px (narrow) → 20px (desktop),
+     matching the live site's own responsive type — not a fixed size. */
+  --cs-body-size: clamp(1rem, 0.85rem + 0.8vw, 1.25rem);
 }
 
 * { box-sizing: border-box; }
@@ -369,21 +385,9 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
    Case Study pages — matched to the live incubxperts.com/case-stories
    design (fonts, colors, spacing extracted from the live site's computed
    styles). Scoped under .cs- classes so it never touches the other 7
-   hand-written pages, which keep the site's original look.
+   hand-written pages, which keep the site's original look. Tokens for
+   this section live in the shared :root block at the top of this file.
    ========================================================================== */
-
-:root {
-  --cs-primary: #196cfa;
-  --cs-navy: #042963;
-  --cs-filter-border: #42526e;
-  --cs-text: #424242;
-  --cs-light-blue: #deebff;
-  --cs-font-display: "Barlow Semi Condensed", "Segoe UI", sans-serif;
-  --cs-font-body: "Inter", "Segoe UI", sans-serif;
-  /* Body copy on case-study pages scales 16px (narrow) → 20px (desktop),
-     matching the live site's own responsive type — not a fixed size. */
-  --cs-body-size: clamp(1rem, 0.85rem + 0.8vw, 1.25rem);
-}
 
 /* ---------- Hero (both the listing page and detail pages) ---------- */
 .cs-hero {
