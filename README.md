@@ -1,8 +1,8 @@
 # IncubXperts Website
 
 A static HTML/CSS/JS corporate site. Two small build scripts keep it DRY:
-one generates case-study pages from content files, the other keeps the
-shared header/footer in sync across every page.
+one generates case-study pages from Strapi, the other keeps the shared
+header/footer in sync across every page.
 
 ```
 incubxperts-website/
@@ -11,8 +11,8 @@ incubxperts-website/
 │                                             content, but header/footer are
 │                                             SYNCED (see below), not hand-edited
 ├── case-studies.html                        # GENERATED — case-study listing page
-├── case-studies/<slug>.html                 # GENERATED — one page per case story
-├── content/case-studies/<slug>.md           # you write these
+├── case-studies/<slug>.html                 # GENERATED — one page per Strapi case-story entry
+├── content/case-studies-archived/<slug>.md  # OLD local content, no longer built — see below
 ├── images/case-studies/, images/hero/       # images referenced by pages
 ├── templates/
 │   ├── template.html                        # shared shell for case-study pages
@@ -20,15 +20,16 @@ incubxperts-website/
 │                                             & footer — used by every page
 ├── scripts/
 │   ├── build-pages.js                       # syncs partials into the 7 hand-written pages
-│   └── build-case-studies.js                # generates case-study pages
+│   └── build-case-studies.js                # generates case-study pages from Strapi
 ├── css/style.css, js/script.js
 ├── sitemap.xml, robots.txt, llms.txt        # sitemap.xml is GENERATED; the others are hand-maintained
 └── package.json
 ```
 
 **Never hand-edit files under `case-studies/` or `case-studies.html`** — they're
-overwritten every time the build script runs. Edit the `.md` source file
-instead.
+regenerated from Strapi every time the build script runs, and any page whose
+Strapi entry no longer exists is deleted automatically. Edit the content in
+Strapi instead (see "Case studies: sourced from Strapi" below).
 
 **Never hand-edit the `<header>`/`<footer>` blocks inside any page** — edit
 `templates/partials/header.html` or `footer.html` instead, then run:
@@ -43,136 +44,31 @@ that up rather than hand-editing N files.
 
 ---
 
-## Adding a new case story (as admin)
+## Case studies: sourced from Strapi (the only source)
 
-### 1. Create a content file
+As of 2026-09-07, **Strapi is the sole source of truth** for `/case-studies/`.
+Every run of `npm run build:case-studies` fetches the current case-story
+entries from Strapi and makes `case-studies/` match them exactly — it also
+**deletes** any previously generated page whose entry is no longer in Strapi,
+so the folder can never drift out of sync or accumulate stale pages.
 
-Add a new file at `content/case-studies/<your-slug>.md`. Copy an existing one
-as a starting point (e.g. `content/case-studies/ai-credit-risk-assessment-platform.md`)
-or use this reference:
-
-```
----
-slug: my-new-case-study
-title: A Short, Punchy Title for the Story
-category: Fintech
-client: A brief, anonymized client descriptor
-publishDate: 2026-08-26
-heroSummary: One sentence shown in the page hero and on listing cards.
-metaDescription: A ~150-character SEO summary. Optional — falls back to heroSummary if omitted.
-tags: Fintech, AI, Automation
-heroImage: /images/case-studies/my-new-case-study.svg
-benefit1Title: 60% Faster Processing
-benefit1Description: A full sentence explaining this benefit's impact.
-benefit2Title: Another Benefit
-benefit2Description: Another full sentence.
-stat1Value: 3,000+
-stat1Label: Short metric label
-testimonialQuote: A real, approved client quote.
-testimonialAuthor: Jane Doe
-testimonialRole: VP Engineering, Client Company
----
-## Business Problem
-
-Plain prose describing the problem.
-
-## Technology Solution
-
-Intro sentence, then a bullet list:
-
-- **Feature Name**: what it does.
-- **Another Feature**: what it does.
-
-## Technology Stack
-
-- Technology One
-- Technology Two
-```
-
-**Field reference:**
-
-| Field | Required? | Notes |
-|---|---|---|
-| `slug` | yes | must be unique; becomes the filename/URL |
-| `title` | yes | |
-| `category` | yes | shown as the page breadcrumb + listing-card label |
-| `client` | yes | short, anonymized descriptor |
-| `publishDate` | yes | `YYYY-MM-DD` — controls sort order |
-| `heroSummary` | yes | one-liner |
-| `metaDescription` | no | falls back to a truncated `heroSummary` |
-| `tags` | no | comma-separated, shown as a pill row |
-| `heroImage` | no | root-relative path to an image in `images/case-studies/`; also becomes the listing thumbnail and social-share image automatically |
-| `detailImage` | no | a second, separate image shown full-width above "Business Problem" (matches Strapi's `CaseDetailsImageVideo`) — distinct from `heroImage`, which is the hero banner background |
-| `benefit1Title`/`benefit1Description` … up to `benefit6` | no | headline + sentence impact cards; stop at the first missing number |
-| `stat1Value`/`stat1Label` … up to `stat4` | no | short number + label (e.g. "3,000+" / "Users"); can be used alongside benefits |
-| `testimonialQuote`/`testimonialAuthor`/`testimonialRole` | no | all three or none — partial sets error the build |
-| `ogImage` | no | only needed if you want a *different* image for social sharing than `heroImage` |
-
-**Body content** goes below the second `---`. Use `## Heading` for each
-narrative section (Business Problem, Technology Solution, Technology Stack,
-etc.) — each becomes its own block on the page. If you skip headings
-entirely, the whole body renders as one flowing narrative instead.
-
-**Important — this is not full YAML:**
-- Don't wrap values in quotes (`title: "like this"`) — quotes aren't
-  stripped and will show up literally on the page.
-- A colon inside a value (e.g. `title: Scaling Ops: A New Approach`) is
-  fine — only the *first* colon on the line is treated as the delimiter.
-
-### 2. Add an image (optional)
-
-Drop an SVG or image file into `images/case-studies/` and reference it via
-`heroImage: /images/case-studies/your-file.svg` in the front matter.
-
-### 3. Build
-
-```bash
-npm run build:case-studies
-```
-
-This regenerates `case-studies/<slug>.html`, `case-studies.html`,
-`sitemap.xml`, and the Case Stories section of `llms.txt`. Read the console
-output — it errors on things like a missing required field, a duplicate
-slug, a bad date format, or a partial testimonial.
-
-### 4. Preview locally
-
-```bash
-npx serve .
-```
-
-Then open the printed URL and check your new page at
-`/case-studies/<your-slug>.html` and the listing at `/case-studies.html`.
-
-### 5. Publish
-
-```bash
-git add -A
-git commit -m "Add case study: <title>"
-git push
-```
-
-Once pushed, if Vercel is connected to this GitHub repo it deploys
-automatically. If it isn't connected yet, see "Deployment" below.
-
----
-
-## Content source #2: Strapi (optional)
-
-Case studies can also come from a Strapi CMS instance instead of a local
-`.md` file — both sources are read and merged automatically every build.
-This is read-only from the site's side: nothing here ever writes back to
-Strapi.
+This means: to add, edit, or remove a case study, do it in the Strapi admin
+(Content Manager → Case Stories), then re-run the build. There is no local
+`.md` content workflow anymore — see "History: local `.md` files" below for
+what happened to the old one.
 
 **Setup:**
 1. Copy `.env.example` to `.env` (gitignored — never commit real tokens)
 2. Fill in `STRAPI_URL` and `STRAPI_API_TOKEN` (a Strapi API Token — read
-   access is enough)
-3. Run `npm run build:case-studies` as normal
+   access is enough; this integration never writes back to Strapi)
+3. Run `npm run build:case-studies`
 
-If those env vars aren't set, the Strapi source is silently skipped — the
-build still works purely off local `.md` files. This is what happens on
-Vercel today, since those env vars aren't configured there.
+If those env vars are unset or Strapi is unreachable, the build proceeds
+with **zero** case studies rather than failing — existing generated pages
+are cleaned up (not left stale), `case-studies.html` renders its "check back
+soon" empty state, and `sitemap.xml`/`llms.txt` simply have no case-study
+entries. A real HTTP-level error from Strapi (bad token, wrong path) still
+fails the build loudly, since that's a config problem worth surfacing.
 
 **How a Strapi `case-story` entry maps onto the site:**
 
@@ -183,9 +79,9 @@ Vercel today, since those env vars aren't configured there.
 | `BGImage` | heroImage (banner + listing thumbnail + social image) |
 | `CaseDetailsImageVideo` | detailImage — a second image/video shown above "Business Problem" (renders as `<video>` if its mime type starts with `video/`) |
 | `TagsCommaSeparated` | tags (pill row) |
-| `CaseDetailsMarkdown` (if set) else `CaseDetails` (Blocks) | body — same `## Heading`-splits-into-sections convention as the `.md` files |
+| `CaseDetailsMarkdown` (if set) else `CaseDetails` (Blocks) | body — `## Heading` splits into page sections either way |
 | `master_industry_types` (first one) | category/breadcrumb — falls back to "General" if empty |
-| `case_benefits_and_impacts` (relation) | benefits (with optional icon from `IconImage`) |
+| `case_benefits_and_impacts` (relation) | benefits (with optional icon from `IconImage`; falls back to a default icon if unset) |
 | `testimonials` (relation, first one only — see note below) | testimonial |
 | `SEOdescription` / `OGdescription` | metaDescription / heroSummary |
 | `OGimage` (falls back to `BGImage`) | social-share image |
@@ -195,17 +91,33 @@ if they become real gaps):
 - Only the *first* linked testimonial renders, even if a Strapi entry has
   several — the template supports one testimonial block per page.
 - No numeric `stats` block equivalent exists in the Strapi schema yet — that
-  block just doesn't render for Strapi-sourced stories.
+  block just doesn't render.
 - Strapi's `case-story` schema has no `client` field, and the current
-  template doesn't display one anyway, so it's left blank for Strapi
-  entries.
-- If a slug collides between a local `.md` file and a Strapi entry, the
-  build fails loudly rather than silently picking one — rename one of them.
+  template doesn't display one anyway, so it's left blank.
+- An entry missing `slug` or `Title` is skipped with a console warning
+  rather than breaking the whole build — fix it in the Strapi admin.
 
 **Production Strapi**: not wired up yet. When ready, add
 `STRAPI_PROD_URL`/`STRAPI_PROD_API_TOKEN` to `.env` (placeholders already in
 `.env.example`) and extend `fetchStrapiCaseStudies()` in
 `scripts/build-case-studies.js` to also query the prod instance.
+
+### History: local `.md` files (no longer built)
+
+Before Strapi was connected, case studies were authored as local
+Markdown+front-matter files under `content/case-studies/`. That hybrid model
+caused `/case-studies/` to drift out of sync with Strapi (extra pages
+lingering after their local source no longer matched what was in Strapi),
+so it was retired in favor of Strapi as the sole source.
+
+The 3 real case studies that only ever existed as local files — "An AI
+Assistant that Provides Pinpoint Insights...", "AI-Driven Gamified Platform:
+Cultivating Grit in Youth", and the AI trivia quiz story — are **not lost**,
+just archived at `content/case-studies-archived/` (along with a disclosed
+test/demo file). They are no longer built into the site. If you want them
+live again, recreate them as real entries in Strapi (their front matter maps
+cleanly onto the Strapi fields in the table above) — ask me to help migrate
+the content across if that's useful.
 
 ---
 

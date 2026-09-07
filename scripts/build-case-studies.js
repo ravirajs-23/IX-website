@@ -2,23 +2,28 @@
 /**
  * build-case-studies.js
  *
- * Case studies can come from TWO sources, merged together:
- *   1. Markdown+front-matter files in content/case-studies/
- *   2. A Strapi CMS instance (read-only), via its REST API
+ * Strapi is the SOLE source of truth for case studies (as of 2026-09-07 —
+ * previously this also read local Markdown+front-matter files from
+ * content/case-studies/, merged alongside Strapi; that hybrid model was
+ * dropped because it let case-studies/ drift out of sync with Strapi's own
+ * content — see content/case-studies-archived/ for the old real content,
+ * kept for reference/possible migration into Strapi, no longer built).
  *
- * Both are normalized into the same internal "story" shape and rendered
- * through the same templates/template.html, producing:
- *   - case-studies/<slug>.html   (one detail page per story)
- *   - case-studies.html          (the listing/index page)
+ * Every run:
+ *   1. Fetches the current set of case-story entries from Strapi.
+ *   2. Renders each into case-studies/<slug>.html + the case-studies.html
+ *      listing page, through templates/template.html.
+ *   3. Deletes any case-studies/*.html file whose slug is no longer present
+ *      in Strapi — so the folder always exactly mirrors Strapi, with no
+ *      stale/orphaned pages left behind when an entry is removed there.
+ *   4. Regenerates sitemap.xml and the case-studies block of llms.txt.
  *
- * Also keeps sitemap.xml and llms.txt in sync with the current set of
- * case-study pages. See the plan doc for the full design rationale.
- *
- * Strapi env vars (optional — set in .env, see .env.example):
+ * Strapi env vars (required — set in .env, see .env.example):
  *   STRAPI_URL         e.g. http://localhost:1337
  *   STRAPI_API_TOKEN   a Strapi API token (read access is enough)
- * If unset, the Strapi source is silently skipped — the script still works
- * purely off local .md files.
+ * If unset or unreachable, the build proceeds with zero case studies
+ * (existing generated pages are cleaned up, not left stale) rather than
+ * failing outright — see fetchStrapiCaseStudies().
  *
  * Usage: node scripts/build-case-studies.js   (or: npm run build:case-studies)
  */
@@ -28,7 +33,6 @@ const path = require("path");
 const { marked } = require("marked");
 
 const ROOT = path.join(__dirname, "..");
-const CONTENT_DIR = path.join(ROOT, "content", "case-studies");
 const TEMPLATE_PATH = path.join(ROOT, "templates", "template.html");
 const PARTIALS_DIR = path.join(ROOT, "templates", "partials");
 const OUTPUT_DIR = path.join(ROOT, "case-studies");
@@ -84,36 +88,6 @@ function safeJsonLd(obj) {
   return JSON.stringify(obj, null, 2).replace(/<\/script/gi, "<\\/script");
 }
 
-/**
- * Hand-rolled front-matter parser. Deliberately NOT full YAML — supports:
- *   key: value          (scalar)
- * Everything else (comma-separated lists, numbered stat1/stat2/... pairs)
- * is handled by the caller via plain key lookups. No block scalars, no
- * nested structures — see the plan doc for why.
- *
- * IMPORTANT: do NOT wrap values in quotes ("like this") — this is not YAML,
- * quotes are not stripped and will end up literally in the output. A colon
- * inside a value (e.g. a title with a subtitle) is fine as-is: only the
- * FIRST colon on the line is treated as the key/value delimiter.
- */
-function parseFrontMatter(raw) {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!match) {
-    throw new Error("Missing or malformed front matter (expected leading `---` ... `---` block).");
-  }
-  const [, frontMatterBlock, body] = match;
-  const data = {};
-  for (const line of frontMatterBlock.split(/\r?\n/)) {
-    if (!line.trim() || line.trim().startsWith("#")) continue;
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
-    const value = line.slice(idx + 1).trim();
-    data[key] = value;
-  }
-  return { data, body: body.trim() };
-}
-
 /** OG/Twitter image tags need a fully-qualified URL — prefix root-relative paths. */
 function toAbsoluteUrl(pathOrUrl) {
   if (!pathOrUrl) return null;
@@ -137,125 +111,7 @@ function resolveMediaUrl(media) {
 }
 
 // ---------------------------------------------------------------------------
-// Load + validate every case-study content file
-// ---------------------------------------------------------------------------
-
-function loadCaseStudies() {
-  if (!fs.existsSync(CONTENT_DIR)) {
-    console.warn(`No content directory found at ${CONTENT_DIR} — nothing to build.`);
-    return [];
-  }
-
-  const files = fs
-    .readdirSync(CONTENT_DIR)
-    .filter((f) => f.endsWith(".md"));
-
-  const stories = [];
-  const seenSlugs = new Set();
-
-  for (const file of files) {
-    const fullPath = path.join(CONTENT_DIR, file);
-    const raw = fs.readFileSync(fullPath, "utf8");
-    const { data, body } = parseFrontMatter(raw);
-
-    const required = ["slug", "title", "category", "client", "publishDate", "heroSummary"];
-    const missing = required.filter((key) => !data[key]);
-    if (missing.length) {
-      throw new Error(`${file}: missing required front-matter field(s): ${missing.join(", ")}`);
-    }
-
-    if (seenSlugs.has(data.slug)) {
-      throw new Error(`Duplicate slug "${data.slug}" found in ${file} — slugs must be unique.`);
-    }
-    seenSlugs.add(data.slug);
-
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(data.publishDate)) {
-      throw new Error(`${file}: publishDate "${data.publishDate}" must be in YYYY-MM-DD format.`);
-    }
-
-    // metaDescription: fall back to a truncated heroSummary, with a warning.
-    if (!data.metaDescription) {
-      data.metaDescription = truncate(data.heroSummary, 155);
-      console.warn(
-        `⚠ ${file}: no metaDescription given — falling back to a truncated heroSummary. Consider adding a hand-tuned one.`
-      );
-    }
-
-    // Testimonial: all-or-nothing.
-    const testimonialFields = ["testimonialQuote", "testimonialAuthor", "testimonialRole"];
-    const testimonialGiven = testimonialFields.filter((k) => data[k]);
-    if (testimonialGiven.length > 0 && testimonialGiven.length < testimonialFields.length) {
-      throw new Error(
-        `${file}: partial testimonial fields given (${testimonialGiven.join(", ")}) — all of ${testimonialFields.join(
-          ", "
-        )} are required together, or omit all three.`
-      );
-    }
-
-    // Stats: numbered pairs stat1..stat4, stop at first missing number.
-    const stats = [];
-    for (let i = 1; i <= 4; i++) {
-      const value = data[`stat${i}Value`];
-      const label = data[`stat${i}Label`];
-      if (!value || !label) break;
-      stats.push({ value, label });
-    }
-
-    const tags = data.tags
-      ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
-      : [];
-
-    // Benefits: numbered title+description pairs benefit1..benefit6, stop at
-    // first missing number. This is the "headline + full sentence" shape
-    // used on the live site's "Benefits & Impacts" section — distinct from
-    // the short number+label `stats` block above, which the two can coexist
-    // alongside for pages that also want a single standout metric.
-    const benefits = [];
-    for (let i = 1; i <= 6; i++) {
-      const title = data[`benefit${i}Title`];
-      const description = data[`benefit${i}Description`];
-      if (!title || !description) break;
-      benefits.push({ title, description });
-    }
-
-    stories.push({
-      slug: data.slug,
-      title: data.title,
-      category: data.category,
-      client: data.client,
-      publishDate: data.publishDate,
-      heroSummary: data.heroSummary,
-      metaDescription: data.metaDescription,
-      heroImage: data.heroImage || null,
-      // ogImage falls back to heroImage when not explicitly given, so a
-      // story only needs one image field in the common case.
-      ogImage: data.ogImage || data.heroImage || null,
-      // Inline banner shown above "Business Problem" — distinct from the
-      // hero background image, matches Strapi's CaseDetailsImageVideo.
-      detailImage: data.detailImage ? { url: data.detailImage, isVideo: false } : null,
-      tags,
-      stats,
-      benefits,
-      testimonial:
-        testimonialGiven.length === testimonialFields.length
-          ? {
-              quote: data.testimonialQuote,
-              author: data.testimonialAuthor,
-              role: data.testimonialRole,
-            }
-          : null,
-      bodyHtml: renderMarkdownBody(body),
-      sourceFile: file,
-    });
-  }
-
-  // Newest first.
-  stories.sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
-  return stories;
-}
-
-// ---------------------------------------------------------------------------
-// Load case studies from Strapi (optional second content source)
+// Load case studies from Strapi — the sole content source
 // ---------------------------------------------------------------------------
 
 /** Map one Strapi case-story API entry into the same internal story shape. */
@@ -914,30 +770,45 @@ async function main() {
     footer: fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf8").trim(),
   };
 
-  const localStories = loadCaseStudies();
   const strapiStories = await fetchStrapiCaseStudies();
 
-  // Duplicate slugs across the two sources are a build error, same as a
-  // duplicate within one source (already checked inside loadCaseStudies).
+  // A duplicate slug across Strapi entries is a build error (fetchStrapiCaseStudies
+  // already skips entries with no slug at all, but two different entries could
+  // still share one typo'd into both).
   const seen = new Map();
-  for (const s of [...localStories, ...strapiStories]) {
+  for (const s of strapiStories) {
     if (seen.has(s.slug)) {
       throw new Error(
-        `Duplicate slug "${s.slug}" found in both ${seen.get(s.slug)} and ${s.sourceFile} — slugs must be unique across local .md files and Strapi entries.`
+        `Duplicate slug "${s.slug}" found in both ${seen.get(s.slug)} and ${s.sourceFile} — slugs must be unique across Strapi entries.`
       );
     }
     seen.set(s.slug, s.sourceFile);
   }
 
-  const stories = [...localStories, ...strapiStories].sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
+  const stories = strapiStories.sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  const currentSlugs = new Set(stories.map((s) => s.slug));
 
   for (const story of stories) {
     const html = buildDetailPage(story, template, stories, partials);
     const outPath = path.join(OUTPUT_DIR, `${story.slug}.html`);
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✓ wrote case-studies/${story.slug}.html`);
+  }
+
+  // Strapi is the sole source of truth: any previously generated page whose
+  // slug is no longer in the current Strapi fetch (entry deleted/renamed
+  // there, or left over from the old local-.md content model) must not
+  // linger — delete it so case-studies/ always exactly mirrors Strapi.
+  for (const file of fs.readdirSync(OUTPUT_DIR)) {
+    if (!file.endsWith(".html")) continue;
+    const slug = file.slice(0, -".html".length);
+    if (!currentSlugs.has(slug)) {
+      fs.unlinkSync(path.join(OUTPUT_DIR, file));
+      console.log(`✗ removed stale case-studies/${file} (no matching Strapi entry)`);
+    }
   }
 
   const indexHtml = buildIndexPage(stories, template, partials);
