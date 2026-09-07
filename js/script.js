@@ -49,34 +49,49 @@ document.addEventListener("DOMContentLoaded", () => {
     if (href === current) a.classList.add("active");
   });
 
-  // Homepage hero carousel — see the HERO_SLIDES array above.
+  // Homepage hero carousel — see the HERO_SLIDES array above. All slide
+  // tabs render simultaneously (matching the live site); the progress bar
+  // is one shared track, filling the active slide's segment of it.
   const heroSection = document.querySelector("#heroCarousel");
   if (heroSection) {
     const els = {
       title: heroSection.querySelector('[data-hero="title"]'),
       subtitle: heroSection.querySelector('[data-hero="subtitle"]'),
-      num: heroSection.querySelector('[data-hero="num"]'),
-      tag: heroSection.querySelector('[data-hero="tag"]'),
+      tabsContainer: heroSection.querySelector('[data-hero="tabs"]'),
       progress: heroSection.querySelector('[data-hero="progress"]'),
     };
     let index = 0;
     let timer = null;
+
+    const tabs = HERO_SLIDES.map((slide, i) => {
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "hero-tab";
+      tab.innerHTML = `<span class="hero-tab-num">${slide.num}</span><span class="hero-tab-tag">${slide.tag}</span>`;
+      tab.addEventListener("click", () => {
+        goTo(i);
+        restartAutoplay();
+      });
+      els.tabsContainer?.appendChild(tab);
+      return tab;
+    });
 
     function renderHeroSlide(i) {
       const slide = HERO_SLIDES[i];
       if (!slide) return;
       if (els.title) els.title.innerHTML = slide.title;
       if (els.subtitle) els.subtitle.textContent = slide.subtitle;
-      if (els.num) els.num.textContent = slide.num;
-      if (els.tag) els.tag.textContent = slide.tag;
       heroSection.style.backgroundImage = `url('${slide.image}')`;
+      tabs.forEach((tab, t) => tab.classList.toggle("active", t === i));
+
       if (els.progress) {
+        const segment = 100 / HERO_SLIDES.length;
         els.progress.style.transition = "none";
-        els.progress.style.width = "0%";
+        els.progress.style.width = `${i * segment}%`;
         // Force reflow so the transition below actually restarts.
         void els.progress.offsetWidth;
         els.progress.style.transition = `width ${HERO_SLIDE_DURATION_MS}ms linear`;
-        els.progress.style.width = "100%";
+        els.progress.style.width = `${(i + 1) * segment}%`;
       }
     }
 

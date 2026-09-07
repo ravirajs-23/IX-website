@@ -150,6 +150,42 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 }
 .nav-links a:hover, .nav-links a.active { color: var(--color-primary); }
 .nav-cta { display: flex; align-items: center; }
+.nav-cta .btn { text-transform: uppercase; }
+
+/* Dropdown items ("Our Expertise", "Industries", "Insights") — hover-reveal
+   on desktop, always-expanded inline on mobile (see the 900px breakpoint). */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle::after {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  margin-left: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+}
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 12px;
+  background: #fff;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--shadow);
+  padding: 10px 0;
+  min-width: 240px;
+  z-index: 10;
+}
+.nav-dropdown-menu a {
+  display: block;
+  padding: 8px 20px;
+  color: var(--color-text) !important;
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+.nav-dropdown-menu a:hover { background: var(--color-bg-alt); color: var(--color-primary) !important; }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -182,6 +218,19 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   /* Matches the live site: only the hamburger shows once the nav collapses
      — the CTA button doesn't compete with it for space. */
   .nav-cta { display: none; }
+  /* Dropdowns can't rely on hover on touch devices — show them expanded
+     inline instead of as a floating panel. */
+  .nav-dropdown { width: 100%; }
+  .nav-dropdown-menu {
+    display: block;
+    position: static;
+    box-shadow: none;
+    background: none;
+    padding: 4px 0 0 16px;
+    min-width: 0;
+    margin-top: 8px;
+  }
+  .nav-dropdown-menu a { padding: 6px 0; font-size: 0.85rem; }
 }
 
 /* ---------- Hero carousel (homepage) ----------
@@ -199,11 +248,14 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   transition: background-image 0.4s ease;
 }
 .hero::before {
-  /* Scrim so slide photography never fights with white text/buttons. */
+  /* Flat, low-opacity scrim (matches the live site exactly) — the slide
+     images already bake in their own left-dark/right-light gradient for
+     text contrast; a heavier gradient here was washing out their subtle
+     icon/network illustration artwork on the right side. */
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, rgba(18, 23, 43, 0.88) 0%, rgba(18, 23, 43, 0.55) 55%, rgba(18, 23, 43, 0.3) 100%);
+  background: rgba(0, 0, 0, 0.3);
 }
 .hero-inner { position: relative; z-index: 1; max-width: 640px; }
 .hero .eyebrow { color: #fff; }
@@ -211,9 +263,23 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .hero p { color: #cdd6ec; font-size: 1.15rem; }
 .hero-actions { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
 
-.hero-slide-meta { position: relative; z-index: 1; margin-top: 48px; display: flex; align-items: center; gap: 20px; }
-.hero-slide-num { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
-.hero-slide-tag { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; flex: 1; }
+/* All slide tabs shown at once (not just the active one) — matches the
+   live site. Populated by JS from HERO_SLIDES; see js/script.js. */
+.hero-tabs-row { position: relative; z-index: 1; margin-top: 48px; display: flex; align-items: flex-end; gap: 20px; }
+.hero-tabs { display: flex; flex: 1; gap: 32px; }
+.hero-tab {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.2s ease;
+}
+.hero-tab:hover { color: rgba(255, 255, 255, 0.85); }
+.hero-tab.active { color: #fff; }
+.hero-tab .hero-tab-num { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; display: block; }
+.hero-tab .hero-tab-tag { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; }
 .hero-slide-nav { display: flex; gap: 10px; }
 .hero-slide-nav button {
   width: 36px; height: 36px;
