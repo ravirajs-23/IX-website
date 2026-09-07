@@ -230,6 +230,9 @@ function loadCaseStudies() {
       // ogImage falls back to heroImage when not explicitly given, so a
       // story only needs one image field in the common case.
       ogImage: data.ogImage || data.heroImage || null,
+      // Inline banner shown above "Business Problem" — distinct from the
+      // hero background image, matches Strapi's CaseDetailsImageVideo.
+      detailImage: data.detailImage ? { url: data.detailImage, isVideo: false } : null,
       tags,
       stats,
       benefits,
@@ -264,6 +267,14 @@ function mapStrapiEntryToStory(entry) {
 
   const heroImage = resolveMediaUrl(entry.BGImage);
   const ogImage = resolveMediaUrl(entry.OGimage) || heroImage;
+
+  // Inline banner shown above "Business Problem" on the live site — a
+  // separate field from BGImage (the hero background). Strapi allows this
+  // to be an image, file, or video; branch on mime type for video support.
+  const detailImageUrl = resolveMediaUrl(entry.CaseDetailsImageVideo);
+  const detailImage = detailImageUrl
+    ? { url: detailImageUrl, isVideo: (entry.CaseDetailsImageVideo?.mime || "").startsWith("video/") }
+    : null;
 
   const heroSummary = entry.OGdescription || entry.SEOdescription || entry.Title;
   const metaDescription = entry.SEOdescription || entry.OGdescription || truncate(heroSummary, 155);
@@ -304,6 +315,7 @@ function mapStrapiEntryToStory(entry) {
     metaDescription,
     heroImage,
     ogImage,
+    detailImage,
     tags: (entry.TagsCommaSeparated || "").split(",").map((t) => t.trim()).filter(Boolean),
     // No dedicated numeric-stat equivalent in the Strapi schema today.
     stats: [],
@@ -325,6 +337,7 @@ async function fetchStrapiCaseStudies() {
   params.set("populate[testimonials]", "true");
   params.set("populate[BGImage]", "true");
   params.set("populate[OGimage]", "true");
+  params.set("populate[CaseDetailsImageVideo]", "true");
   params.set("populate[master_industry_types]", "true");
   params.set("populate[master_industries_types]", "true");
   params.set("pagination[pageSize]", "100");
@@ -578,6 +591,26 @@ function renderListingHeroSection() {
 </section>`;
 }
 
+/**
+ * Inline banner shown above "Business Problem" — distinct from the hero
+ * background (heroImage). Matches the live site: full-width, no radius,
+ * no shadow. Unlike the live site (object-fit: fill, which can distort an
+ * arbitrary future upload), this uses height:auto to always preserve the
+ * image's real aspect ratio.
+ */
+function renderDetailImageBlock(detailImage, title) {
+  if (!detailImage) return "";
+  const media = detailImage.isVideo
+    ? `<video src="${escapeHtml(detailImage.url)}" controls></video>`
+    : `<img src="${escapeHtml(detailImage.url)}" alt="${escapeHtml(title)}" />`;
+  return `
+<section class="section" style="padding-bottom:0;">
+  <div class="container">
+    <div class="cs-detail-image">${media}</div>
+  </div>
+</section>`;
+}
+
 function renderBenefitsBlock(benefits) {
   if (!benefits.length) return "";
   const cards = benefits
@@ -692,6 +725,7 @@ function buildDetailPage(story, template, allStories, partials) {
   const isDemo = story.sourceFile.startsWith("_");
   const mainContent = [
     isDemo ? renderDemoNoticeBlock() : "",
+    renderDetailImageBlock(story.detailImage, story.title),
     story.bodyHtml || "",
     renderBenefitsBlock(story.benefits),
     renderTestimonialBlock(story.testimonial),

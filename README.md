@@ -102,6 +102,7 @@ Intro sentence, then a bullet list:
 | `metaDescription` | no | falls back to a truncated `heroSummary` |
 | `tags` | no | comma-separated, shown as a pill row |
 | `heroImage` | no | root-relative path to an image in `images/case-studies/`; also becomes the listing thumbnail and social-share image automatically |
+| `detailImage` | no | a second, separate image shown full-width above "Business Problem" (matches Strapi's `CaseDetailsImageVideo`) — distinct from `heroImage`, which is the hero banner background |
 | `benefit1Title`/`benefit1Description` … up to `benefit6` | no | headline + sentence impact cards; stop at the first missing number |
 | `stat1Value`/`stat1Label` … up to `stat4` | no | short number + label (e.g. "3,000+" / "Users"); can be used alongside benefits |
 | `testimonialQuote`/`testimonialAuthor`/`testimonialRole` | no | all three or none — partial sets error the build |
@@ -180,6 +181,7 @@ Vercel today, since those env vars aren't configured there.
 | `Title` | title |
 | `slug` | URL slug |
 | `BGImage` | heroImage (banner + listing thumbnail + social image) |
+| `CaseDetailsImageVideo` | detailImage — a second image/video shown above "Business Problem" (renders as `<video>` if its mime type starts with `video/`) |
 | `TagsCommaSeparated` | tags (pill row) |
 | `CaseDetailsMarkdown` (if set) else `CaseDetails` (Blocks) | body — same `## Heading`-splits-into-sections convention as the `.md` files |
 | `master_industry_types` (first one) | category/breadcrumb — falls back to "General" if empty |

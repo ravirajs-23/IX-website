@@ -613,6 +613,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 }
 .cs-card[hidden] { display: none; }
 
+/* Inline detail image/video (Strapi's CaseDetailsImageVideo) — full-width,
+   no radius/shadow (matches the live site), shown above "Business Problem". */
+.cs-detail-image { margin-bottom: 24px; }
+.cs-detail-image img,
+.cs-detail-image video { width: 100%; height: auto; display: block; }
+
 /* ---------- Detail page body content ----------
    Flex + gap for spacing between heading/paragraphs/lists (not margins) —
    matches the live site's own zero-margin text elements. */
