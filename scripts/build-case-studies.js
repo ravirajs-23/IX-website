@@ -625,9 +625,9 @@ function renderBenefitsBlock(benefits) {
     })
     .join("");
   return `
-<section class="section section-alt">
+<section class="section">
   <div class="container">
-    <div class="cs-section-label">Benefits &amp; Impacts</div>
+    <h3 class="cs-heading">Benefits &amp; Impacts</h3>
     <div class="cs-benefit-grid">${cards}
     </div>
   </div>

@@ -34,6 +34,7 @@ AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (
 <!-- CASE-STUDIES:START -->
 ## Case Stories
 
+- [AI-Driven Gamified Platform: Cultivating Grit in Youth](/case-studies/ai-gamified-grit-platform.html): A dynamic, AI-powered platform that fosters grit in youth through personalized, gamified learning experiences and real-time engagement.
 - [An AI Assistant that Provides Pinpoint Insights Through Natural Language Queries](/case-studies/ai-assistant-natural-language-insights.html): An AI-driven data assistant that lets users query complex dashboards in plain English and get instant, precise insights and visualizations.
 - [AI-Powered Trivia Quiz: Transforming Learning with Intelligent Gamification](/case-studies/ai-trivia-quiz-gamified-learning.html): An AI-powered trivia platform integrated with Slack and Microsoft Teams, using NLP and gamification to boost student engagement and retention.
 <!-- CASE-STUDIES:END -->
