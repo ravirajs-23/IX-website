@@ -566,8 +566,17 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
      the live site's own responsive heading — not a fixed size. */
   font-size: clamp(1rem, 0.5rem + 2vw, 2rem);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.87);
   margin-bottom: 28px;
+  /* The live site renders this as gradient text (verified via computed
+     style: background-clip:text + transparent fill, not a plain color —
+     easy to miss since the *declared* `color` on that element is also
+     rgba(0,0,0,0.87), a red herring if you only check `color`). Same
+     two-stop gradient already used for the Benefits card border. */
+  color: rgba(0, 0, 0, 0.87); /* fallback if background-clip:text isn't supported */
+  background: linear-gradient(270deg, var(--cs-gradient-start), var(--cs-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ---------- Cards (listing grid + "Other Case Stories") ---------- */
