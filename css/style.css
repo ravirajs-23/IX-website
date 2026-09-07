@@ -116,18 +116,25 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .btn-white:hover { background: var(--color-dark); color: #fff; }
 
 /* ---------- Header ----------
-   Transparent, overlaid on the hero (matches the live site — the header
-   isn't sticky there either). Every page starts with a dark hero/page-hero
-   section, so white logo/nav text stays readable everywhere. The mobile
-   dropdown is the one exception: it drops an opaque white panel below the
-   bar, so its links switch back to dark text — see the media query below. */
+   Opaque white bar with a soft drop shadow is the DEFAULT — this is what
+   the live site actually uses on every page except the homepage (verified
+   directly: about-us, case-stories listing, and case-story detail pages
+   all render a solid-white header with dark nav text + the black logo,
+   sitting in normal flow above whatever hero/banner follows — not
+   overlaid). The homepage is the one exception, where the header stays
+   absolutely positioned and transparent, overlaid on the hero, with white
+   text/logo — see `body.is-home` below. Both variants keep the header
+   `position: absolute` structurally (so hero padding-top compensation
+   elsewhere doesn't need to differ per page); only background/text/logo
+   color flip. */
 .site-header {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  background: transparent;
+  background: #fff;
+  box-shadow: 0 8px 5px -5px rgba(0, 0, 0, 0.17);
 }
 .nav {
   display: flex;
@@ -138,6 +145,7 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 }
 .logo { display: flex; align-items: center; }
 .logo img { height: 30px; width: auto; display: block; }
+.logo .logo-light { display: none; }
 .nav-links {
   display: flex;
   gap: 32px;
@@ -146,7 +154,7 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .nav-links a {
   font-weight: 600;
   font-size: 0.95rem;
-  color: #fff;
+  color: var(--color-text);
   transition: color var(--transition);
   position: relative;
 }
@@ -207,7 +215,23 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
   cursor: pointer;
   padding: 6px;
 }
-.nav-toggle span { width: 26px; height: 3px; background: #fff; border-radius: 3px; }
+.nav-toggle span { width: 26px; height: 3px; background: var(--color-text); border-radius: 3px; }
+
+/* Homepage only: the header goes back to transparent, overlaid on the
+   hero carousel, with white logo/nav text — matches the live site, which
+   keeps this one page's header fixed+transparent while every other page
+   uses the opaque white bar above. Structurally still `position: absolute`
+   (see .site-header) so this is purely a color/background flip. */
+body.is-home .site-header { background: transparent; box-shadow: none; }
+body.is-home .logo .logo-dark { display: none; }
+body.is-home .logo .logo-light { display: block; }
+body.is-home .nav-links a { color: #fff; }
+body.is-home .nav-links a:hover, body.is-home .nav-links a.active { color: var(--color-primary); }
+body.is-home .nav-toggle span { background: #fff; }
+/* The mobile dropdown panel is always opaque white, even on the homepage
+   — so its links/toggle must stay dark regardless of body.is-home. */
+body.is-home .nav-links.open a { color: var(--color-text); }
+body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { color: var(--color-primary); }
 
 @media (max-width: 900px) {
   .nav-links {
