@@ -93,14 +93,20 @@ fails the build loudly, since that's a config problem worth surfacing.
 | `CaseDetailsMarkdown` (if set) else `CaseDetails` (Blocks) | body — `## Heading` splits into page sections either way |
 | `master_industry_types` (first one) | category/breadcrumb — falls back to "General" if empty |
 | `case_benefits_and_impacts` (relation) | benefits (with optional icon from `IconImage`; falls back to a default icon if unset) |
-| `testimonials` (relation, first one only — see note below) | testimonial |
 | `SEOdescription` / `OGdescription` | metaDescription / heroSummary |
 | `OGimage` (falls back to `BGImage`) | social-share image |
 
+**The "TRUSTIMONIALS" carousel is NOT per-entry** — verified directly against
+the live site (two unrelated case stories rendered byte-identical
+testimonial carousels, same order): it's the exact same full list on every
+case-study page. So it's built from Strapi's separate, standalone
+`testimonial` collection (`/api/testimonials`, fetched once per build by
+`fetchAllTestimonials()`) rather than any relation on the case-story entry
+itself — a case-story's own `testimonials` relation field (if you see one
+in the Strapi admin) is not used by this site at all.
+
 **Known limitations of the current mapping** (fine for now, worth revisiting
 if they become real gaps):
-- Only the *first* linked testimonial renders, even if a Strapi entry has
-  several — the template supports one testimonial block per page.
 - No numeric `stats` block equivalent exists in the Strapi schema yet — that
   block just doesn't render.
 - Strapi's `case-story` schema has no `client` field, and the current

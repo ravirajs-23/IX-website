@@ -223,15 +223,6 @@ function mapStrapiEntryToStory(entry) {
     icon: resolveMediaUrl(b.IconImage),
   }));
 
-  const firstTestimonial = (entry.testimonials || [])[0];
-  const testimonial = firstTestimonial
-    ? {
-        quote: firstTestimonial.Testimonial,
-        author: firstTestimonial.TestimonyName,
-        role: [firstTestimonial.Designation, firstTestimonial.Company].filter(Boolean).join(", "),
-      }
-    : null;
-
   let bodyHtml = "";
   if (entry.CaseDetailsMarkdown && entry.CaseDetailsMarkdown.trim()) {
     bodyHtml = renderMarkdownBody(entry.CaseDetailsMarkdown);
@@ -261,7 +252,6 @@ function mapStrapiEntryToStory(entry) {
     // No dedicated numeric-stat equivalent in the Strapi schema today.
     stats: [],
     benefits,
-    testimonial,
     bodyHtml,
     sourceFile: `strapi:${entry.slug}`,
   };
@@ -275,7 +265,6 @@ async function fetchStrapiCaseStudies() {
 
   const params = new URLSearchParams();
   params.set("populate[case_benefits_and_impacts][populate]", "IconImage");
-  params.set("populate[testimonials]", "true");
   params.set("populate[BGImage]", "true");
   params.set("populate[OGimage]", "true");
   params.set("populate[CaseDetailsImageVideo]", "true");
@@ -324,6 +313,43 @@ async function fetchStrapiCaseStudies() {
   await mirrorAllStrapiMedia(valid);
 
   return valid.map(mapStrapiEntryToStory);
+}
+
+/**
+ * The "TRUSTIMONIALS" carousel on the live site is NOT per-case-story — it
+ * renders the exact same full list of testimonials on every single
+ * case-story detail page (verified directly against the live site: two
+ * unrelated case stories showed byte-identical testimonial carousels, same
+ * order). So unlike everything else in this file, this pulls from Strapi's
+ * standalone `testimonial` collection (/api/testimonials) rather than any
+ * per-entry relation on the case-story itself.
+ */
+async function fetchAllTestimonials() {
+  if (!STRAPI_URL || !STRAPI_API_TOKEN) return [];
+
+  let res;
+  try {
+    res = await fetch(`${STRAPI_URL}/api/testimonials?pagination[pageSize]=100`, {
+      headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
+    });
+  } catch (err) {
+    console.warn(`⚠ Could not reach Strapi for testimonials (${err.message}) — the testimonials carousel will be empty.`);
+    return [];
+  }
+  if (!res.ok) {
+    throw new Error(`Strapi API request failed: ${res.status} ${res.statusText} (${STRAPI_URL}/api/testimonials)`);
+  }
+  const json = await res.json();
+  const entries = json.data || [];
+
+  return entries
+    .filter((e) => e.Testimonial && e.TestimonyName)
+    .map((e) => ({
+      quote: e.Testimonial,
+      author: e.TestimonyName,
+      role: e.Designation || "",
+      company: e.Company || "",
+    }));
 }
 
 // ---------------------------------------------------------------------------
@@ -581,18 +607,40 @@ function renderBenefitsBlock(benefits) {
 </section>`;
 }
 
-function renderTestimonialBlock(testimonial) {
-  if (!testimonial) return "";
+/**
+ * The full-width "TRUSTIMONIALS" carousel — identical on every case-study
+ * page (see fetchAllTestimonials() for why). Markup renders just the first
+ * testimonial (so the page is meaningful with JS disabled and has real
+ * content for crawlers/SEO); js/script.js's testimonials-carousel
+ * controller hydrates it into an auto-advancing carousel over the full
+ * list, which travels with the page as a JSON blob.
+ */
+function renderTestimonialsCarousel(testimonials) {
+  if (!testimonials.length) return "";
+  const first = testimonials[0];
   return `
-<section class="section">
+<section class="testimonials-section" data-testimonials>
   <div class="container">
-    <div class="cs-testimonial">
+    <div class="testimonials-heading">
+      <div class="testimonials-eyebrow">TRUSTIMONIALS</div>
+      <p class="testimonials-title">Success Delivered, Trust Earned</p>
+    </div>
+    <div class="testimonial-card">
       <div class="quote-mark">&ldquo;</div>
-      <p>${escapeHtml(testimonial.quote)}</p>
-      <div class="meta">${escapeHtml(testimonial.author)} <span>${escapeHtml(testimonial.role)}</span></div>
+      <p data-t="quote">${escapeHtml(first.quote)}</p>
+      <hr />
+      <h2 data-t="name">${escapeHtml(first.author)}</h2>
+      <h3 data-t="role">${escapeHtml(first.role)}</h3>
+      <h4 data-t="company">${escapeHtml(first.company)}</h4>
+    </div>
+    <div class="testimonials-progress"><div class="testimonials-progress-bar" data-t="progress"></div></div>
+    <div class="testimonials-nav">
+      <button type="button" data-t-prev aria-label="Previous testimonial">&lsaquo;</button>
+      <button type="button" data-t-next aria-label="Next testimonial">&rsaquo;</button>
     </div>
   </div>
-</section>`;
+</section>
+<script>window.__TESTIMONIALS__ = ${safeJsonLd(testimonials)};</script>`;
 }
 
 /** Shared card, used by the listing grid and "Other Case Stories" — matches the live site's card exactly. */
@@ -645,7 +693,7 @@ function renderCtaBand() {
 // Build one detail page
 // ---------------------------------------------------------------------------
 
-function buildDetailPage(story, template, allStories, partials) {
+function buildDetailPage(story, template, allStories, partials, testimonials) {
   const canonicalUrl = `${SITE_URL}/case-studies/${story.slug}.html`;
   const pageTitle = `${story.title} | IncubXperts Case Study`;
 
@@ -675,7 +723,7 @@ function buildDetailPage(story, template, allStories, partials) {
     renderDetailImageBlock(story.detailImage, story.title),
     story.bodyHtml || "",
     renderBenefitsBlock(story.benefits),
-    renderTestimonialBlock(story.testimonial),
+    renderTestimonialsCarousel(testimonials),
     renderOtherStoriesBlock(story.slug, allStories),
     renderCtaBand(),
   ]
@@ -858,6 +906,8 @@ async function main() {
   };
 
   const strapiStories = await fetchStrapiCaseStudies();
+  const testimonials = await fetchAllTestimonials();
+  console.log(`✓ fetched ${testimonials.length} testimonial${testimonials.length === 1 ? "" : "s"} for the carousel`);
 
   // A duplicate slug across Strapi entries is a build error (fetchStrapiCaseStudies
   // already skips entries with no slug at all, but two different entries could
@@ -879,7 +929,7 @@ async function main() {
   const currentSlugs = new Set(stories.map((s) => s.slug));
 
   for (const story of stories) {
-    const html = buildDetailPage(story, template, stories, partials);
+    const html = buildDetailPage(story, template, stories, partials, testimonials);
     const outPath = path.join(OUTPUT_DIR, `${story.slug}.html`);
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✓ wrote case-studies/${story.slug}.html`);

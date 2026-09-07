@@ -118,6 +118,69 @@ document.addEventListener("DOMContentLoaded", () => {
     restartAutoplay();
   }
 
+  // Testimonials carousel ("TRUSTIMONIALS") — appears on every case-study
+  // page with the exact same testimonial list (see fetchAllTestimonials()
+  // in scripts/build-case-studies.js for why it's not per-story). Data
+  // travels with the page as window.__TESTIMONIALS__; unlike the hero
+  // carousel above, the live site uses one continuous progress bar per
+  // slide (not segmented tabs), so this mirrors that instead.
+  const testimonialsSection = document.querySelector("[data-testimonials]");
+  if (testimonialsSection && Array.isArray(window.__TESTIMONIALS__) && window.__TESTIMONIALS__.length) {
+    const testimonials = window.__TESTIMONIALS__;
+    const tEls = {
+      quote: testimonialsSection.querySelector('[data-t="quote"]'),
+      name: testimonialsSection.querySelector('[data-t="name"]'),
+      role: testimonialsSection.querySelector('[data-t="role"]'),
+      company: testimonialsSection.querySelector('[data-t="company"]'),
+      progress: testimonialsSection.querySelector('[data-t="progress"]'),
+    };
+    let tIndex = 0;
+    let tTimer = null;
+
+    function renderTestimonial(i) {
+      const t = testimonials[i];
+      if (!t) return;
+      if (tEls.quote) tEls.quote.textContent = t.quote;
+      if (tEls.name) tEls.name.textContent = t.author;
+      if (tEls.role) tEls.role.textContent = t.role;
+      if (tEls.company) tEls.company.textContent = t.company;
+      if (tEls.progress) {
+        tEls.progress.style.transition = "none";
+        tEls.progress.style.width = "0%";
+        void tEls.progress.offsetWidth;
+        tEls.progress.style.transition = `width ${HERO_SLIDE_DURATION_MS}ms linear`;
+        tEls.progress.style.width = "100%";
+      }
+    }
+
+    function tGoTo(i) {
+      tIndex = (i + testimonials.length) % testimonials.length;
+      renderTestimonial(tIndex);
+    }
+
+    function restartTestimonialAutoplay() {
+      if (tTimer) clearInterval(tTimer);
+      tTimer = setInterval(() => tGoTo(tIndex + 1), HERO_SLIDE_DURATION_MS);
+    }
+
+    testimonialsSection.querySelector("[data-t-prev]")?.addEventListener("click", () => {
+      tGoTo(tIndex - 1);
+      restartTestimonialAutoplay();
+    });
+    testimonialsSection.querySelector("[data-t-next]")?.addEventListener("click", () => {
+      tGoTo(tIndex + 1);
+      restartTestimonialAutoplay();
+    });
+
+    // testimonials.length > 1 check: with only one testimonial, goTo(±1)
+    // would just re-render the same one — autoplay/arrows would be inert
+    // busywork, so skip wiring them up entirely.
+    if (testimonials.length > 1) {
+      tGoTo(0);
+      restartTestimonialAutoplay();
+    }
+  }
+
   // Simple contact/careers form handler (no backend wired up yet)
   const forms = document.querySelectorAll("form[data-form]");
   forms.forEach((form) => {

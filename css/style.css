@@ -38,6 +38,8 @@
      own :root block. */
   --cs-primary: #196cfa;
   --cs-navy: #042963;
+  --cs-gradient-start: #113f91;
+  --cs-gradient-mid: #0d4dc0;
   --cs-filter-border: #42526e;
   --cs-text: #424242;
   --cs-light-blue: #deebff;
@@ -664,7 +666,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   border: 1.6px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(270deg, #113f91, var(--cs-primary)) border-box;
+    linear-gradient(270deg, var(--cs-gradient-start), var(--cs-primary)) border-box;
 }
 .cs-benefit .icon { width: 48px; height: 48px; object-fit: contain; margin-bottom: 16px; display: block; }
 .cs-benefit h3 {
@@ -676,29 +678,67 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 }
 .cs-benefit p { font-family: var(--cs-font-body); font-size: var(--cs-body-size); line-height: 1.5; color: var(--cs-text); margin: 0; }
 
-/* Testimonial (simplified static card — the live site uses a JS carousel) */
-.cs-testimonial {
+/* Testimonials carousel ("TRUSTIMONIALS") — the exact same content renders
+   on every case-study page (see fetchAllTestimonials() in
+   scripts/build-case-studies.js for why); js/script.js's
+   testimonials-carousel controller auto-advances through the full list. */
+.testimonials-section {
+  background: linear-gradient(270deg, var(--cs-gradient-start), var(--cs-gradient-mid), var(--cs-primary));
+  padding: 64px 0;
+}
+.testimonials-heading { margin-bottom: 32px; }
+.testimonials-eyebrow {
+  font-family: var(--cs-font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.testimonials-title { font-family: var(--cs-font-body); font-size: 2.2rem; font-weight: 400; color: #fff; margin: 0; }
+.testimonial-card {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  padding: 40px 54px;
   max-width: 720px;
   margin: 0 auto;
+  text-align: center;
 }
-.cs-testimonial .quote-mark {
-  display: inline-flex;
-  width: 44px; height: 36px;
-  align-items: center; justify-content: center;
-  background: var(--cs-light-blue);
-  border-radius: 8px;
-  color: var(--cs-primary);
+.testimonial-card .quote-mark {
   font-family: Georgia, serif;
-  font-size: 1.6rem;
-  margin-bottom: 16px;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--cs-primary);
+  line-height: 1;
+  margin-bottom: 8px;
 }
-.cs-testimonial p { font-family: var(--cs-font-body); font-size: 1.1rem; color: var(--cs-text); font-style: normal; }
-.cs-testimonial .meta { font-family: var(--cs-font-body); font-weight: 700; color: #12172b; }
-.cs-testimonial .meta span { display: block; font-weight: 400; color: #757575; font-size: 0.9rem; }
+.testimonial-card p { font-family: var(--cs-font-body); font-size: 1.3rem; font-weight: 600; color: #2a2a2a; line-height: 1.5; margin: 0; font-style: normal; }
+.testimonial-card hr { border: none; border-top: 0.8px solid rgba(151, 160, 175, 0.3); width: 60%; margin: 8px auto; }
+.testimonial-card h2 { font-family: var(--cs-font-body); font-size: 1.3rem; font-weight: 600; color: #2a2a2a; margin: 0; }
+.testimonial-card h3 { font-family: var(--cs-font-body); font-size: 0.95rem; font-weight: 600; color: #2a2a2a; margin: 2px 0 0; }
+.testimonial-card h4 { font-family: var(--cs-font-body); font-size: 0.95rem; font-weight: 400; color: #2a2a2a; margin: 0; }
+.testimonials-progress {
+  max-width: 720px; margin: 24px auto 0;
+  height: 4px; background: var(--cs-navy); border-radius: 8px; overflow: hidden;
+}
+.testimonials-progress-bar { height: 100%; width: 0%; background: #fff; border-radius: 8px; }
+.testimonials-nav { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+.testimonials-nav button {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-btn);
+  border: 1px solid rgba(255,255,255,0.5);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+.testimonials-nav button:hover { background: rgba(255,255,255,0.15); }
+@media (max-width: 620px) {
+  .testimonial-card { padding: 32px 24px; }
+  .testimonials-title { font-size: 1.7rem; }
+}
 
 @media (max-width: 900px) {
   .cs-card-grid, .cs-benefit-grid { grid-template-columns: repeat(2, 1fr); }
