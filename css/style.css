@@ -648,8 +648,25 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .cs-content-section ul, .cs-content-section ol { padding-left: 1.4em; margin: 0; }
 .cs-content-section p { margin: 0; }
 
-/* Benefits & Impacts — flat (no card box), matching the live site exactly */
+/* Benefits & Impacts — each item is a card with a gradient border (NOT a
+   plain border/box-shadow — the live site achieves this via a ::before
+   pseudo-element with a gradient background, clipped to only show at the
+   edges; the two-layer background-clip trick below gets the same visual
+   result with plain CSS on the element itself, no pseudo-element needed).
+   Confirmed by direct inspection — an earlier pass missed this because it
+   only checked the element's own border/box-shadow/background, not that
+   the live site's border is actually painted by a separate layer. */
 .cs-benefit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 32px; }
+.cs-benefit {
+  position: relative;
+  border-radius: 8px;
+  padding: 32px;
+  border: 1.6px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(270deg, #113f91, var(--cs-primary)) border-box;
+}
+.cs-benefit .icon { width: 48px; height: 48px; object-fit: contain; margin-bottom: 16px; display: block; }
 .cs-benefit h3 {
   font-family: var(--cs-font-body);
   font-weight: 600;
@@ -658,7 +675,6 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   margin: 0 0 10px;
 }
 .cs-benefit p { font-family: var(--cs-font-body); font-size: var(--cs-body-size); line-height: 1.5; color: var(--cs-text); margin: 0; }
-.cs-benefit .icon { width: 32px; height: 32px; object-fit: contain; margin-bottom: 12px; }
 
 /* Testimonial (simplified static card — the live site uses a JS carousel) */
 .cs-testimonial {

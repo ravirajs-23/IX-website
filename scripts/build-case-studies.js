@@ -611,14 +611,18 @@ function renderDetailImageBlock(detailImage, title) {
 </section>`;
 }
 
+// Every benefit card shows an icon on the live site, even when no custom
+// one is set per-benefit — falls back to this generic growth/impact icon.
+const DEFAULT_BENEFIT_ICON = "/images/case-studies/_benefit-icon-default.svg";
+
 function renderBenefitsBlock(benefits) {
   if (!benefits.length) return "";
   const cards = benefits
     .map((b) => {
-      const icon = b.icon ? `<img class="icon" src="${escapeHtml(b.icon)}" alt="" />` : "";
+      const iconSrc = b.icon || DEFAULT_BENEFIT_ICON;
       return `
       <div class="cs-benefit">
-        ${icon}
+        <img class="icon" src="${escapeHtml(iconSrc)}" alt="" />
         <h3>${escapeHtml(b.title)}</h3>
         <p>${escapeHtml(b.description)}</p>
       </div>`;
