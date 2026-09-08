@@ -79,7 +79,9 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 .eyebrow {
   display: inline-block;
-  font-family: var(--font-display);
+  /* Inter, not the display font — verified against the live site's actual
+     eyebrow labels (e.g. "About Us" above the about-us h1). */
+  font-family: var(--font);
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -88,8 +90,14 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 
 h1, h2, h3, h4 { font-family: var(--font-display); color: var(--color-dark); font-weight: 600; line-height: 1.2; margin: 0 0 16px; }
-h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
-h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
+/* Ceiling raised to 4rem (64px) and the fluid part re-tuned so it actually
+   reaches that ceiling by typical desktop widths — verified against the
+   live site's real (measured, not estimated) hero h1: 64px. */
+h1 { font-size: clamp(2.2rem, 3vw + 1.5rem, 4rem); }
+/* Ceiling lowered to 2rem (32px) — verified against the live site's actual
+   section headings (e.g. "OUR STORY SO FAR", "Leadership" on about-us):
+   flat 32px, not the ~40px our previous clamp topped out at. */
+h2 { font-size: clamp(1.5rem, 2vw + 1rem, 2rem); }
 h3 { font-size: 1.3rem; }
 p { margin: 0 0 16px; color: var(--color-text-muted); }
 
@@ -99,11 +107,12 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 14px 28px;
+  padding: 12px 16px;
   border-radius: var(--radius-btn);
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 1rem;
   border: 2px solid transparent;
   cursor: pointer;
   transition: all var(--transition);
@@ -170,7 +179,15 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 }
 .nav-links a.nav-ai-lab:hover { -webkit-text-fill-color: initial; color: var(--color-primary); background: none; }
 .nav-cta { display: flex; align-items: center; }
-.nav-cta .btn { text-transform: uppercase; }
+/* Distinct, smaller box than the hero buttons — verified against the live
+   site's actual nav CTA (fixed 44px height, flush 0 16px padding, weight
+   500), rather than inheriting the hero button's bigger box. */
+.nav-cta .btn {
+  text-transform: uppercase;
+  height: 44px;
+  padding: 0 16px;
+  font-weight: 500;
+}
 
 /* Dropdown items ("Our Expertise", "Industries", "Insights") — hover-reveal
    on desktop, always-expanded inline on mobile (see the 900px breakpoint). */
@@ -296,7 +313,9 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .hero-inner { position: relative; z-index: 1; max-width: 640px; }
 .hero .eyebrow { color: #fff; }
 .hero h1 { color: #fff; }
-.hero p { color: #cdd6ec; font-size: 1.15rem; }
+/* Verified against the live site: the hero subtitle is white (not a muted
+   blue-gray) at 32px, roughly double the size this was previously set to. */
+.hero p { color: #fff; font-size: clamp(1.15rem, 1rem + 2vw, 2rem); }
 .hero-actions { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
 
 /* All slide tabs shown at once (not just the active one) — matches the
@@ -376,8 +395,15 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .card {
   background: #fff;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 32px 26px;
+  /* 8px, not var(--radius) (12px) — verified against the live site's actual
+     tile cards, which use a tighter radius than the site's other rounded
+     surfaces (buttons, modals) that --radius is shared with. */
+  border-radius: 8px;
+  padding: 24px;
+  /* min- not a hard height: the live site's tiles are a fixed 200px, but a
+     hard height would clip a card whose copy runs longer than the ones
+     measured — min-height keeps the grid reading as uniform without that risk. */
+  min-height: 200px;
   transition: transform var(--transition), box-shadow var(--transition);
 }
 .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
@@ -852,8 +878,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   .page-hero { padding: calc(var(--header-height) + 16px) 0 40px; }
   .section-head { margin-bottom: 40px; }
   .cta-band { padding: 40px 22px; }
-  .card { padding: 26px 20px; }
-  .card-thumb { margin: -26px -20px 18px; }
+  .card { padding: 20px; min-height: 0; }
+  .card-thumb { margin: -20px -20px 18px; }
   .hero-actions { gap: 12px; }
   .hero-actions .btn, .nav-cta .btn { width: 100%; justify-content: center; }
   .hero-actions { flex-direction: column; }
@@ -867,6 +893,6 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 /* Small phones (≤420px) */
 @media (max-width: 420px) {
   .container { padding: 0 18px; }
-  .btn { padding: 12px 22px; font-size: 0.9rem; }
+  .btn { font-size: 0.95rem; }
   .avatar { width: 80px; height: 80px; font-size: 1.25rem; }
 }
