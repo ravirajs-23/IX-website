@@ -137,6 +137,22 @@ const SCENARIOS = [
     oursSelector: ".cs-card",
     props: ["borderRadius", "boxShadow"],
   },
+  {
+    name: "Case-study filter pill (active)",
+    livePath: "/case-stories",
+    oursPath: "/case-studies.html",
+    liveMatchText: "All",
+    oursSelector: ".cs-filter-pill.active",
+    props: ["padding", "fontSize", "fontWeight", "borderRadius", "height"],
+  },
+  {
+    name: "Case-study filter search box",
+    livePath: "/case-stories",
+    oursPath: "/case-studies.html",
+    liveSelector: "input[placeholder]",
+    oursSelector: ".cs-search",
+    props: ["fontSize", "borderRadius", "height"],
+  },
 ];
 
 function findChrome() {

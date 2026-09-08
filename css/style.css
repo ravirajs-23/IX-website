@@ -627,14 +627,18 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 }
 .cs-filter-pills { display: flex; flex-wrap: wrap; gap: 10px; flex: 1; }
 .cs-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--cs-font-body);
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 0.875rem;
+  font-weight: 500;
   background: transparent;
   color: #12172b;
   border: 0.8px solid var(--cs-filter-border);
   border-radius: 8px;
-  padding: 6px 18px;
+  padding: 4px 18px;
+  height: 44px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -645,12 +649,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 }
 .cs-search {
   font-family: var(--cs-font-body);
-  font-size: 0.75rem;
+  font-size: 1rem;
   border: 0.8px solid var(--cs-filter-border);
   border-radius: 8px;
   padding: 0 8px;
   width: 240px;
-  height: 34px;
+  height: 48px;
 }
 .cs-section-label {
   font-family: var(--cs-font-display);
