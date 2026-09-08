@@ -643,21 +643,28 @@ function renderTestimonialsCarousel(testimonials) {
 <script>window.__TESTIMONIALS__ = ${safeJsonLd(testimonials)};</script>`;
 }
 
-/** Shared card, used by the listing grid and "Other Case Stories" — matches the live site's card exactly. */
+/** A right-pointing arrow next to "READ MORE" — matches the live site's card
+ * (an actual gradient-filled icon there; simplified here to a solid-color
+ * inline SVG using currentColor, so it's trivial to recolor via CSS). */
+const CARD_ARROW_SVG = `<svg class="cs-read-more-arrow" viewBox="0 0 16 16" width="15" height="16" fill="none" aria-hidden="true"><path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/**
+ * Shared card, used by the listing grid and "Other Case Stories". Matches
+ * the live site's actual card exactly (verified via its DOM): image, title,
+ * "READ MORE" + arrow — no category tag or description text on the card
+ * itself, even though `category` is tracked via `data-category` for the
+ * listing page's filter pills/search (see js/script.js), just not shown.
+ */
 function renderStoryCard(s) {
   const media = s.heroImage
     ? `<img src="${escapeHtml(s.heroImage)}" alt="${escapeHtml(s.title)}" />`
     : `<div class="cs-card-noimg"></div>`;
-  const isDemo = s.sourceFile.startsWith("_");
-  const tagLabel = isDemo ? `${escapeHtml(s.category)} &middot; Demo` : escapeHtml(s.category);
   return `
       <a class="cs-card" href="/case-studies/${s.slug}.html" data-category="${escapeHtml(s.category)}" data-title="${escapeHtml(s.title)}">
         ${media}
         <div class="cs-card-body">
-          <div class="cs-tag">${tagLabel}</div>
           <h3>${escapeHtml(s.title)}</h3>
-          <p>${escapeHtml(s.heroSummary)}</p>
-          <span class="cs-read-more">READ MORE</span>
+          <span class="cs-read-more">READ MORE${CARD_ARROW_SVG}</span>
         </div>
       </a>`;
 }
