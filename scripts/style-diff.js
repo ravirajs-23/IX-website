@@ -138,6 +138,20 @@ const SCENARIOS = [
     props: ["borderRadius", "boxShadow"],
   },
   {
+    // The bottom gradient bar lives entirely in a pseudo-element on both
+    // sites (live: ::before on .case-content; ours: ::after on .cs-card,
+    // a deliberately simpler recreation of the same visual effect) —
+    // checking the element itself would show nothing.
+    name: "Case-study card bottom gradient bar",
+    livePath: "/case-stories",
+    oursPath: "/case-studies.html",
+    liveSelector: ".case-content",
+    livePseudo: "::before",
+    oursSelector: ".cs-card",
+    oursPseudo: "::after",
+    props: ["backgroundImage"],
+  },
+  {
     name: "Case-study filter pill (active)",
     livePath: "/case-stories",
     oursPath: "/case-studies.html",
@@ -175,9 +189,9 @@ function findChrome() {
   return found;
 }
 
-async function getComputedProps(page, { selector, matchText, matchIncludes }, props) {
+async function getComputedProps(page, { selector, matchText, matchIncludes, pseudo }, props) {
   return page.evaluate(
-    (selector, matchText, matchIncludes, props) => {
+    (selector, matchText, matchIncludes, pseudo, props) => {
       let el = null;
       if (matchText) {
         el = [...document.querySelectorAll("*")].find((e) => {
@@ -189,7 +203,11 @@ async function getComputedProps(page, { selector, matchText, matchIncludes }, pr
         el = document.querySelector(selector);
       }
       if (!el) return null;
-      const cs = getComputedStyle(el);
+      // pseudo (e.g. "::after"/"::before"): some effects (the case-study
+      // card's bottom gradient bar) live entirely in a pseudo-element, not
+      // on the element itself — getComputedStyle needs the second arg to
+      // see them at all.
+      const cs = getComputedStyle(el, pseudo || undefined);
       const out = {};
       for (const p of props) out[p] = cs[p];
       return out;
@@ -197,6 +215,7 @@ async function getComputedProps(page, { selector, matchText, matchIncludes }, pr
     selector || null,
     matchText || null,
     Boolean(matchIncludes),
+    pseudo || null,
     props
   );
 }
@@ -249,6 +268,7 @@ async function main() {
             selector: scenario.liveSelector,
             matchText: scenario.liveMatchText,
             matchIncludes: scenario.matchIncludes,
+            pseudo: scenario.livePseudo,
           },
           scenario.props
         );
@@ -263,6 +283,7 @@ async function main() {
             selector: scenario.oursSelector,
             matchText: scenario.oursMatchText,
             matchIncludes: scenario.matchIncludes,
+            pseudo: scenario.oursPseudo,
           },
           scenario.props
         );
