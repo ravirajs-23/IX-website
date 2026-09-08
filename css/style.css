@@ -626,12 +626,11 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   margin-bottom: 40px;
 }
 .cs-filter-pills { display: flex; flex-wrap: wrap; gap: 10px; flex: 1; }
-/* font-size/weight step at 1200px (12px/400 -> 14px/500), confirmed via
-   style-diff at all 4 breakpoints — height is deliberately NOT set: the
-   live site's own pill height varies (28/40/44px) in a way that tracks
-   flex-row wrapping (e.g. a neighboring two-line "Cloud Transformation"
-   pill stretching the whole row), not a fixed CSS value — auto here lets
-   ours do the same instead of fighting it with an explicit height. */
+/* 3 tiers, all confirmed by direct measurement (not assumed): height
+   28px/40px/44px at <600px/600-1199px/>=1200px, with font-size+weight
+   stepping up only at the last boundary (12px/400 -> 14px/500 at
+   1200px). A first pass wrongly treated the height as non-fixed/auto
+   because only 2 of these 3 tiers had been checked. */
 .cs-filter-pill {
   display: inline-flex;
   align-items: center;
@@ -644,11 +643,15 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   border: 0.8px solid var(--cs-filter-border);
   border-radius: 8px;
   padding: 4px 18px;
+  height: 28px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
+@media (min-width: 600px) {
+  .cs-filter-pill { height: 40px; }
+}
 @media (min-width: 1200px) {
-  .cs-filter-pill { font-size: 0.875rem; font-weight: 500; }
+  .cs-filter-pill { font-size: 0.875rem; font-weight: 500; height: 44px; }
 }
 .cs-filter-pill.active,
 .cs-filter-pill:hover {
