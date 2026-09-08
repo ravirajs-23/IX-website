@@ -138,6 +138,34 @@ the content across if that's useful.
 
 ---
 
+## Checking styling against the live site
+
+`scripts/style-diff.js` (`npm run style-diff`) compares computed CSS between
+the live site and this one, at a fixed set of breakpoints, for a fixed list
+of elements (hero heading/subtitle, buttons, cards, section headings). It
+exists because hand-checking `getComputedStyle()` one snippet at a time
+doesn't scale and easily misses viewport-dependent differences — a value
+that matches at one width can be wrong at another if the two sites scale it
+differently. This bit us directly once: the live site (built with MUI) steps
+typography between fixed sizes at specific breakpoints rather than scaling
+smoothly, so an earlier fluid `clamp()`-based fix looked right at the one
+width it was checked against and was visibly wrong at others.
+
+**Usage:**
+```bash
+npm run style-diff                                          # ours = http://localhost:5050
+OURS_BASE_URL=https://your-deploy.vercel.app npm run style-diff
+```
+Needs a local Chrome or Edge install (uses `puppeteer-core` against it, not
+a bundled/downloaded browser — set `CHROME_PATH` if it's somewhere
+non-standard). Requires the local static site running first (`npx serve`,
+see `.claude/launch.json`) if not pointing `OURS_BASE_URL` at a deployment.
+
+Add more breakpoints/elements to `BREAKPOINTS`/`SCENARIOS` in the script as
+new gaps are found — it's meant to grow, not be a one-off audit.
+
+---
+
 ## Editing the other pages
 
 The 7 hand-written pages (`index.html`, `about.html`, etc.) hold their own
