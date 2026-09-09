@@ -498,6 +498,44 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .cta-band h2 { color: #fff; }
 .cta-band p { color: #dfe9ff; }
 
+/* ---------- History timeline (about.html "Our Story So Far") ----------
+   One card per year: a year badge + a bullet list of that year's
+   milestones on a solid gradient card. Matches the live site's content
+   and colors exactly (gradient/radius/padding/list-text all measured
+   directly); the live site's per-year "cube" icon + connecting arrow
+   graphics are simplified here to a plain year badge — a deliberate
+   simplification, consistent with other decorative-icon simplifications
+   already made elsewhere in this project (e.g. the case-study card's
+   read-more arrow, the homepage Stack section's logos). */
+.history-timeline { display: flex; flex-direction: column; gap: 24px; margin-top: 8px; }
+.history-card { display: flex; align-items: flex-start; gap: 20px; }
+.history-year {
+  flex-shrink: 0;
+  width: 64px; height: 64px;
+  border-radius: 12px;
+  background: var(--color-dark);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.history-card ul {
+  flex: 1;
+  background: linear-gradient(90deg, #005be2, #007bff);
+  border-radius: 12px;
+  padding: 16px 24px 16px 44px;
+  margin: 0;
+  /* Restore bullets — the base stylesheet resets ul { list-style: none } */
+  list-style: disc;
+}
+.history-card li { color: #fff; font-size: 1rem; line-height: 1.5; margin-bottom: 10px; }
+.history-card li:last-child { margin-bottom: 0; }
+@media (max-width: 700px) {
+  .history-card { flex-direction: column; gap: 10px; }
+  .history-year { width: auto; height: auto; padding: 6px 16px; border-radius: 8px; }
+}
+
 /* ---------- Forms ---------- */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .form-grid .full { grid-column: 1 / -1; }
@@ -672,12 +710,19 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (min-width: 1200px) {
   .cs-search { font-size: 1rem; height: 48px; }
 }
-.cs-section-label {
+/* .section-title: the live site's actual class name for this pattern
+   (confirmed via its DOM) — a plain, generic gradient section heading used
+   on about-us ("Our Story So Far", "Leadership", "Engagement Models", "The
+   Scorecard") as well as the case-studies pages (as .cs-section-label,
+   kept as an alias since it's already used that way there). */
+.cs-section-label, .section-title {
   font-family: var(--cs-font-display);
   font-weight: 600;
-  /* Scales from ~16px on narrow viewports up to 32px on desktop, matching
-     the live site's own responsive heading — not a fixed size. */
-  font-size: clamp(1rem, 0.5rem + 2vw, 2rem);
+  /* Stepped at 900px (16px -> 32px), not fluid — same fix as the global h2
+     rule elsewhere in this file, and for the same reason: this was
+     previously a vw-based clamp() that only matched the live site at one
+     specific width. */
+  font-size: 1rem;
   text-transform: uppercase;
   margin-bottom: 28px;
   /* The live site renders this as gradient text (verified via computed
@@ -690,6 +735,9 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+@media (min-width: 900px) {
+  .cs-section-label, .section-title { font-size: 2rem; }
 }
 
 /* ---------- Cards (listing grid + "Other Case Stories") ---------- */
