@@ -6,7 +6,8 @@
   "scripts": {
     "build:pages": "node scripts/build-pages.js",
     "build:case-studies": "node scripts/build-case-studies.js",
-    "build": "npm run build:pages && npm run build:case-studies",
+    "build:services": "node scripts/build-services.js",
+    "build": "npm run build:pages && npm run build:case-studies && npm run build:services",
     "style-diff": "node scripts/style-diff.js"
   },
   "dependencies": {

@@ -532,4 +532,10 @@
     <priority>0.6</priority>
     <lastmod>2026-08-26</lastmod>
   </url>
+<!-- SERVICES:START -->
+  <url>
+    <loc>https://www.incubxperts.com/services/ai-adoption-and-strategy.html</loc>
+    <priority>0.7</priority>
+  </url>
+<!-- SERVICES:END -->
 </urlset>
