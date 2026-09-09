@@ -453,6 +453,25 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
 @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } .stat .num { font-size: 2rem; } }
 
+/* Scorecard (about.html) — the live site renders this as a solid brand-
+   gradient band with white text and a bordered box per stat, not the plain
+   .stats block used on the homepage — scoped so index.html's own stats
+   are unaffected. */
+.scorecard-band {
+  background: linear-gradient(271deg, #113f91 10%, #196cfa 105%);
+  border-radius: var(--radius);
+}
+.scorecard-title { color: #fff; font-size: 3rem; font-weight: 600; margin: 0 0 28px; }
+@media (min-width: 900px) { .scorecard-title { font-size: 4rem; } }
+.scorecard-band .stat {
+  border: 0.8px solid #fff;
+  border-radius: 8px;
+  padding: 16px 8px;
+}
+.scorecard-band .stat img { margin-bottom: 12px; }
+.scorecard-band .stat .num { color: #fff; font-size: 2rem; font-weight: 600; }
+.scorecard-band .stat .label { color: #deebff; font-weight: 400; font-size: 1.25rem; }
+
 /* ---------- Cards / Grids ---------- */
 .grid {
   display: grid;
@@ -479,6 +498,23 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
   transition: transform var(--transition), box-shadow var(--transition);
 }
 .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+
+/* Engagement Models cards (about.html #engagement) — the live site's
+   equivalent cards render the h3 as gradient text (same brand gradient,
+   confirmed via computed style: color is transparent, background-image is
+   the gradient) and carry a permanent subtle shadow, not just on :hover. */
+#engagement .card {
+  border: none;
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12);
+}
+#engagement .card h3 {
+  background: linear-gradient(243deg, #113f91 72%, #196cfa 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #113f91; /* fallback */
+}
+#engagement .card p { color: #42526e; }
 .card .icon {
   width: 52px; height: 52px;
   border-radius: 12px;
@@ -501,18 +537,22 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .testimonial-meta { font-weight: 700; color: var(--color-dark); font-size: 0.92rem; }
 .testimonial-meta span { display: block; font-weight: 500; color: var(--color-text-muted); font-size: 0.85rem; }
 
-/* ---------- Leadership ---------- */
-.person-card { text-align: center; }
-.avatar {
-  width: 96px; height: 96px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  color: #fff;
+/* ---------- Leadership ----------
+   Real headshots + LinkedIn badge (downloaded from the live site — these
+   are public professional photos of named execs on their own About page),
+   replacing what had been plain initials-in-a-circle placeholders. */
+.person-card { text-align: left; padding: 0; overflow: hidden; }
+.person-photo-wrap { position: relative; }
+.person-photo { width: 100%; height: 290px; object-fit: cover; display: block; }
+.person-linkedin {
+  position: absolute;
+  bottom: 16px; right: 16px;
+  width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.5rem;
-  margin: 0 auto 16px;
 }
-.person-role { color: var(--color-primary); font-weight: 700; font-size: 0.88rem; }
+.person-linkedin img { width: 32px; height: 32px; }
+.person-card h3 { font-size: 1.5rem; color: var(--color-text); margin: 20px 24px 4px; }
+.person-role { color: #424242; font-weight: 400; font-size: 1rem; margin: 0 24px 20px; }
 
 /* ---------- Timeline ---------- */
 .timeline { position: relative; margin-top: 20px; padding-left: 28px; border-left: 3px solid var(--color-border); }
@@ -557,12 +597,18 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 }
 .history-year img { width: 80px; height: auto; display: block; position: relative; z-index: 1; }
 .history-year::after {
-  /* connector line, bridging the cube column to the milestone box */
+  /* connector line, bridging the cube column to the milestone box — 166px
+     (+ the 8px dot after it = 174px total gap). Re-measured directly
+     against the live page's actual DOM rects (cube/arrow-image/box
+     getBoundingClientRect, relative to their shared container): the real
+     gap between the cube and the box is ~250px, not the ~78px this was
+     originally built with — that first pass was visual-only and wrong by
+     a lot. The dot sits almost flush against the box, same as here. */
   content: '';
   position: absolute;
   top: 50%;
   left: 100%;
-  width: 78px;
+  width: 166px;
   height: 2px;
   background: linear-gradient(90deg, #196cfa, #113f91);
   transform: translateY(-50%);
@@ -572,7 +618,7 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
   content: '';
   position: absolute;
   top: 50%;
-  left: calc(100% + 78px - 7px);
+  left: calc(100% + 166px);
   width: 8px; height: 8px;
   border-radius: 50%;
   background: #113f91;
@@ -581,8 +627,10 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 }
 .history-card ul {
   flex: 1;
-  /* leaves room for the 78px connector between the cube column and here */
-  margin: 0 0 0 78px;
+  /* leaves room for the 174px connector (line + dot) between the cube
+     column and here — see the ::after comment above for how this number
+     was re-derived. */
+  margin: 0 0 0 174px;
   background: linear-gradient(90deg, #005be2, #007bff);
   border-radius: 12px;
   padding: 16px 24px 16px 44px;
