@@ -148,7 +148,7 @@ module.exports = [
     ],
     relatedServices: [
       {
-        slug: null,
+        slug: "agentic-solutions",
         name: "Agentic Solutions",
         description: "Build AI that thinks, collaborates, and delivers autonomously",
         image: "/images/services/related-agentic-solutions.webp",
@@ -169,6 +169,158 @@ module.exports = [
     closingCta: {
       title: "Ready to move from AI ambition to execution?",
       buttonText: "Book a Consultation",
+      href: "/contact.html",
+    },
+  },
+  {
+    slug: "agentic-solutions",
+    name: "Agentic Solutions",
+    tagline: "Building AI that thinks, collaborates, and delivers autonomously",
+    heroImage: "/images/services/hero-agentic-solutions.webp",
+    heroCta: { text: "Build with Us", href: "/contact.html" },
+    metaDescription:
+      "IncubXperts engineers autonomous AI agents that think, collaborate, and deliver, turning agentic AI into measurable business outcomes.",
+    whyMatters: {
+      title: "The Case for Agentic Systems",
+      paragraphs: [
+        `Most business operations depend on manual decision points, scattered systems, siloed data, and workflows that break whenever context changes. Even automated processes stop when judgment, interpretation, or cross-system coordination is required.`,
+        `Agentic systems close this gap by enabling AI to reason, plan, and act with autonomy across your operations. They bring together data, tools, and intelligence to deliver outcomes with speed, accuracy, and governance.`,
+      ],
+    },
+    ourServices: {
+      intro:
+        "We design and deliver agentic systems that combine reasoning, context, and collaboration to enable AI to operate autonomously across tools and data. Built using frameworks like CrewAI, LangGraph, AutoGen, and the Model Context Protocol (MCP), these solutions are engineered for reliability, security, and scale.",
+      items: [
+        {
+          icon: "/images/services/sub-ai-feasibility.svg",
+          title: "Agentic System Design",
+          description:
+            "Architect autonomous and multi-agent AI systems around your workflows, data, and governance requirements, designed for safety, context, and collaboration.",
+        },
+        {
+          icon: "/images/services/sub-high-impact.svg",
+          title: "Cognitive Workflow Automation",
+          description:
+            "Transform static business processes into adaptive, goal-oriented workflows that reason, decide, and act across systems.",
+        },
+        {
+          icon: "/images/services/sub-roadmaps.svg",
+          title: "Agentic Integration for Existing Systems",
+          description:
+            "Extend legacy and existing software with agentic capabilities, using protocols like MCP to let AI reason over, connect with, and act through your current tools and environments.",
+        },
+        {
+          icon: "/images/services/sub-context-integration.svg",
+          title: "Context Integration",
+          description:
+            "Connect enterprise systems, APIs, and data into a unified context layer, giving AI agents secure, real-time understanding of your operations through standards like MCP.",
+        },
+        {
+          icon: "/images/services/sub-autonomous-knowledge.svg",
+          title: "Autonomous Knowledge Agents",
+          description:
+            "Deploy AI agents that continuously learn from your internal knowledge bases, delivering precise, context-aware insights and decisions over time.",
+        },
+        {
+          icon: "/images/services/sub-observability.svg",
+          title: "Observability & Optimization",
+          description:
+            "Instrument every agentic workflow with real-time monitoring, traceability, and evaluation, ensuring transparency, reliability, and continuous improvement.",
+        },
+        {
+          icon: "/images/services/sub-deployment-scale.svg",
+          title: "Deployment & Scale",
+          description:
+            "Deliver containerized, production-grade agents with built-in observability, versioning, and compliance, ready to scale across enterprise environments.",
+        },
+        {
+          icon: "/images/services/sub-cost-aware-agentic.svg",
+          title: "Cost-Aware Agentic Architecture",
+          description:
+            "Optimize the total cost of ownership of agentic systems with right-sized models and cost-aware orchestration, ensuring autonomy scales without unpredictable spend.",
+        },
+      ],
+    },
+    process: {
+      intro: "",
+      steps: [
+        {
+          icon: "/images/services/process-exploration.svg",
+          title: "Discover & Define",
+          description:
+            "Identify the right problems for agentic systems, where reasoning, autonomy, and context can drive meaningful efficiency or decision improvements.",
+        },
+        {
+          icon: "/images/services/process-strategy.svg",
+          title: "Design the System",
+          description:
+            "Design agent roles, reasoning paths, memory, and safeguards. Select orchestration frameworks and LLMs aligned with governance needs and cost-aware scaling patterns.",
+        },
+        {
+          icon: "/images/services/process-pilot.svg",
+          title: "Integrate Context",
+          description:
+            "Connect data, tools, and systems securely, using standards like MCP to enable agents to access live business context in real time.",
+        },
+        {
+          icon: "/images/services/process-optimisation.svg",
+          title: "Optimize & Scale",
+          description:
+            "Continuously refine accuracy, behavior, and impact using telemetry, controlled learning cycles, and optimization of usage patterns for long-term efficiency.",
+        },
+        {
+          icon: "/images/services/process-deployment.svg",
+          title: "Build, Test & Deploy",
+          description:
+            "Engineer, validate, and containerize agents with built-in observability, compliance, and performance metrics. Incorporate cost telemetry to ensure predictable consumption and reliable scaling.",
+        },
+      ],
+    },
+    // The live page's own 3 featured case stories (Sales Intelligence
+    // Assistant, D365 Sales Assistant, AI RecruitAssist) aren't in our
+    // Strapi-synced case-studies/ collection, so these 3 are the closest
+    // topical substitutes from what we actually have, not a reproduction
+    // of the live page's specific picks.
+    featuredCaseStories: [
+      {
+        slug: "building-a-smarter-donation-ecosystem-with-ai-powered-matchmaking",
+        title: "Building a Smarter Donation Ecosystem with AI-Powered Matchmaking",
+        image: "/images/case-studies/strapi/Sevadeep_16f52bdd4c.webp",
+      },
+      {
+        slug: "an-ai-powered-legal-document-management-solution",
+        title: "An AI-Powered Legal Document Management Solution",
+        image: "/images/case-studies/strapi/10032025_Lexicon_Sub_CS_DMS_Cover_Img_1_33db270a17.webp",
+      },
+      {
+        slug: "revolutionizing-workplace-safety-with-ai-driven-incident-reporting",
+        title: "Revolutionizing Workplace Safety with AI-Driven Incident Reporting",
+        image: "/images/case-studies/strapi/Core_Point_BG_Image_0cbc918ce1.webp",
+      },
+    ],
+    relatedServices: [
+      {
+        slug: null,
+        name: "Workflow Automation",
+        description: "Enable seamless, self-operating workflows with intelligent AI-driven automation",
+        image: "/images/services/related-workflow-automation.webp",
+      },
+      {
+        slug: null,
+        name: "AI-Augmented Product Engineering",
+        description: "Build AI-ready products with augmented engineering and human-led precision",
+        image: "/images/services/related-ai-augmented-product-engineering.webp",
+      },
+      {
+        slug: null,
+        name: "AI-Augmented QA",
+        description: "Maximize accuracy and speed with AI-assisted testing and smarter validation",
+        image: "/images/services/related-ai-augmented-qa.webp",
+      },
+    ],
+    closingCta: {
+      title: "Let's build systems that think, decide, and deliver intelligently",
+      buttonText: "Start a Conversation",
       href: "/contact.html",
     },
   },

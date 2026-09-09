@@ -123,11 +123,14 @@ function renderProcess(service) {
       </div>`
     )
     .join("");
+  const intro = service.process.intro
+    ? `<p class="service-statement-sub" style="text-align:center;">${escapeHtml(service.process.intro)}</p>`
+    : "";
   return `
 <section class="section">
   <div class="container">
     <h2 class="service-statement" style="text-align:center;">Our Process</h2>
-    <p class="service-statement-sub" style="text-align:center;">${escapeHtml(service.process.intro)}</p>
+    ${intro}
     <div class="process-row">${steps}
     </div>
   </div>

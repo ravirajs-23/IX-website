@@ -537,5 +537,9 @@
     <loc>https://www.incubxperts.com/services/ai-adoption-and-strategy.html</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://www.incubxperts.com/services/agentic-solutions.html</loc>
+    <priority>0.7</priority>
+  </url>
 <!-- SERVICES:END -->
 </urlset>
