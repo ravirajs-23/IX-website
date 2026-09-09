@@ -615,11 +615,36 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-primary); border-color: transparent; }
 @media (max-width: 620px) { .form-grid { grid-template-columns: 1fr; } }
 
+.contact-subhead { font-size: 1.5rem; font-weight: 600; color: #2a2a2a; margin: 0 0 20px; }
 .contact-info-item { display: flex; gap: 14px; margin-bottom: 22px; align-items: flex-start; }
 .contact-info-item .ic {
   width: 42px; height: 42px; border-radius: 10px;
   background: rgba(24,104,240,0.1); color: var(--color-primary);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800;
+}
+.contact-info-item .ic img { width: 20px; height: auto; }
+
+/* ---------- Office cards (contact.html "Our Offices") ---------- */
+.office-card {
+  display: flex; gap: 16px; align-items: flex-start;
+  margin-bottom: 20px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.office-card:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.office-photo { width: 100px; height: 88px; object-fit: cover; border-radius: var(--radius); flex-shrink: 0; }
+.office-city { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.office-city img { width: 22px; height: 22px; flex-shrink: 0; }
+.office-city span { font-weight: 700; color: var(--color-dark); font-size: 0.95rem; }
+.office-address { color: var(--color-text-muted); font-size: 0.92rem; margin: 0 0 8px; }
+.office-directions {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+.office-directions img { width: 16px; height: 16px; }
+@media (max-width: 500px) {
+  .office-card { flex-direction: column; }
+  .office-photo { width: 100%; height: 140px; }
 }
 
 /* ---------- Job listings ---------- */
@@ -802,6 +827,28 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (min-width: 900px) {
   .cs-section-label, .section-title { font-size: 2rem; }
 }
+/* Muted intro line under a .section-title, used where the live site pairs
+   the gradient heading with a one-line description (careers.html). */
+.section-intro { color: var(--color-text-muted); font-size: 1.05rem; margin: -12px 0 28px; }
+
+/* ---------- Careers: "Benefits of Being an IX'ian" gradient band ----------
+   The live site renders this one section as a solid gradient band (not
+   gradient *text* like every other .section-title) — same brand gradient,
+   used as a background-fill instead, so the heading/intro need a plain
+   white override here. */
+.benefits-band {
+  background: linear-gradient(120deg, var(--color-primary), var(--color-primary-dark));
+  border-radius: var(--radius);
+}
+.benefits-band .section-title {
+  color: #fff;
+  background: none;
+  -webkit-text-fill-color: #fff;
+}
+.benefits-band .section-intro { color: #dfe9ff; }
+.perk-card { text-align: center; padding: 12px; }
+.perk-card img { margin-bottom: 14px; }
+.perk-card h3 { color: #fff; font-size: 1rem; margin: 0; }
 
 /* ---------- Cards (listing grid + "Other Case Stories") ---------- */
 .cs-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -1032,6 +1079,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   color: var(--color-dark);
 }
 .pill-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.tag-pill.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.pill-row.blog-filter-row { justify-content: flex-start; margin-bottom: 40px; }
 
 /* ==========================================================================
    Responsive tuning — tablet & mobile

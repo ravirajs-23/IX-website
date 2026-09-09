@@ -64,8 +64,8 @@ const STATIC_PAGES = [
   { loc: "/", priority: "1.0" },
   { loc: "/about.html", priority: "0.8" },
   { loc: "/services.html", priority: "0.8" },
-  { loc: "/team.html", priority: "0.6" },
   { loc: "/blog.html", priority: "0.6" },
+  { loc: "/outlook.html", priority: "0.6" },
   { loc: "/careers.html", priority: "0.6" },
   { loc: "/contact.html", priority: "0.7" },
 ];

@@ -141,8 +141,8 @@ AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (
 - [Home](/index.html): Overview of services, AI Lab products, testimonials, and company stats.
 - [About Us](/about.html): Company history, milestones, leadership team, engagement models, differentiators.
 - [Services](/services.html): Full list of services with a detailed breakdown of AI Adoption & Strategy.
-- [Leadership](/team.html): Founding leadership team profiles.
 - [Case Stories](/case-studies.html): Real client success stories and outcomes across AI adoption, agentic solutions, and cloud transformation.
 - [Blog](/blog.html): Articles on GCC strategy, automation, and AI-era software services.
+- [Outlook](/outlook.html): IncubXperts' perspective on technology, strategy, and business.
 - [Careers](/careers.html): Open roles and company culture.
 - [Contact](/contact.html): Office addresses and contact form for business and career enquiries.

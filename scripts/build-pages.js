@@ -3,7 +3,7 @@
  * build-pages.js
  *
  * Keeps the shared header and footer on the hand-written pages (index.html,
- * about.html, services.html, team.html, blog.html, careers.html,
+ * about.html, services.html, blog.html, outlook.html, careers.html,
  * contact.html) in sync with the single source of truth:
  *   templates/partials/header.html
  *   templates/partials/footer.html
@@ -30,8 +30,8 @@ const PAGES = [
   "index.html",
   "about.html",
   "services.html",
-  "team.html",
   "blog.html",
+  "outlook.html",
   "careers.html",
   "contact.html",
 ];
