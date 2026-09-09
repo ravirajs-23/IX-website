@@ -540,7 +540,15 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 /* ---------- Leadership ----------
    Real headshots + LinkedIn badge (downloaded from the live site — these
    are public professional photos of named execs on their own About page),
-   replacing what had been plain initials-in-a-circle placeholders. */
+   replacing what had been plain initials-in-a-circle placeholders.
+   The live card is a single clickable area (MuiCardActionArea) that, on
+   hover, fills the text region with the brand gradient and turns the
+   text/arrow white — confirmed via computed style (::hover backgroundImage
+   goes from none to the gradient; the arrow is the same dark icon with
+   filter:brightness(0) invert(1) applied). The live card's own click
+   target opens a bio modal we don't have content for, so "Read More"
+   here links to the same LinkedIn profile as the badge instead of a
+   fabricated destination. */
 .person-card { text-align: left; padding: 0; overflow: hidden; }
 .person-photo-wrap { position: relative; }
 .person-photo { width: 100%; height: 290px; object-fit: cover; display: block; }
@@ -551,8 +559,22 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
   display: flex; align-items: center; justify-content: center;
 }
 .person-linkedin img { width: 32px; height: 32px; }
-.person-card h3 { font-size: 1.5rem; color: var(--color-text); margin: 20px 24px 4px; }
-.person-role { color: #424242; font-weight: 400; font-size: 1rem; margin: 0 24px 20px; }
+.person-content { padding: 20px 24px; transition: background 0.2s ease; }
+.person-card h3 { font-size: 1.5rem; color: var(--color-text); margin: 0 0 4px; transition: color 0.2s ease; }
+.person-role { color: #424242; font-weight: 400; font-size: 1rem; margin: 0 0 16px; transition: color 0.2s ease; }
+.person-content hr { border: none; border-top: 0.8px solid #808080; margin: 0 0 16px; }
+.person-readmore {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #434343; font-size: 0.875rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  transition: color 0.2s ease;
+}
+.person-readmore img { transition: filter 0.2s ease; }
+.person-card:hover .person-content { background: linear-gradient(271deg, #113f91 10%, #196cfa 105%); }
+.person-card:hover .person-content h3,
+.person-card:hover .person-role,
+.person-card:hover .person-readmore { color: #fff; }
+.person-card:hover .person-readmore img { filter: brightness(0) invert(1); }
 
 /* ---------- Timeline ---------- */
 .timeline { position: relative; margin-top: 20px; padding-left: 28px; border-left: 3px solid var(--color-border); }
