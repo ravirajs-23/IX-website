@@ -164,6 +164,14 @@ function renderFeaturedCaseStories(service) {
 </section>`;
 }
 
+/** The live site's version is an interactive hover-reveal component: one
+ * card is "active" at a time, showing its photo + white text, while the
+ * others sit as plain light cards with dark text — confirmed via computed
+ * style (desktop default state is dark-on-light, only the active slide is
+ * white-on-photo). Simplified here to all 3 cards permanently showing
+ * their photo + a dark overlay + white text, since that's legible without
+ * needing hover-state JS — a deliberate behavior simplification, not a
+ * content gap (same real photos/titles/descriptions either way). */
 function renderRelatedServices(service) {
   const cards = service.relatedServices
     .map((r) => {
@@ -180,7 +188,7 @@ function renderRelatedServices(service) {
   return `
 <section class="section service-tint">
   <div class="container">
-    <h2 class="service-statement">Explore More of What We Do</h2>
+    <h2 class="service-statement service-statement--sm">Explore More of What We Do</h2>
     <div class="grid grid-3 service-related-grid">${cards}
     </div>
   </div>

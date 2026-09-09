@@ -1089,8 +1089,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
    style: 42px/60px "statement" headings stepping to 20px/24px below
    900px, #DEEBFF tinted section backgrounds, 24px/32px intro paragraphs).
    ========================================================================== */
-.service-hero-tagline { color: #fff; font-size: 1.25rem; max-width: 720px; margin: 0 0 8px; }
-@media (min-width: 900px) { .service-hero-tagline { font-size: 1.375rem; } }
+/* .page-hero .service-hero-tagline (not just .service-hero-tagline): needs
+   to out-specificity the base ".page-hero p" rule (0,1,1 vs this rule's
+   0,2,0) — verified via computed style that the base rule was winning and
+   leaving the tagline in the wrong (muted blue, not white) color. */
+.page-hero .service-hero-tagline { color: #fff; font-size: 1.25rem; max-width: 720px; margin: 0 0 8px; }
+@media (min-width: 900px) { .page-hero .service-hero-tagline { font-size: 1.375rem; } }
 
 .service-tint { background: #deebff; }
 
@@ -1106,6 +1110,14 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (min-width: 900px) {
   .service-statement { font-size: 2.625rem; line-height: 60px; }
 }
+/* Smaller variant — the live site's "Explore More of What We Do" heading
+   is 32px, not the 42px every other .service-statement heading uses
+   (confirmed via computed style; a real, separate size in their design,
+   not a mistake to normalize away). */
+.service-statement--sm { font-size: 1.25rem; }
+@media (min-width: 900px) {
+  .service-statement--sm { font-size: 2rem; line-height: 1.3; }
+}
 .service-statement-sub { color: #424242; font-size: 1rem; line-height: 1.5; max-width: 780px; }
 @media (min-width: 900px) { .service-statement-sub { font-size: 1.5rem; line-height: 2rem; } }
 
@@ -1117,8 +1129,11 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12);
 }
 .service-card img { margin-bottom: 14px; }
-.service-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
-.service-card p { color: #42526e; font-size: 0.95rem; line-height: 1.6; margin: 0; }
+/* 20px below 900px, 24px at/above — same stepped-not-fluid convention as
+   the page's other headings (confirmed via computed style at 375px). */
+.service-card h3 { font-size: 1.25rem; color: var(--color-text); margin-bottom: 8px; }
+@media (min-width: 900px) { .service-card h3 { font-size: 1.5rem; } }
+.service-card p { color: #42526e; font-size: 1rem; line-height: 1.75; margin: 0; }
 
 /* Process steps: a straight connected row (see build-services.js's
    renderProcess() comment for why this simplifies the live site's zigzag
@@ -1167,8 +1182,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   padding: 24px;
   background: linear-gradient(0deg, rgba(0,0,0,0.75), rgba(0,0,0,0.1) 60%);
 }
-.service-related-overlay h3 { color: #fff; margin: 0 0 8px; }
-.service-related-overlay p { color: #e7edfb; font-size: 0.9rem; margin: 0; display: flex; align-items: center; gap: 8px; }
+.service-related-overlay h3 { color: #fff; font-size: 1rem; margin: 0 0 8px; }
+.service-related-overlay p { color: #fff; font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 8px; }
 
 /* ==========================================================================
    Responsive tuning — tablet & mobile
