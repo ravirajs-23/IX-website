@@ -499,41 +499,65 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .cta-band p { color: #dfe9ff; }
 
 /* ---------- History timeline (about.html "Our Story So Far") ----------
-   One card per year: a year badge + a bullet list of that year's
-   milestones on a solid gradient card. Matches the live site's content
-   and colors exactly (gradient/radius/padding/list-text all measured
-   directly); the live site's per-year "cube" icon + connecting arrow
-   graphics are simplified here to a plain year badge — a deliberate
-   simplification, consistent with other decorative-icon simplifications
-   already made elsewhere in this project (e.g. the case-study card's
-   read-more arrow, the homepage Stack section's logos). */
+   One card per year: the real site's 3D "cube" icon (downloaded verbatim
+   from incubxperts.com/images/OurHistory/, images/about-history/cube*.svg
+   here), connected to the milestone box by a thin gradient line ending in
+   a filled dot (recreated in CSS rather than using the live site's fixed
+   322px-wide connector asset, so it stays responsive). Measurements taken
+   directly off the live page at 1440px: cube image 80x93.6px, cube column
+   130px wide, milestone box begins 208px from the card's left edge — so
+   the connector spans the 78px gap between the cube column and the box. */
 .history-timeline { display: flex; flex-direction: column; gap: 24px; margin-top: 8px; }
-.history-card { display: flex; align-items: flex-start; gap: 20px; }
+.history-card { display: flex; align-items: center; gap: 0; }
 .history-year {
-  flex-shrink: 0;
-  width: 64px; height: 64px;
-  border-radius: 12px;
-  background: var(--color-dark);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
+  flex: 0 0 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.history-year img { width: 80px; height: auto; display: block; position: relative; z-index: 1; }
+.history-year::after {
+  /* connector line, bridging the cube column to the milestone box */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 78px;
+  height: 2px;
+  background: linear-gradient(90deg, #196cfa, #113f91);
+  transform: translateY(-50%);
+}
+.history-year::before {
+  /* dot at the end of the connector, against the milestone box */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 78px - 7px);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #113f91;
+  transform: translateY(-50%);
+  z-index: 1;
 }
 .history-card ul {
   flex: 1;
+  /* leaves room for the 78px connector between the cube column and here */
+  margin: 0 0 0 78px;
   background: linear-gradient(90deg, #005be2, #007bff);
   border-radius: 12px;
   padding: 16px 24px 16px 44px;
-  margin: 0;
   /* Restore bullets — the base stylesheet resets ul { list-style: none } */
   list-style: disc;
 }
 .history-card li { color: #fff; font-size: 1rem; line-height: 1.5; margin-bottom: 10px; }
 .history-card li:last-child { margin-bottom: 0; }
 @media (max-width: 700px) {
-  .history-card { flex-direction: column; gap: 10px; }
-  .history-year { width: auto; height: auto; padding: 6px 16px; border-radius: 8px; }
+  .history-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .history-year { flex: none; justify-content: flex-start; }
+  .history-year img { width: 56px; }
+  .history-year::after, .history-year::before { content: none; }
+  .history-card ul { margin-left: 0; }
 }
 
 /* ---------- Forms ---------- */
