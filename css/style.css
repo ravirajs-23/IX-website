@@ -386,20 +386,59 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 .innovation-banner h2 { color: #fff; margin: 0; font-size: 1.5rem; }
 
 .page-hero {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, var(--color-dark), var(--color-primary-dark));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #fff;
   padding: calc(var(--header-height) + 56px) 0 60px;
-  text-align: center;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  text-align: left;
 }
-/* 48px/64px — measured as a distinct, simpler 2-tier scale from the
-   homepage hero's h1 (36/60/64), not the same rule at a different width. */
-.page-hero h1 { color: #fff; font-size: 3rem; }
-.page-hero p { color: #cdd6ec; max-width: 640px; margin: 0 auto; }
+/* Dark tint over a photo background so text stays legible — matches the
+   live site's rgba(0,0,0,0.4) overlay on its page-banner photo. */
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+/* Faint decorative logo-mark watermark, top-left of the banner — present
+   on the live site's page banners (measured: 207x284px, natural size,
+   no-repeat, anchored top-left). */
+.page-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 207px;
+  height: 284px;
+  background: url("/images/icons/ix-logo-mark.svg") no-repeat top left;
+}
+.page-hero .container { position: relative; z-index: 1; width: 100%; }
+.page-hero--about { background-image: url("/images/about-hero/about-banner.webp"); }
+
+/* 48px/64px — measured stepped scale (not fluid): <900px 48px/line-height
+   48px, >=900px 64px/line-height 80px. */
+.page-hero h1 { color: #fff; font-size: 3rem; line-height: 1; margin: 0; }
+.page-hero p { color: #cdd6ec; max-width: 640px; }
 
 @media (min-width: 900px) {
-  .page-hero h1 { font-size: 4rem; }
+  .page-hero h1 { font-size: 4rem; line-height: 1.25; }
 }
 .breadcrumb { color: #9fc0ff; font-size: 0.85rem; margin-bottom: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Real breadcrumb pattern (home icon + separator + label) — used on
+   about.html so far; scoped to its own class so it doesn't disturb the
+   plain-text .breadcrumb still used on the other page-hero pages. */
+.page-breadcrumb { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+.breadcrumb-home { display: flex; align-items: center; line-height: 0; }
+.breadcrumb-sep { display: block; }
+.page-breadcrumb span { color: #fff; font-weight: 600; font-size: 1rem; }
 
 /* ---------- Stats ---------- */
 .stats {
