@@ -154,7 +154,7 @@ module.exports = [
         image: "/images/services/related-agentic-solutions.webp",
       },
       {
-        slug: null,
+        slug: "workflow-automation",
         name: "Workflow Automation",
         description: "Enable seamless, self-operating workflows with intelligent AI-driven automation",
         image: "/images/services/related-workflow-automation.webp",
@@ -300,7 +300,7 @@ module.exports = [
     ],
     relatedServices: [
       {
-        slug: null,
+        slug: "workflow-automation",
         name: "Workflow Automation",
         description: "Enable seamless, self-operating workflows with intelligent AI-driven automation",
         image: "/images/services/related-workflow-automation.webp",
@@ -321,6 +321,147 @@ module.exports = [
     closingCta: {
       title: "Let's build systems that think, decide, and deliver intelligently",
       buttonText: "Start a Conversation",
+      href: "/contact.html",
+    },
+  },
+  {
+    slug: "workflow-automation",
+    name: "Workflow Automation",
+    tagline: "Intelligent automation for seamless, self-operating workflows",
+    heroImage: "/images/services/hero-workflow-automation.webp",
+    heroCta: { text: "Let's Connect", href: "/contact.html" },
+    metaDescription:
+      "Intelligent workflow automation from IncubXperts creates seamless, self-operating processes that cut manual work and reduce errors.",
+    whyMatters: {
+      title: "Why Workflow Automation Matters",
+      paragraphs: [
+        `Modern products and operations depend on hundreds of moving parts including CRMs, ERPs, AI tools, analytics, and cloud platforms. Without intelligent automation, teams waste hours switching contexts, managing handoffs, and reconciling data.`,
+        `Workflow Automation brings them together. With no-code orchestration, AI-driven logic, and secure system integrations, we help you design workflows that think and act, eliminating manual effort, accelerating processes, and creating room for scale.`,
+      ],
+    },
+    ourServices: {
+      intro:
+        "We help teams design intelligent, connected workflows that move information, decisions, and actions seamlessly across systems, reducing manual effort and unlocking speed, accuracy, and scale.",
+      items: [
+        {
+          icon: "/images/services/sub-workflow-orchestration.svg",
+          title: "Workflow Orchestration",
+          description:
+            "Automate complex, multi-step processes using low-code tools like Zapier, n8n, Make, and Power Automate, or custom orchestration frameworks where needed.",
+        },
+        {
+          icon: "/images/services/sub-ai-action-chains.svg",
+          title: "AI Action Chains",
+          description:
+            "Embed reasoning directly into your workflows. Our automations combine language models, decision rules, and business logic so your systems can interpret, decide, and act, not just trigger the next step.",
+        },
+        {
+          icon: "/images/services/sub-data-flow-automation.svg",
+          title: "Data Flow Automation",
+          description:
+            "Build clean, automated data pipelines that sync and transform information across systems, ensuring accuracy, traceability, and real-time visibility for teams and analytics.",
+        },
+        {
+          icon: "/images/services/sub-system-integration-api.svg",
+          title: "System Integration & API Enablement",
+          description:
+            "Connect enterprise tools, legacy systems, and cloud apps securely using custom APIs, SDKs, middleware, and webhooks. We design integration layers that are scalable, fault-tolerant, and compliant, ready for continuous automation and AI adoption.",
+        },
+        {
+          icon: "/images/services/sub-ops-finance-automation.svg",
+          title: "Ops & Finance Automation",
+          description:
+            "Automate repetitive back-office workflows such as invoicing, reconciliations, and reporting. We integrate finance and operations systems to remove friction, reduce human error, and improve cycle time.",
+        },
+        {
+          icon: "/images/services/sub-iot-event-automation.svg",
+          title: "IoT & Event Automation",
+          description:
+            "Transform live operational or device data into automated actions, from instant alerts to predictive interventions, linking the physical and digital parts of your ecosystem.",
+        },
+        {
+          icon: "/images/services/sub-cost-efficient-automation.svg",
+          title: "Cost-Efficient Automation Architecture",
+          description:
+            "Design workflows that scale predictably by optimizing AI usage patterns, trigger frequency, and data sync logic. We model the operational and AI-related cost impact of automations so your workflows remain efficient and sustainable as volumes grow.",
+        },
+      ],
+    },
+    process: {
+      intro: "",
+      steps: [
+        {
+          icon: "/images/services/process-discovery-mapping.svg",
+          title: "Discovery & Mapping",
+          description:
+            "Identify repetitive workflows, manual tasks, and disconnected systems. We analyze your current processes, map dependencies, and prioritize automation opportunities with the highest operational impact.",
+        },
+        {
+          icon: "/images/services/process-design-orchestration.svg",
+          title: "Design & Orchestration",
+          description:
+            "Define the automation flow and tool stack. We combine low-code orchestrators, APIs, and AI models to design scalable workflows that connect data, logic, and actions seamlessly across platforms.",
+        },
+        {
+          icon: "/images/services/process-integration-implementation.svg",
+          title: "Integration & Implementation",
+          description:
+            "Connect systems securely using APIs, SDKs, middleware, and webhooks. Each automation is built for reliability, data integrity, and compliance, tested end-to-end to ensure performance and fault tolerance.",
+        },
+        {
+          icon: "/images/services/process-monitor-optimize.svg",
+          title: "Monitor & Optimize",
+          description:
+            "Track performance and continuously refine. Our dashboards surface workflow efficiency, failure patterns, and AI usage signals, helping your automations evolve with scale and stay cost-efficient.",
+        },
+        {
+          icon: "/images/services/process-intelligence-layer.svg",
+          title: "Intelligence Layer",
+          description:
+            "Embed reasoning and decision-making into your workflows. We integrate models like GPT, Claude, or Vertex AI to add contextual awareness, smart routing, and adaptive automation capabilities.",
+        },
+      ],
+    },
+    featuredCaseStories: [
+      {
+        slug: "building-a-custom-sdk-for-integrating-ecosystem-applications",
+        title: "Building a Custom SDK for Integrating Ecosystem Applications",
+        image: "/images/case-studies/strapi/jigsaw_teamwork_concept_macro_shot_3bc16bd3ae_bc6a5be672.webp",
+      },
+      {
+        slug: "empowering-executive-management-with-advanced-sales-performance-tracking",
+        title: "Empowering Executive Management with Advanced Sales Performance Tracking",
+        image: "/images/case-studies/strapi/Numerik_93491fa169.webp",
+      },
+      {
+        slug: "modernizing-cmms-enhancing-ecosystem-connectivity-with-rest-apis",
+        title: "Modernizing CMMS: Enhancing Ecosystem Connectivity with Rest APIs",
+        image: "/images/case-studies/strapi/Maxpanda_53fcb0ed6e.webp",
+      },
+    ],
+    relatedServices: [
+      {
+        slug: null,
+        name: "AI-Augmented Product Engineering",
+        description: "Build AI-ready products with augmented engineering and human-led precision",
+        image: "/images/services/related-ai-augmented-product-engineering.webp",
+      },
+      {
+        slug: null,
+        name: "AI-Augmented QA",
+        description: "Maximize accuracy and speed with AI-assisted testing and smarter validation",
+        image: "/images/services/related-ai-augmented-qa.webp",
+      },
+      {
+        slug: null,
+        name: "Predictive Analytics & BI",
+        description: "Turn complex data into actionable intelligence",
+        image: "/images/services/related-predictive-analytics-bi.png",
+      },
+    ],
+    closingCta: {
+      title: "Ready to move from manual workflows to intelligent automation?",
+      buttonText: "Let's Talk",
       href: "/contact.html",
     },
   },
