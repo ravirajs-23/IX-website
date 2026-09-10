@@ -686,6 +686,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (max-width: 620px) { .form-grid { grid-template-columns: 1fr; } }
 
 .contact-subhead { font-size: 1.5rem; font-weight: 600; color: #2a2a2a; margin: 0 0 20px; }
+/* "Got a Question?" specifically steps up to 48px above ~1200px on the
+   live site (confirmed via computed style) while "Contact Details"/"Our
+   Offices" stay flat at 24px — a real, isolated difference, not a
+   mistake to normalize away. */
+@media (min-width: 1200px) { .contact-subhead--lg { font-size: 3rem; } }
+.contact-form-intro { color: rgba(0,0,0,0.87); font-size: 1rem; }
 .contact-info-item { display: flex; gap: 14px; margin-bottom: 22px; align-items: flex-start; }
 .contact-info-item .ic {
   width: 42px; height: 42px; border-radius: 10px;
@@ -701,11 +707,13 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   border-bottom: 1px solid var(--color-border);
 }
 .office-card:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.office-photo { width: 100px; height: 88px; object-fit: cover; border-radius: var(--radius); flex-shrink: 0; }
+.office-photo { width: 144px; height: 96px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
 .office-city { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .office-city img { width: 22px; height: 22px; flex-shrink: 0; }
-.office-city span { font-weight: 700; color: var(--color-dark); font-size: 0.95rem; }
-.office-address { color: var(--color-text-muted); font-size: 0.92rem; margin: 0 0 8px; }
+.office-city span { font-weight: 600; color: var(--color-text); font-size: 1rem; }
+.office-address { color: #424242; font-size: 1rem; margin: 0 0 8px; }
+.contact-info-item h4 { color: var(--color-text); font-size: 1rem; font-weight: 600; }
+.contact-info-item p { color: var(--color-text); font-size: 1rem; }
 .office-directions {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
