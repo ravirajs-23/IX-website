@@ -601,6 +601,21 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 }
 .cta-band h2 { color: #fff; }
 .cta-band p { color: #dfe9ff; }
+/* Blog/Outlook closing CTA — the live page's version of this band uses a
+   larger 48px/24px title/subtitle and a translucent-white ghost button,
+   not the site's usual solid .btn-primary — confirmed via computed
+   style. Scoped so the shared .cta-band used elsewhere isn't affected. */
+/* 30px below 1200px (confirmed flat from 375 through 1200), 48px above —
+   same unusual ~1200px breakpoint as contact.html's "Got a Question?". */
+.cta-band--insights h2 { font-size: 1.875rem; }
+@media (min-width: 1200px) { .cta-band--insights h2 { font-size: 3rem; } }
+.cta-band--insights p { color: #fff; font-size: 1.5rem; }
+.btn-ghost-white {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 0.8px solid rgba(25,118,210,0.5);
+}
+.btn-ghost-white:hover { background: rgba(255,255,255,0.35); }
 
 /* ---------- History timeline (about.html "Our Story So Far") ----------
    One card per year: the real site's 3D "cube" icon (downloaded verbatim
@@ -1183,6 +1198,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .pill-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 .tag-pill.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 .pill-row.blog-filter-row { justify-content: flex-start; margin-bottom: 40px; }
+/* Blog filter pills are a squarer, smaller chip on the live site than the
+   homepage's rounded industry pills — confirmed via computed style
+   (8px radius, 12px text, #42526e border on the inactive state). Scoped
+   here so the shared .tag-pill used elsewhere isn't affected. */
+.blog-filter-row .tag-pill { border-radius: 8px; font-size: 0.75rem; padding: 8px 16px; border-color: #42526e; color: #000; }
+.blog-filter-row .tag-pill.active { background: #196cfa; border-color: #196cfa; }
 
 /* ==========================================================================
    Individual service pages (services/<slug>.html, built by
