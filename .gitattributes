@@ -1,0 +1,5 @@
+# scripts/hooks/* are POSIX shell scripts run by git (via bash) on every
+# platform, including this repo's own Windows/Git-Bash dev machine — CRLF
+# line endings in a #!/bin/sh script break execution (the interpreter sees
+# a literal \r), so these must stay LF regardless of core.autocrlf.
+scripts/hooks/* text eol=lf

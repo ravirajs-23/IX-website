@@ -146,14 +146,18 @@ of elements (hero heading/subtitle, buttons, cards, section headings). It
 exists because hand-checking `getComputedStyle()` one snippet at a time
 doesn't scale and easily misses viewport-dependent differences — a value
 that matches at one width can be wrong at another if the two sites scale it
-differently. This bit us directly once: the live site (built with MUI) steps
-typography between fixed sizes at specific breakpoints rather than scaling
-smoothly, so an earlier fluid `clamp()`-based fix looked right at the one
-width it was checked against and was visibly wrong at others.
+differently. This bit us directly, more than once: the live site (built with
+MUI) steps typography between fixed sizes at specific breakpoints rather
+than scaling smoothly, so an earlier fluid `clamp()`-based fix looked right
+at the one width it was checked against and was visibly wrong at others;
+separately, `color` alone has repeatedly been a red herring for a gradient-
+clipped heading (the real fill lives in `backgroundImage`/
+`webkitTextFillColor`, `color` just carries the plausible-looking fallback).
 
 **Usage:**
 ```bash
-npm run style-diff                                          # ours = http://localhost:5050
+npm run style-diff                                          # full 4-breakpoint sweep, ours = http://localhost:5050
+npm run style-diff:fast                                     # 2 breakpoints (mobile + xl) — what the pre-push hook runs
 OURS_BASE_URL=https://your-deploy.vercel.app npm run style-diff
 ```
 Needs a local Chrome or Edge install (uses `puppeteer-core` against it, not
@@ -162,7 +166,38 @@ non-standard). Requires the local static site running first (`npx serve`,
 see `.claude/launch.json`) if not pointing `OURS_BASE_URL` at a deployment.
 
 Add more breakpoints/elements to `BREAKPOINTS`/`SCENARIOS` in the script as
-new gaps are found — it's meant to grow, not be a one-off audit.
+new gaps are found — it's meant to grow, not be a one-off audit. When you
+fix a visual bug found by hand (in a chat session or otherwise), add a
+scenario for it here too, so a future change can't silently reintroduce the
+same bug — that's the whole point of the pre-push hook below.
+
+### Mandatory pre-push check
+
+`git push` runs `scripts/style-diff.js --fast` automatically (via a
+`pre-push` git hook) and **blocks the push if anything mismatches**. This
+is deliberate, not a suggestion — this project's history is full of things
+that were called "verified" after a visual/screenshot pass and turned out
+wrong once actually diffed against computed style, including entire
+sections built with the wrong component. The hook also refuses to push if
+`npm run build` produces uncommitted output (i.e. a template/script was
+edited without regenerating and committing the built pages).
+
+- **Installed automatically** by `npm install` (via `postinstall` →
+  `node scripts/install-hooks.js`), since `.git/hooks/` isn't tracked by
+  git and wouldn't otherwise survive a fresh clone. Re-run
+  `node scripts/install-hooks.js` by hand if you ever suspect it's missing.
+- **The hook script itself lives in `scripts/hooks/pre-push`** (tracked,
+  editable) — `.git/hooks/pre-push` is just a copy of it.
+- **Bypass** (use sparingly, and only for a push that genuinely doesn't
+  touch any rendered page — e.g. a README-only change):
+  ```bash
+  git push --no-verify
+  ```
+- If a scenario itself is stale or wrong (a page was intentionally
+  restructured, an element no longer exists) — fix the scenario in
+  `scripts/style-diff.js` with a comment explaining why, the same as any
+  other bug fix; don't reach for `--no-verify` to work around a check
+  that's correctly catching something.
 
 ---
 

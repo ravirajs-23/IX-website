@@ -707,7 +707,9 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 /* "Got a Question?" specifically steps up to 48px above ~1200px on the
    live site (confirmed via computed style) while "Contact Details"/"Our
    Offices" stay flat at 24px — a real, isolated difference, not a
-   mistake to normalize away. */
+   mistake to normalize away. It's also 500 weight, not 600 like the
+   other two (caught by scripts/style-diff.js). */
+.contact-subhead--lg { font-weight: 500; }
 @media (min-width: 1200px) { .contact-subhead--lg { font-size: 3rem; } }
 .contact-form-intro { color: rgba(0,0,0,0.87); font-size: 1rem; }
 .contact-info-item { display: flex; gap: 14px; margin-bottom: 22px; align-items: flex-start; }
@@ -729,7 +731,11 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .office-city { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .office-city img { width: 22px; height: 22px; flex-shrink: 0; }
 .office-city span { font-weight: 600; color: var(--color-text); font-size: 1rem; }
-.office-address { color: #424242; font-size: 1rem; margin: 0 0 8px; }
+/* 14px below 1536px, 16px at MUI's xl tier and above — confirmed via
+   style-diff across all 4 breakpoints (only the xl one matched at flat
+   16px, the other three wanted 14px). */
+.office-address { color: #424242; font-size: 0.875rem; margin: 0 0 8px; }
+@media (min-width: 1536px) { .office-address { font-size: 1rem; } }
 .contact-info-item h4 { color: var(--color-text); font-size: 1rem; font-weight: 600; }
 .contact-info-item p { color: var(--color-text); font-size: 1rem; }
 .office-directions {
@@ -949,19 +955,30 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .benefits-band .section-intro { color: #fff; }
 .perk-card { text-align: center; padding: 12px; }
 .perk-card img { margin-bottom: 14px; }
-.perk-card h3 { color: #fff; font-size: 1.5rem; margin: 0; }
+/* 20px below 900px, 24px at/above — confirmed via style-diff (only the
+   mobile breakpoint mismatched at flat 24px). */
+.perk-card h3 { color: #fff; font-size: 1.25rem; margin: 0; }
+@media (min-width: 900px) { .perk-card h3 { font-size: 1.5rem; } }
 
 /* "Chart Your Path" cards (careers.html) — confirmed via computed style
    that the live site's plain white cards use 24px/rgba(0,0,0,0.87) for
-   the title and #42526e for the body text, not this component's default
-   colors — scoped here rather than changed globally since .card is
-   shared with other, already-matched sections elsewhere on the site. */
-.career-path-grid .card h3 { font-size: 1.5rem; color: rgba(0,0,0,0.87); }
-.career-path-grid .card p { color: #42526e; }
+   the title and #42526e for the body text (both stepping down to 20px/
+   14px below 900px), not this component's default colors — scoped here
+   rather than changed globally since .card is shared with other,
+   already-matched sections elsewhere on the site. */
+.career-path-grid .card h3 { font-size: 1.25rem; color: rgba(0,0,0,0.87); }
+.career-path-grid .card p { color: #42526e; font-size: 0.875rem; }
+@media (min-width: 900px) {
+  .career-path-grid .card h3 { font-size: 1.5rem; }
+  .career-path-grid .card p { font-size: 1rem; }
+}
 
 /* Beyond Work at IncubXperts (careers.html) — see the HTML comment above
-   this section for context on the earlier wrong-background mistake. */
-.beyond-work-title { font-size: 2rem; color: rgba(0,0,0,0.87); margin-bottom: 12px; }
+   this section for context on the earlier wrong-background mistake. The
+   heading itself uses .section-title directly (it's gradient text, same
+   trap as elsewhere on this site — color alone showed a plausible dark
+   fallback and nearly got missed again; webkitTextFillColor/backgroundImage
+   confirmed it's actually gradient-clipped). */
 .beyond-work-sub { font-size: 1.25rem; color: #424242; margin-bottom: 32px; }
 .beyond-work-strip { display: flex; gap: 16px; overflow-x: auto; margin-bottom: 24px; }
 .beyond-work-strip img { width: 220px; height: 165px; object-fit: cover; border-radius: var(--radius); flex-shrink: 0; }

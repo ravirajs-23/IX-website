@@ -8,7 +8,9 @@
     "build:case-studies": "node scripts/build-case-studies.js",
     "build:services": "node scripts/build-services.js",
     "build": "npm run build:pages && npm run build:case-studies && npm run build:services",
-    "style-diff": "node scripts/style-diff.js"
+    "style-diff": "node scripts/style-diff.js",
+    "style-diff:fast": "node scripts/style-diff.js --fast",
+    "postinstall": "node scripts/install-hooks.js"
   },
   "dependencies": {
     "marked": "12.0.2"

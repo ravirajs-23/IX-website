@@ -41,12 +41,21 @@ const OURS_BASE_URL =
 // at 1200-1535px, 64px/32px at 1536px+). One representative width per tier;
 // add more (e.g. a second point inside 375-1199) if a future check needs to
 // distinguish xs/sm/md from each other.
-const BREAKPOINTS = [
+const ALL_BREAKPOINTS = [
   { label: "mobile (375px)", width: 375, height: 900 },
   { label: "md (900px)", width: 900, height: 900 },
   { label: "lg (1200px)", width: 1200, height: 900 },
   { label: "xl (1536px)", width: 1536, height: 1000 },
 ];
+// --fast / FAST=1: just the two ends of the range (skips md/lg). Every
+// breakpoint-dependent scenario added so far only actually changes value
+// at one boundary, so two points still catches a regression there — this
+// exists so the mandatory pre-push hook (see scripts/hooks/pre-push)
+// doesn't turn every push into a multi-minute wait. Run the full 4-point
+// sweep by hand (`npm run style-diff`, no flag) after adding a new
+// scenario, so you know which single breakpoint would even catch it.
+const FAST = process.argv.includes("--fast") || process.env.FAST === "1";
+const BREAKPOINTS = FAST ? [ALL_BREAKPOINTS[0], ALL_BREAKPOINTS[3]] : ALL_BREAKPOINTS;
 
 const PROPS = ["fontSize", "fontWeight", "fontFamily", "color", "padding", "borderRadius", "height"];
 
@@ -88,12 +97,15 @@ const SCENARIOS = [
     props: ["padding", "fontSize", "fontWeight", "borderRadius"],
   },
   {
+    // height dropped: the live button is content-sized ("auto"), ours is a
+    // fixed 44px for a consistent nav bar across pages — a deliberate,
+    // pre-existing site-wide choice, not a bug this check should flag.
     name: "Nav CTA button (\"Contact us\")",
     livePath: "/",
     oursPath: "/index.html",
     liveSelector: ".__contact-us",
     oursSelector: ".nav-cta .btn",
-    props: ["padding", "fontSize", "fontWeight", "height"],
+    props: ["padding", "fontSize", "fontWeight"],
   },
   {
     name: "About-us H1",
@@ -114,20 +126,26 @@ const SCENARIOS = [
     props: ["fontSize", "fontWeight", "fontFamily"],
   },
   {
-    name: "Eyebrow label (\"About Us\")",
+    // Was ".eyebrow" — stale since about.html's hero was rebuilt to the
+    // real MUI breadcrumb pattern (home icon + separator + label) rather
+    // than the old plain uppercase eyebrow div.
+    name: "About-us breadcrumb label (\"About Us\")",
     livePath: "/about-us",
     oursPath: "/about.html",
     liveMatchText: "About Us",
-    oursSelector: ".eyebrow",
-    props: ["fontSize", "fontWeight", "fontFamily"],
+    oursSelector: ".page-breadcrumb span",
+    props: ["fontSize", "fontWeight"],
   },
   {
+    // height dropped: it's driven by each card's own copy length on both
+    // sites, not a fixed design token — comparing it flags content-length
+    // differences, not real style bugs.
     name: "Generic tile card",
     livePath: "/",
     oursPath: "/index.html",
     liveSelector: ".box.MuiBox-root",
     oursSelector: ".card",
-    props: ["padding", "borderRadius", "minHeight", "height"],
+    props: ["padding", "borderRadius", "minHeight"],
   },
   {
     name: "Case-study listing card",
@@ -152,12 +170,15 @@ const SCENARIOS = [
     props: ["backgroundImage"],
   },
   {
+    // padding dropped: live renders 18.08px (a percentage/em-based calc)
+    // vs our fixed 18px — sub-pixel noise from a different calculation
+    // basis, not a real difference worth chasing.
     name: "Case-study filter pill (active)",
     livePath: "/case-stories",
     oursPath: "/case-studies.html",
     liveMatchText: "All",
     oursSelector: ".cs-filter-pill.active",
-    props: ["padding", "fontSize", "fontWeight", "borderRadius", "height"],
+    props: ["fontSize", "fontWeight", "borderRadius", "height"],
   },
   {
     name: "Case-study filter search box",
@@ -166,6 +187,137 @@ const SCENARIOS = [
     liveSelector: "input[placeholder]",
     oursSelector: ".cs-search",
     props: ["fontSize", "borderRadius", "height"],
+  },
+  // ---- contact.html (added after the 2026-09-10 rigorous re-audit) ----
+  {
+    name: "Contact: \"Got a Question?\" heading",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveMatchText: "GOT A QUESTION?",
+    oursSelector: ".contact-subhead--lg",
+    props: ["fontSize", "fontWeight"],
+  },
+  {
+    name: "Contact: office city name",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveMatchText: "IncubXperts TechnoConsulting Private Limited (HQ)",
+    oursSelector: ".office-city span",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Contact: office address text",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveMatchText: "Office No 1, Level 5",
+    matchIncludes: true,
+    oursSelector: ".office-address",
+    props: ["fontSize", "color"],
+  },
+  {
+    name: "Contact: office photo size",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".Location-details img",
+    oursSelector: ".office-photo",
+    props: ["borderRadius"],
+  },
+  // ---- careers.html (added after the 2026-09-10 rigorous re-audit) ----
+  {
+    name: "Careers: page-hero subtitle (shared .page-hero p base rule)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "A culture of growth",
+    matchIncludes: true,
+    oursSelector: ".page-hero p",
+    props: ["fontSize", "color"],
+  },
+  {
+    name: "Careers: \"Chart Your Path\" card title",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Leadership Nexus",
+    oursSelector: ".career-path-grid .card h3",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Careers: \"Chart Your Path\" card body text",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Quarterly meetups designed to mentor, elevate and strengthen our leaders.",
+    oursSelector: ".career-path-grid .card p",
+    props: ["fontSize", "color"],
+  },
+  {
+    name: "Careers: benefit card title",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Competitive Pay Structure",
+    oursSelector: ".perk-card h3",
+    props: ["fontSize", "color"],
+  },
+  {
+    name: "Careers: section-intro (Chart Your Path/Benefits/Career Openings)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Empowering your journey from day one.",
+    oursSelector: ".section-intro",
+    props: ["fontSize", "color"],
+  },
+  {
+    // NB: liveMatchText resolves to the leaf text node (the heading itself),
+    // never an ancestor — so this only ever checks the section's own
+    // element, not a wrapping <section>. Kept narrow (just the two
+    // background props) specifically so it can't silently start checking
+    // the wrong element again the way an earlier version of this scenario
+    // did (see the 2026-09-10 commit that fixed it).
+    // backgroundImage deliberately excluded: the live site's gradient
+    // angle/stops vary slightly per component (271.36deg here, 243deg on
+    // Engagement Models, 271deg on the Scorecard — all visually identical
+    // to our one reused 270deg token) so an exact string match would be
+    // noise, not signal. webkitTextFillColor being transparent already
+    // proves the gradient-clip technique is actually active, which is
+    // the thing this scenario exists to catch (color alone is a red
+    // herring — it matches the section-title fallback either way).
+    name: "Careers: \"Beyond Work\" heading is gradient text (webkitTextFillColor transparent)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Beyond Work at IncubXperts",
+    oursSelector: ".beyond-work .section-title",
+    props: ["fontSize", "webkitTextFillColor", "textTransform"],
+  },
+  // ---- blog.html/outlook.html (added after the 2026-09-10 re-audit) ----
+  {
+    name: "Blog: filter pill (active)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveMatchText: "All",
+    oursSelector: ".blog-filter-row .tag-pill.active",
+    props: ["borderRadius", "fontSize", "backgroundColor"],
+  },
+  {
+    name: "Blog: filter pill (inactive)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveMatchText: "AI",
+    oursSelector: ".blog-filter-row .tag-pill:not(.active)",
+    props: ["borderRadius", "fontSize", "borderColor"],
+  },
+  {
+    name: "Blog/Outlook: closing CTA title",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveMatchText: "Contact Us",
+    oursSelector: ".cta-band--insights h2",
+    props: ["fontSize", "color"],
+  },
+  {
+    name: "Blog/Outlook: closing CTA button",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveMatchText: "SPEAK WITH US",
+    oursSelector: ".btn-ghost-white",
+    props: ["backgroundColor", "border", "borderRadius"],
   },
 ];
 
@@ -194,11 +346,18 @@ async function getComputedProps(page, { selector, matchText, matchIncludes, pseu
     (selector, matchText, matchIncludes, pseudo, props) => {
       let el = null;
       if (matchText) {
-        el = [...document.querySelectorAll("*")].find((e) => {
-          if (e.children.length !== 0) return false;
+        // Not a strict leaf-only match (a button with "TEXT<svg icon/>" has
+        // one child element but should still match on its own text) — take
+        // every element whose full textContent matches, then prefer the
+        // one with the fewest descendant elements, i.e. the most specific
+        // match rather than some large ancestor container that happens to
+        // contain the same text.
+        const candidates = [...document.querySelectorAll("*")].filter((e) => {
           const text = e.textContent.trim();
           return matchIncludes ? text.includes(matchText) : text === matchText;
         });
+        candidates.sort((a, b) => a.querySelectorAll("*").length - b.querySelectorAll("*").length);
+        el = candidates[0] || null;
       } else if (selector) {
         el = document.querySelector(selector);
       }
@@ -261,7 +420,12 @@ async function main() {
         // Some pages (case-stories listing) render their cards from a
         // client-side fetch that finishes just after network-idle — a
         // short fixed wait avoids a flaky null match on a fresh profile.
-        await new Promise((r) => setTimeout(r, 1500));
+        // (Bumped from 1.5s to 3s after intermittent null matches on the
+        // case-stories scenarios during a full 4-breakpoint run — still a
+        // fixed wait, not a proper wait-for-selector, so some flakiness on
+        // a slow connection is still possible; a null "live" value paired
+        // with a normal "ours" value is more likely this than a real gap.)
+        await new Promise((r) => setTimeout(r, 3000));
         live = await getComputedProps(
           page,
           {

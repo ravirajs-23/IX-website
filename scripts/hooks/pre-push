@@ -1,0 +1,82 @@
+#!/bin/sh
+# Installed by scripts/install-hooks.js
+# pre-push hook — mandatory live-site style-diff check.
+#
+# Installed by scripts/install-hooks.js (run automatically via the
+# "postinstall" npm script, or manually with `node scripts/install-hooks.js`).
+# This file is the source of truth — .git/hooks/pre-push is just a copy of
+# it, so .git/hooks isn't tracked by git and would otherwise silently not
+# apply for a fresh clone or a teammate's machine.
+#
+# What it does, and why:
+#   This project's history (see git log / SITE-AUDIT.md) is full of things
+#   that were visually "verified" by screenshot or a quick glance and later
+#   turned out wrong once actually diffed against the live site's computed
+#   style — wrong colors, wrong breakpoints, entire sections built with the
+#   wrong component. scripts/style-diff.js is the tool that catches that
+#   class of bug; this hook makes running it non-optional before code
+#   reaches origin, rather than relying on remembering to run it by hand.
+#
+# What it does NOT do:
+#   It only checks the fixed list of scenarios in scripts/style-diff.js —
+#   it is not a substitute for adding a new scenario when you fix a new
+#   visual bug (see that file's own header comment for the format), and it
+#   does not (cannot) verify content accuracy, only computed style.
+#
+# Bypass (use sparingly, and only for a push that genuinely doesn't touch
+# any rendered page — e.g. a README-only change):
+#   git push --no-verify
+
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+
+echo "── pre-push: rebuilding and checking for uncommitted build output ──"
+npm run build --silent
+if ! git diff --quiet -- . ':!node_modules'; then
+  echo ""
+  echo "❌ Push blocked: 'npm run build' produced changes that aren't committed."
+  echo "   A template/script/partial was edited without re-running the build,"
+  echo "   or the build output is stale. Review the diff, commit the"
+  echo "   regenerated files, and push again."
+  echo ""
+  git status --short
+  exit 1
+fi
+
+echo "── pre-push: starting local server on :5050 ──"
+STARTED_SERVER=0
+if ! curl -s -o /dev/null "http://localhost:5050/index.html"; then
+  npx serve -l 5050 . >/tmp/pre-push-serve.log 2>&1 &
+  SERVER_PID=$!
+  STARTED_SERVER=1
+  # Give it a moment to bind the port before style-diff starts hitting it.
+  for i in 1 2 3 4 5 6 7 8 9 10; do
+    curl -s -o /dev/null "http://localhost:5050/index.html" && break
+    sleep 1
+  done
+fi
+
+echo "── pre-push: running style-diff.js --fast against the live site ──"
+echo "   (2 of 4 breakpoints, to keep this from taking several minutes —"
+echo "    run 'npm run style-diff' by hand for the full sweep.)"
+set +e
+node scripts/style-diff.js --fast
+DIFF_STATUS=$?
+set -e
+
+if [ "$STARTED_SERVER" = "1" ]; then
+  kill "$SERVER_PID" 2>/dev/null || true
+fi
+
+if [ "$DIFF_STATUS" -ne 0 ]; then
+  echo ""
+  echo "❌ Push blocked: style-diff.js found mismatches against the live site."
+  echo "   Fix the mismatches, or if a scenario itself is stale/wrong, update"
+  echo "   it in scripts/style-diff.js with a comment explaining why."
+  echo "   Emergency bypass (use sparingly): git push --no-verify"
+  exit 1
+fi
+
+echo "✅ style-diff passed — proceeding with push."
+exit 0
