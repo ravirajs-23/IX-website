@@ -425,7 +425,10 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
 /* 48px/64px — measured stepped scale (not fluid): <900px 48px/line-height
    48px, >=900px 64px/line-height 80px. */
 .page-hero h1 { color: #fff; font-size: 3rem; line-height: 1; margin: 0; }
-.page-hero p { color: #cdd6ec; max-width: 640px; }
+/* #cdd6ec/16px was wrong across every page using it — confirmed via
+   computed style on careers.html and blog.html that the real subtitle is
+   always 24px solid white, flat at every width (no responsive step). */
+.page-hero p { color: #fff; font-size: 1.5rem; max-width: 640px; }
 
 @media (min-width: 900px) {
   .page-hero h1 { font-size: 4rem; line-height: 1.25; }
@@ -907,7 +910,12 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 }
 /* Muted intro line under a .section-title, used where the live site pairs
    the gradient heading with a one-line description (careers.html). */
-.section-intro { color: var(--color-text-muted); font-size: 1.05rem; margin: -12px 0 28px; }
+/* 16px below 900px, 48px at/above — confirmed via computed style on all
+   three uses of this class on careers.html (Chart Your Path, Benefits,
+   Career Openings intros); the original 1.05rem-flat build badly
+   under-sized this at desktop widths. */
+.section-intro { color: #424242; font-size: 1rem; margin: -12px 0 28px; }
+@media (min-width: 900px) { .section-intro { font-size: 3rem; } }
 
 /* ---------- Careers: "Benefits of Being an IX'ian" gradient band ----------
    The live site renders this one section as a solid gradient band (not
@@ -923,10 +931,26 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   background: none;
   -webkit-text-fill-color: #fff;
 }
-.benefits-band .section-intro { color: #dfe9ff; }
+.benefits-band .section-intro { color: #fff; }
 .perk-card { text-align: center; padding: 12px; }
 .perk-card img { margin-bottom: 14px; }
-.perk-card h3 { color: #fff; font-size: 1rem; margin: 0; }
+.perk-card h3 { color: #fff; font-size: 1.5rem; margin: 0; }
+
+/* "Chart Your Path" cards (careers.html) — confirmed via computed style
+   that the live site's plain white cards use 24px/rgba(0,0,0,0.87) for
+   the title and #42526e for the body text, not this component's default
+   colors — scoped here rather than changed globally since .card is
+   shared with other, already-matched sections elsewhere on the site. */
+.career-path-grid .card h3 { font-size: 1.5rem; color: rgba(0,0,0,0.87); }
+.career-path-grid .card p { color: #42526e; }
+
+/* Beyond Work at IncubXperts (careers.html) — see the HTML comment above
+   this section for context on the earlier wrong-background mistake. */
+.beyond-work-title { font-size: 2rem; color: rgba(0,0,0,0.87); margin-bottom: 12px; }
+.beyond-work-sub { font-size: 1.25rem; color: #424242; margin-bottom: 32px; }
+.beyond-work-strip { display: flex; gap: 16px; overflow-x: auto; margin-bottom: 24px; }
+.beyond-work-strip img { width: 220px; height: 165px; object-fit: cover; border-radius: var(--radius); flex-shrink: 0; }
+.beyond-work-link { color: var(--color-primary); font-weight: 700; }
 
 /* ---------- Cards (listing grid + "Other Case Stories") ---------- */
 .cs-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }

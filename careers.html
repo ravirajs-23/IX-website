@@ -86,7 +86,7 @@
   <div class="container">
     <h2 class="section-title">Chart Your Path at IncubXperts</h2>
     <p class="section-intro">Empowering your journey from day one.</p>
-    <div class="grid grid-3">
+    <div class="grid grid-3 career-path-grid">
       <div class="card"><h3>Leadership Nexus</h3><p>Quarterly meetups designed to mentor, elevate and strengthen our leaders.</p></div>
       <div class="card"><h3>Tech Circle</h3><p>Facilitating growth through peer-led learning for technical experts.</p></div>
       <div class="card"><h3>Training &amp; Development</h3><p>Ongoing initiatives for holistic individual growth.</p></div>
@@ -171,13 +171,28 @@
   </div>
 </section>
 
-<section class="cta-band">
+<!-- Corrected from an earlier pass that wrongly treated this as a
+     .cta-band (blue gradient, white text) — the live page is actually a
+     plain white section with dark text and a photo strip of real
+     team/culture events (an 18-photo swiper there; simplified here to a
+     static row of 6, since a full carousel isn't worth the complexity
+     for a decorative strip). Confirmed via computed style: white bg,
+     rgba(0,0,0,0.87) heading, #424242 subtitle. -->
+<section class="section beyond-work">
   <div class="container">
-    <h2>Beyond Work at IncubXperts</h2>
-    <p>A people-centred environment promoting growth and a healthy dose of fun</p>
+    <h2 class="beyond-work-title">Beyond Work at IncubXperts</h2>
+    <p class="beyond-work-sub">A people-centred environment promoting growth and a healthy dose of fun</p>
+    <div class="beyond-work-strip">
+      <img src="/images/careers/culture/culture1.webp" alt="" />
+      <img src="/images/careers/culture/culture2.webp" alt="" />
+      <img src="/images/careers/culture/culture3.webp" alt="" />
+      <img src="/images/careers/culture/culture4.webp" alt="" />
+      <img src="/images/careers/culture/culture5.webp" alt="" />
+      <img src="/images/careers/culture/culture6.webp" alt="" />
+    </div>
     <!-- Real site links this to /culture, a page we haven't built locally —
          About Us is the closest local equivalent for now. -->
-    <a href="/about.html" class="btn btn-primary mt-40">Explore Our Culture</a>
+    <a href="/about.html" class="beyond-work-link">Explore our culture</a>
   </div>
 </section>
 
