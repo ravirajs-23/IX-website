@@ -288,6 +288,27 @@ const SCENARIOS = [
   },
   // ---- blog.html/outlook.html (added after the 2026-09-10 re-audit) ----
   {
+    // Was a plain white text card before 2026-09-11 (a "known
+    // simplification" that turned out to just be an unfixed gap once
+    // asked about directly) — the real card is an image with the title
+    // overlaid, revealing a full gradient panel on :hover. Checks the
+    // *default* (non-hover) state.
+    name: "Blog: card title over image (default, non-hover state)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveMatchText: "AI-Native vs. AI-Added: The Difference That Actually Matters",
+    oursSelector: ".blog-card-title",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Blog: card hover-reveal starts hidden (opacity/visibility)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveSelector: ".box-hover-content",
+    oursSelector: ".blog-card-hover",
+    props: ["opacity", "visibility"],
+  },
+  {
     name: "Blog: filter pill (active)",
     livePath: "/blogs",
     oursPath: "/blog.html",
@@ -418,24 +439,25 @@ async function main() {
       try {
         await page.goto(liveUrl, { waitUntil: "networkidle2", timeout: 20000 });
         // Some pages (case-stories listing) render their cards from a
-        // client-side fetch that finishes just after network-idle — a
-        // short fixed wait avoids a flaky null match on a fresh profile.
-        // (Bumped from 1.5s to 3s after intermittent null matches on the
-        // case-stories scenarios during a full 4-breakpoint run — still a
-        // fixed wait, not a proper wait-for-selector, so some flakiness on
-        // a slow connection is still possible; a null "live" value paired
-        // with a normal "ours" value is more likely this than a real gap.)
-        await new Promise((r) => setTimeout(r, 3000));
-        live = await getComputedProps(
-          page,
-          {
-            selector: scenario.liveSelector,
-            matchText: scenario.liveMatchText,
-            matchIncludes: scenario.matchIncludes,
-            pseudo: scenario.livePseudo,
-          },
-          scenario.props
-        );
+        // client-side fetch that finishes just after network-idle. A
+        // fixed wait here was flaky (a null "live" match a couple of runs
+        // in a row, even at 3s) — poll instead: retry the actual matcher
+        // up to 8 times over ~8s and stop as soon as it finds something,
+        // rather than guessing one fixed delay for every scenario/page.
+        for (let attempt = 0; attempt < 8; attempt++) {
+          live = await getComputedProps(
+            page,
+            {
+              selector: scenario.liveSelector,
+              matchText: scenario.liveMatchText,
+              matchIncludes: scenario.matchIncludes,
+              pseudo: scenario.livePseudo,
+            },
+            scenario.props
+          );
+          if (live) break;
+          await new Promise((r) => setTimeout(r, 1000));
+        }
       } catch (err) {
         live = { error: err.message };
       }

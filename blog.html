@@ -93,36 +93,88 @@
       <span class="tag-pill">Growth &amp; Culture</span>
     </div>
     <h2 class="section-title">Our Blogs</h2>
-    <div class="grid grid-3">
-      <div class="card blog-card">
-        <div class="date">AI</div>
-        <h3>AI-Native vs. AI-Added: The Difference That Actually Matters</h3>
-        <p>How to tell whether AI is truly built into the foundation&mdash;or simply added on top.</p>
+    <!-- Real cards are an image + title by default, revealing a full
+         gradient panel (two tag pills, description, date/read-time,
+         "Read More") on hover — not a plain white text card, which is
+         what this section used to be (a deliberate simplification, now
+         corrected). Real data (images, tags, dates, read times)
+         downloaded/measured directly from the live /blogs page. Not
+         wrapped in a real link: the live site's own detail pages have
+         full article bodies we don't have content for, so linking would
+         mean fabricating a destination — kept as a non-clickable
+         preview card instead, same as it was before. -->
+    <div class="grid grid-3 blog-grid-v2">
+      <div class="blog-card-v2">
+        <img src="/images/blog/ai-native-vs-ai-added.webp" alt="AI-Native vs. AI-Added: The Difference That Actually Matters" />
+        <div class="blog-card-title">AI-Native vs. AI-Added: The Difference That Actually Matters</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">AI-Native</span><span class="blog-tag">AI-Added</span></div>
+          <p class="blog-card-desc">How to tell whether AI is truly built into the foundation&mdash;or simply added on top.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>8 Sep 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>4 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
-      <div class="card blog-card">
-        <div class="date">GCC Insights</div>
-        <h3>Two Halves of Every Strong GCC</h3>
-        <p>What it takes to build a Global Capacity Center that delivers on both technology and people.</p>
+      <div class="blog-card-v2">
+        <img src="/images/blog/two-halves-strong-gcc.webp" alt="Two Halves of Every Strong GCC" />
+        <div class="blog-card-title">Two Halves of Every Strong GCC</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">AI-Native GCC</span><span class="blog-tag">Business Strategy</span></div>
+          <p class="blog-card-desc">Examines why business-native direction and AI-native execution need to work together, with business setting the priorities and AI providing the speed and scale.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>5 Aug 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>3 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
-      <div class="card blog-card">
-        <div class="date">People & Culture</div>
-        <h3>The People Side of a High-Performing GCC</h3>
-        <p>Why culture and talent strategy matter as much as process in GCC success.</p>
+      <div class="blog-card-v2">
+        <img src="/images/blog/people-side-gcc.webp" alt="The People Side of a High-Performing GCC" />
+        <div class="blog-card-title">The People Side of a High-Performing GCC</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">Employee Experience</span><span class="blog-tag">GCC Talent Strategy</span></div>
+          <p class="blog-card-desc">Explores how intentional people strategies across employer branding, leadership, onboarding, employee experience, and talent development create stronger, more engaged, and high-performing teams.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>27 May 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>5 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
-      <div class="card blog-card">
-        <div class="date">Automation</div>
-        <h3>Transforming Document Processing with MS Syntex & Power Automate</h3>
-        <p>How intelligent automation is reshaping document-heavy workflows.</p>
+      <div class="blog-card-v2">
+        <img src="/images/blog/document-processing-syntex.webp" alt="Transforming Document Processing with MS Syntex & Power Automate" />
+        <div class="blog-card-title">Transforming Document Processing with MS Syntex &amp; Power Automate</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">Intelligent Document Processing</span><span class="blog-tag">Microsoft Syntex</span></div>
+          <p class="blog-card-desc">Discover how intelligent document automation transformed a broker&rsquo;s document management process with faster processing and improved compliance.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>22 Apr 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>3 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
-      <div class="card blog-card">
-        <div class="date">GCC Insights</div>
-        <h3>India's GCCs Are Outgrowing Their Own Definition</h3>
-        <p>How GCCs are evolving from support functions into strategic, full-stack business hubs driving innovation and enterprise value.</p>
+      <div class="blog-card-v2">
+        <img src="/images/blog/india-gccs-outgrowing.webp" alt="India's GCCs Are Outgrowing Their Own Definition" />
+        <div class="blog-card-title">India's GCCs Are Outgrowing Their Own Definition</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">Global Capability Centers</span><span class="blog-tag">Enterprise Innovation</span></div>
+          <p class="blog-card-desc">Explores how GCCs are evolving from support functions into strategic, full-stack business hubs driving innovation, leadership, AI adoption, and enterprise value creation.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>10 Apr 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>5 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
-      <div class="card blog-card">
-        <div class="date">GCC Insights</div>
-        <h3>Why Timing Now Decides How a GCC Is Built</h3>
-        <p>How AI is reshaping new, transitioning, and legacy centers, and why timing and operating model matter for future readiness.</p>
+      <div class="blog-card-v2">
+        <img src="/images/blog/timing-gcc-built.webp" alt="Why Timing Now Decides How a GCC Is Built" />
+        <div class="blog-card-title">Why Timing Now Decides How a GCC Is Built</div>
+        <div class="blog-card-hover">
+          <div class="blog-card-tags"><span class="blog-tag">AI-First Operations</span><span class="blog-tag">Organizational Transformation</span></div>
+          <p class="blog-card-desc">Explores how AI is reshaping new, transitioning, and legacy centers, and why operating models, workforce transformation, and timing matter for future readiness.</p>
+          <div class="blog-card-meta">
+            <div class="blog-card-date-row"><span>9 Jan 2026</span><img src="/images/icons/dot.svg" alt="" width="8" height="8" /><span>4 Min read</span></div>
+            <div class="blog-card-readmore">Read More <img src="/images/icons/arrow-forward-white.svg" alt="" width="16" height="16" /></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="text-center mt-40"><a href="/blog.html" class="btn btn-outline">View More</a></div>
