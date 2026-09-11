@@ -782,7 +782,14 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .blog-card-v2 {
   position: relative;
   display: block;
-  aspect-ratio: 390 / 480;
+  /* Fixed height, not aspect-ratio — confirmed the live site keeps this
+     card at a flat 480px tall at every width (375px through desktop),
+     letting width alone flex with the grid column. aspect-ratio was
+     shrinking the card below 480px in a 3-column grid at this site's own
+     container width, which under-sized the space available for the
+     line-clamped description below and caused it to overlap the
+     date/read-more row. */
+  height: 480px;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -814,7 +821,21 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   border-radius: 8px;
   padding: 4px 6px;
 }
-.blog-card-desc { color: #fff; font-size: 1.5rem; line-height: 1.35; margin: 0; }
+/* line-clamp (confirmed on the live site: -webkit-line-clamp:8, same
+   24px/36px sizing) — without it, a long description (e.g. "The People
+   Side of a High-Performing GCC") grows tall enough to overlap the
+   absolutely-positioned date/read-more row pinned to the card's bottom. */
+.blog-card-desc {
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .blog-card-meta { position: absolute; bottom: 32px; left: 24px; right: 24px; }
 .blog-card-date-row { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 1rem; margin-bottom: 12px; }
 .blog-card-date-row img { width: 8px; height: 8px; flex-shrink: 0; }
