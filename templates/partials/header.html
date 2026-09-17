@@ -5,18 +5,29 @@
       <img class="logo-light" src="/images/logo-white.svg" alt="IncubXperts" />
     </a>
     <nav class="nav-links">
-      <!-- Real site's About Us flyout holds exactly these 3 items (confirmed
-           via the live mobile-menu DOM: Company/Leadership/Partnerships, no
-           "About Us" or "Differentiators" entries) — Company and Leadership
-           are anchors within about.html (both sections already exist there);
-           Partnerships is a real standalone page, /partnerships on the live
-           site, rebuilt locally as partnerships.html. -->
+      <!-- Real site's About Us flyout is a distinct "mega menu" component
+           (class __menu-mega-view-about-us), confirmed via its actual
+           computed style/CSS rules (getComputedStyle + document.styleSheets
+           — the live hover flyout resisted every simulated-hover technique,
+           so it was forced open via its React onClick handler, dispatched
+           as a real bubbling DOM click event, to get a genuine render to
+           inspect): a light-blue rounded list (#EBF3FF bg, 8px radius,
+           16px padding, 20px gap, 24px/32px margin) of Company/Leadership/
+           Partnerships, each item 16px/600/Inter black text that on hover
+           becomes a blue-gradient (270deg #113F91→#196CFA) pill with white
+           text and a revealed white 16x16 arrow-icon chip on the right.
+           Company and Leadership are anchors within about.html (both
+           sections already exist there); Partnerships is a real standalone
+           page, /partnerships on the live site, rebuilt locally as
+           partnerships.html. -->
       <div class="nav-dropdown">
         <a href="/about.html" class="nav-dropdown-toggle">About Us</a>
-        <div class="nav-dropdown-menu">
-          <a href="/about.html">Company</a>
-          <a href="/about.html#leadership">Leadership</a>
-          <a href="/partnerships.html">Partnerships</a>
+        <div class="nav-dropdown-menu about-us-menu">
+          <ul class="about-us-menu__list">
+            <li class="about-us-menu__list-item"><a href="/about.html">Company</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/about.html#leadership">Leadership</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/partnerships.html">Partnerships</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+          </ul>
         </div>
       </div>
       <div class="nav-dropdown">

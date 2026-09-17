@@ -26,18 +26,29 @@
       <img class="logo-light" src="/images/logo-white.svg" alt="IncubXperts" />
     </a>
     <nav class="nav-links">
-      <!-- Real site's About Us flyout holds exactly these 3 items (confirmed
-           via the live mobile-menu DOM: Company/Leadership/Partnerships, no
-           "About Us" or "Differentiators" entries) — Company and Leadership
-           are anchors within about.html (both sections already exist there);
-           Partnerships is a real standalone page, /partnerships on the live
-           site, rebuilt locally as partnerships.html. -->
+      <!-- Real site's About Us flyout is a distinct "mega menu" component
+           (class __menu-mega-view-about-us), confirmed via its actual
+           computed style/CSS rules (getComputedStyle + document.styleSheets
+           — the live hover flyout resisted every simulated-hover technique,
+           so it was forced open via its React onClick handler, dispatched
+           as a real bubbling DOM click event, to get a genuine render to
+           inspect): a light-blue rounded list (#EBF3FF bg, 8px radius,
+           16px padding, 20px gap, 24px/32px margin) of Company/Leadership/
+           Partnerships, each item 16px/600/Inter black text that on hover
+           becomes a blue-gradient (270deg #113F91→#196CFA) pill with white
+           text and a revealed white 16x16 arrow-icon chip on the right.
+           Company and Leadership are anchors within about.html (both
+           sections already exist there); Partnerships is a real standalone
+           page, /partnerships on the live site, rebuilt locally as
+           partnerships.html. -->
       <div class="nav-dropdown">
         <a href="/about.html" class="nav-dropdown-toggle">About Us</a>
-        <div class="nav-dropdown-menu">
-          <a href="/about.html">Company</a>
-          <a href="/about.html#leadership">Leadership</a>
-          <a href="/partnerships.html">Partnerships</a>
+        <div class="nav-dropdown-menu about-us-menu">
+          <ul class="about-us-menu__list">
+            <li class="about-us-menu__list-item"><a href="/about.html">Company</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/about.html#leadership">Leadership</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/partnerships.html">Partnerships</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+          </ul>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -86,12 +97,12 @@
 </header>
 <!-- SITE-HEADER:END -->
 
-<!-- Reuses the about.html hero background/breadcrumb pattern (page-hero--about
-     + home-icon breadcrumb) since the live site's own /partnerships hero uses
-     the same abstract dark-blue banner treatment as its other About-Us-family
-     pages. Breadcrumb is 2-level (About Us > Partnerships), matching the live
-     site's own breadcrumb on this page. -->
-<section class="page-hero page-hero--about">
+<!-- Hero: a distinct component from the shared .page-hero (own gradient
+     background, own 32px→80px title and 20px/500 Inter subtitle) —
+     confirmed via computed style against the live page, which does not
+     reuse .page-hero here. Breadcrumb is 2-level (About Us > Partnerships),
+     matching the live site's own breadcrumb on this page. -->
+<section class="partnership-hero">
   <div class="container">
     <nav class="page-breadcrumb" aria-label="breadcrumb">
       <a href="/index.html" class="breadcrumb-home"><img src="/images/icons/home.svg" alt="Home" width="20" height="20" /></a>
@@ -100,33 +111,47 @@
       <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
       <span>Partnerships</span>
     </nav>
-    <h1>Our Partners</h1>
-    <p>Strategic alliances that extend our capabilities and help clients solve broader challenges.</p>
+    <h1 class="partnership-hero__title">Our Partners</h1>
+    <p class="partnership-hero__subtitle">Strategic alliances that extend our capabilities and help clients solve broader challenges.</p>
   </div>
 </section>
 
+<!-- Card layout (tag + heading, then logo/description side by side on
+     desktop, stacked on mobile) confirmed via computed style — including
+     the logo's fixed 376x188/214x107 box with object-fit:fill (the live
+     site really does stretch both logos into an identical box) and the
+     "Read More" link's unstyled default blue (rgb(0,0,238) — no color
+     override exists on the live site for this link). -->
 <section class="section">
   <div class="container">
     <div class="partner-card">
-      <div class="partner-tag">Ploko</div>
-      <h3>Ploko: Driving Digital Growth through AI</h3>
-      <p>Our European AI implementation partner, based in the Netherlands. Together, we help European businesses move from AI strategy to adoption, combining IncubXperts&rsquo; engineering depth with Ploko&rsquo;s implementation, automation, and digital growth expertise.</p>
-      <img class="partner-logo" src="/images/partnerships/ploko-logo.png" alt="Ploko logo" />
-      <!-- Live site's own "Read More" opens an internal /ploko-ai detail page
-           we haven't built locally (no source content for it) — links to
-           Ploko's real site instead, a more honest destination than a dead
-           or fabricated internal page. -->
-      <a class="partner-readmore" href="https://ploko.nl" target="_blank" rel="noopener noreferrer">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="16" height="16" /></a>
+      <div class="partner-tag">PLOKO</div>
+      <h2 class="partner-heading">Ploko: Driving Digital Growth through AI</h2>
+      <div class="partner-card-row">
+        <img class="partner-logo" src="/images/partnerships/ploko-logo.png" alt="Ploko logo" />
+        <div class="partner-card-right">
+          <p class="partner-desc">Our European AI implementation partner, based in the Netherlands. Together, we help European businesses move from AI strategy to adoption, combining IncubXperts&rsquo; engineering depth with Ploko&rsquo;s implementation, automation, and digital growth expertise.</p>
+          <!-- Live site's own "Read More" opens an internal /ploko-ai detail
+               page we haven't built locally (no source content for it) —
+               links to Ploko's real site instead, a more honest destination
+               than a dead or fabricated internal page. -->
+          <a class="partner-readmore" href="https://ploko.nl" target="_blank" rel="noopener noreferrer">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
+        </div>
+      </div>
     </div>
     <div class="partner-card">
-      <div class="partner-tag">Sustainity</div>
-      <h3>Sustainity: AI-Powered Sustainability Reporting</h3>
-      <p>Our sustainability and climate transition partner. Together, we help organizations build structured, auditable ESG and climate transition reporting, combining IncubXperts&rsquo; enterprise technology and data expertise with Sustainity&rsquo;s sustainability advisory and AI-powered reporting platform, aligned with frameworks including ISSB, GRI, and TCFD.</p>
-      <img class="partner-logo" src="/images/partnerships/sustainity-logo.png" alt="Sustainity logo" />
-      <!-- Live site links this card to /industries/environment-and-sustainability
-           (a page we haven't built) — pointing to our own closest local
-           equivalent, the Industries anchor on the homepage. -->
-      <a class="partner-readmore" href="/index.html#industries">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="16" height="16" /></a>
+      <div class="partner-tag">SUSTAINITY</div>
+      <h2 class="partner-heading">Sustainity: AI-Powered Sustainability Reporting</h2>
+      <div class="partner-card-row">
+        <img class="partner-logo" src="/images/partnerships/sustainity-logo.png" alt="Sustainity logo" />
+        <div class="partner-card-right">
+          <p class="partner-desc">Our sustainability and climate transition partner. Together, we help organizations build structured, auditable ESG and climate transition reporting, combining IncubXperts&rsquo; enterprise technology and data expertise with Sustainity&rsquo;s sustainability advisory and AI-powered reporting platform, aligned with frameworks including ISSB, GRI, and TCFD.</p>
+          <!-- Live site links this card to /industries/environment-and-sustainability
+               (a page we haven't built) — pointing to our own closest local
+               equivalent, the Industries anchor on the homepage. -->
+          <a class="partner-readmore" href="/index.html#industries">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
+        </div>
+      </div>
     </div>
   </div>
 </section>

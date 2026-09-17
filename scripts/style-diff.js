@@ -340,6 +340,65 @@ const SCENARIOS = [
     oursSelector: ".btn-ghost-white",
     props: ["backgroundColor", "border", "borderRadius"],
   },
+  // Partnerships (new 2026-09-17): distinct hero + card components, not
+  // reusing .page-hero/.card — confirmed via computed style rather than
+  // approximated. Not covered here: the About Us nav mega-menu's
+  // hover-reveal content (Company/Leadership/Partnerships list) — the
+  // live site's flyout resisted every simulated-hover/click technique
+  // tried against it in an automated context (it took an unreliable
+  // number of attempts even manually), so wiring a reliable, non-flaky
+  // click-then-check into this script wasn't attempted; that component's
+  // match was confirmed once by hand instead (see the header partial's
+  // comment) rather than added to this regression suite.
+  {
+    name: "Partnerships: hero title",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveSelector: "h1",
+    oursSelector: ".partnership-hero__title",
+    props: ["fontSize", "color", "fontWeight", "lineHeight"],
+  },
+  {
+    name: "Partnerships: hero subtitle",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveMatchText: "Strategic alliances that extend",
+    matchIncludes: true,
+    oursSelector: ".partnership-hero__subtitle",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Partnerships: partner tag (PLOKO)",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveMatchText: "PLOKO",
+    oursSelector: ".partner-tag",
+    props: ["fontSize", "color", "fontWeight", "textTransform"],
+  },
+  {
+    name: "Partnerships: partner heading",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveMatchText: "Ploko: Driving Digital Growth through AI",
+    oursSelector: ".partner-heading",
+    props: ["fontSize", "color", "fontWeight", "lineHeight"],
+  },
+  {
+    name: "Partnerships: partner logo box (fixed size, object-fit:fill)",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveSelector: "img[alt='Ploko logo']",
+    oursSelector: ".partner-logo",
+    props: ["height", "objectFit"],
+  },
+  {
+    name: "Partnerships: read-more link (unstyled default blue)",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveMatchText: "READ MORE",
+    oursSelector: ".partner-readmore",
+    props: ["color", "textDecoration"],
+  },
 ];
 
 function findChrome() {

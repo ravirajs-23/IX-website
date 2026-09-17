@@ -236,6 +236,51 @@ p { margin: 0 0 16px; color: var(--color-text-muted); }
 }
 .nav-dropdown-menu a:hover { background: var(--color-bg-alt); color: var(--color-primary) !important; }
 .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+
+/* About Us mega-menu (confirmed via the live site's actual computed style/
+   CSS rules — see the header partial's comment for how it was obtained).
+   Overrides the generic .nav-dropdown-menu padding since this one has its
+   own inner padding/margin on .about-us-menu__list instead. */
+.nav-dropdown-menu.about-us-menu {
+  padding: 0;
+  border-radius: 4px;
+  /* MUI elevation8 shadow, confirmed via computed style on the live
+     popover paper — distinct from this site's own --shadow token. */
+  box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
+}
+.about-us-menu__list {
+  list-style: none;
+  background: #ebf3ff;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 240px;
+}
+.about-us-menu__list-item {
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.about-us-menu__list-item a {
+  display: inline;
+  padding: 0;
+  color: rgb(0, 0, 0) !important;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 32px;
+}
+.about-us-menu__list-item-icon { display: none; width: 16px; height: 16px; background: #fff; border-radius: 8px; padding: 8px; box-sizing: content-box; }
+.about-us-menu__list-item:hover {
+  background: linear-gradient(270deg, #113f91 0%, #196cfa 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.about-us-menu__list-item:hover a { background: none !important; color: #fff !important; }
+.about-us-menu__list-item:hover .about-us-menu__list-item-icon { display: block; }
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -297,6 +342,18 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
     margin-top: 8px;
   }
   .nav-dropdown-menu a { padding: 6px 0; font-size: 0.85rem; }
+  /* Real site's mobile drawer shows Company/Leadership/Partnerships as a
+     plain list (no light-blue box, no gradient hover, no arrow icon) —
+     confirmed via its DOM: plain MuiListItem rows, none of the
+     about-us-menu__* classes used there. Collapse the desktop mega-menu
+     styling back to plain rows to match. */
+  .nav-dropdown-menu.about-us-menu { box-shadow: none; }
+  .about-us-menu__list { background: none; border-radius: 0; padding: 0; margin: 0; gap: 0; min-width: 0; }
+  .about-us-menu__list-item { padding: 6px 0; border-radius: 0; }
+  .about-us-menu__list-item a { font-size: 0.85rem; line-height: normal; }
+  .about-us-menu__list-item:hover { background: none; display: block; }
+  .about-us-menu__list-item:hover a { color: var(--color-primary) !important; }
+  .about-us-menu__list-item-icon { display: none !important; }
 }
 
 /* ---------- Hero carousel (homepage) ----------
@@ -336,13 +393,18 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
   .hero p { font-size: 2rem; }
 }
 .hero-actions { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
-/* Slightly less vertical padding below the lg breakpoint — measured via
-   style-diff (8px there vs 12px at ≥1200px on the live site). */
-@media (min-width: 1200px) {
-  .hero-actions .btn { padding-top: 12px; padding-bottom: 12px; }
+/* Real 3-tier padding, confirmed via computed style by bisecting the live
+   site's actual breakpoints directly (binary-searched pixel by pixel —
+   this isn't a round MUI tier like 900/1200, it's a genuine ~1024/1025px
+   boundary): <600px "8px 16px" (this default), 600-1024px flat "8px"
+   (drops the horizontal padding too, not just vertical), ≥1025px
+   "12px 16px". */
+.hero-actions .btn { padding: 8px 16px; }
+@media (min-width: 600px) and (max-width: 1024px) {
+  .hero-actions .btn { padding: 8px; }
 }
-@media (max-width: 1199px) {
-  .hero-actions .btn { padding-top: 8px; padding-bottom: 8px; }
+@media (min-width: 1025px) {
+  .hero-actions .btn { padding: 12px 16px; }
 }
 
 /* All slide tabs shown at once (not just the active one) — matches the
@@ -704,13 +766,15 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (max-width: 620px) { .form-grid { grid-template-columns: 1fr; } }
 
 .contact-subhead { font-size: 1.5rem; font-weight: 600; color: #2a2a2a; margin: 0 0 20px; }
-/* "Got a Question?" specifically steps up to 48px above ~1200px on the
-   live site (confirmed via computed style) while "Contact Details"/"Our
-   Offices" stay flat at 24px — a real, isolated difference, not a
-   mistake to normalize away. It's also 500 weight, not 600 like the
-   other two (caught by scripts/style-diff.js). */
+/* "Got a Question?" specifically steps up to 48px above 1200px on the
+   live site (confirmed via computed style, bisected pixel-by-pixel: 1200px
+   itself is still 24px, 1201px+ is 48px — a MUI breakpoints.up() quirk,
+   not a plain round 1200 threshold) while "Contact Details"/"Our Offices"
+   stay flat at 24px — a real, isolated difference, not a mistake to
+   normalize away. It's also 500 weight, not 600 like the other two
+   (caught by scripts/style-diff.js). */
 .contact-subhead--lg { font-weight: 500; }
-@media (min-width: 1200px) { .contact-subhead--lg { font-size: 3rem; } }
+@media (min-width: 1201px) { .contact-subhead--lg { font-size: 3rem; } }
 .contact-form-intro { color: rgba(0,0,0,0.87); font-size: 1rem; }
 .contact-info-item { display: flex; gap: 14px; margin-bottom: 22px; align-items: flex-start; }
 .contact-info-item .ic {
@@ -749,29 +813,40 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   .office-photo { width: 100%; height: 140px; }
 }
 
-/* ---------- Partner cards (partnerships.html "Our Partners") ---------- */
-.partner-card {
-  padding: 32px 0;
-  border-bottom: 1px solid var(--color-border);
+/* ---------- Partnerships hero + partner cards (partnerships.html) ----------
+   All values below confirmed via computed style against the live
+   /partnerships page (distinct components from the shared .page-hero /
+   .card patterns used elsewhere — this page doesn't reuse them). */
+.partnership-hero {
+  background: linear-gradient(90deg, #0a3076 18.96%, #002a68 100%);
+  color: #fff;
+  padding: calc(var(--header-height) + 56px) 0 60px;
 }
+.partnership-hero__title { color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1; margin: 0 0 16px; }
+@media (min-width: 900px) { .partnership-hero__title { font-size: 5rem; } }
+.partnership-hero__subtitle { color: #fff; font-family: var(--font); font-weight: 500; font-size: 1.25rem; line-height: 1.2; max-width: 650px; margin: 0; }
+
+.partner-card { display: flex; flex-direction: column; gap: 24px; padding: 40px 0; border-bottom: 1px solid var(--color-border); }
+@media (min-width: 900px) { .partner-card { padding: 80px 0; } }
 .partner-card:last-child { border-bottom: none; }
-.partner-tag {
-  color: var(--color-primary);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.partner-card h3 { font-size: 1.75rem; margin: 0 0 12px; }
-.partner-card p { color: #424242; max-width: 720px; margin: 0 0 20px; }
-.partner-logo { max-width: 180px; height: auto; display: block; margin-bottom: 20px; }
-.partner-readmore {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
-  color: var(--color-primary);
-}
-.partner-readmore img { width: 16px; height: 16px; }
+.partner-tag { font-family: var(--font-display); font-weight: 600; font-size: 2rem; color: rgba(0,0,0,.87); }
+.partner-heading { font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; line-height: 1; margin: 0; }
+@media (min-width: 900px) { .partner-heading { font-size: 5rem; } }
+.partner-card-row { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+@media (min-width: 900px) { .partner-card-row { flex-direction: row; align-items: center; gap: 80px; } }
+/* object-fit:fill (not contain) is the live site's own behavior — both
+   logos are forced into this exact box, confirmed via computed style; not
+   "fixed" here since the task is matching the real site, not improving it. */
+.partner-logo { width: 214px; height: 107px; object-fit: fill; flex-shrink: 0; }
+@media (min-width: 900px) { .partner-logo { width: 376px; height: 188px; } }
+.partner-card-right { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.partner-desc { color: #2a2a2a; font-size: 1rem; line-height: 1.25rem; margin: 0; }
+@media (min-width: 900px) { .partner-desc { font-size: 1.25rem; line-height: 1.5rem; } }
+/* rgb(0,0,238) is literally the browser's unstyled default anchor blue —
+   confirmed via computed style that the live site applies no color
+   override here, so this is matched as-is rather than "fixed". */
+.partner-readmore { display: flex; align-items: center; gap: 16px; color: rgb(0,0,238); font-weight: 600; font-size: 1rem; text-decoration: none; }
+.partner-readmore img { width: 24px; height: 24px; }
 
 /* ---------- Job listings ---------- */
 .job-item {
