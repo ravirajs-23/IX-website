@@ -25,11 +25,18 @@
       <img class="logo-light" src="/images/logo-white.svg" alt="IncubXperts" />
     </a>
     <nav class="nav-links">
+      <!-- Real site's About Us flyout holds exactly these 3 items (confirmed
+           via the live mobile-menu DOM: Company/Leadership/Partnerships, no
+           "About Us" or "Differentiators" entries) — Company and Leadership
+           are anchors within about.html (both sections already exist there);
+           Partnerships is a real standalone page, /partnerships on the live
+           site, rebuilt locally as partnerships.html. -->
       <div class="nav-dropdown">
         <a href="/about.html" class="nav-dropdown-toggle">About Us</a>
         <div class="nav-dropdown-menu">
-          <a href="/about.html">About Us</a>
-          <a href="/index.html#differentiators">Differentiators</a>
+          <a href="/about.html">Company</a>
+          <a href="/about.html#leadership">Leadership</a>
+          <a href="/partnerships.html">Partnerships</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -42,6 +49,11 @@
           <a href="/services.html">AI-Augmented QA</a>
           <a href="/services.html">Predictive Analytics &amp; BI</a>
           <a href="/services.html">Cloud &amp; AI Infrastructure</a>
+          <!-- Relocated here from the old About Us dropdown to match the live
+               site's mobile-menu structure (Services/Horizontals/Platforms/
+               Differentiators under Our Expertise) — kept reachable rather
+               than orphaned now that About Us no longer lists it. -->
+          <a href="/index.html#differentiators">Differentiators</a>
         </div>
       </div>
       <div class="nav-dropdown">

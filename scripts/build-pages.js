@@ -34,6 +34,7 @@ const PAGES = [
   "outlook.html",
   "careers.html",
   "contact.html",
+  "partnerships.html",
 ];
 
 const BLOCKS = [

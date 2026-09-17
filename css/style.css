@@ -749,6 +749,30 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   .office-photo { width: 100%; height: 140px; }
 }
 
+/* ---------- Partner cards (partnerships.html "Our Partners") ---------- */
+.partner-card {
+  padding: 32px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.partner-card:last-child { border-bottom: none; }
+.partner-tag {
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.partner-card h3 { font-size: 1.75rem; margin: 0 0 12px; }
+.partner-card p { color: #424242; max-width: 720px; margin: 0 0 20px; }
+.partner-logo { max-width: 180px; height: auto; display: block; margin-bottom: 20px; }
+.partner-readmore {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+.partner-readmore img { width: 16px; height: 16px; }
+
 /* ---------- Job listings ---------- */
 .job-item {
   display: flex; justify-content: space-between; align-items: center;

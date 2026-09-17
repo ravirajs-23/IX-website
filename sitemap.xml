@@ -29,8 +29,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.incubxperts.com/partnerships.html</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.incubxperts.com/case-studies.html</loc>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.incubxperts.com/case-studies/sales-intelligence-assistant-revolutionizing-sales-operations-with-ai-powered-insights.html</loc>
+    <priority>0.6</priority>
+    <lastmod>2026-08-26</lastmod>
   </url>
   <url>
     <loc>https://www.incubxperts.com/case-studies/aws-powered-modernization-for-a-pharma-event-management-enterprise.html</loc>
@@ -524,11 +533,6 @@
   </url>
   <url>
     <loc>https://www.incubxperts.com/case-studies/a-customizable-survey-solution-to-assess-customer-satisfaction.html</loc>
-    <priority>0.6</priority>
-    <lastmod>2026-08-26</lastmod>
-  </url>
-  <url>
-    <loc>https://www.incubxperts.com/case-studies/7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment.html</loc>
     <priority>0.6</priority>
     <lastmod>2026-08-26</lastmod>
   </url>

@@ -34,6 +34,7 @@ AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (
 <!-- CASE-STUDIES:START -->
 ## Case Stories
 
+- [Sales Intelligence Assistant: Revolutionizing Sales Operations with AI-Powered Insights](/case-studies/sales-intelligence-assistant-revolutionizing-sales-operations-with-ai-powered-insights.html): How IncubXperts built an AI sales assistant using multi-agent orchestration, unifying Gmail, Calendar, and HubSpot CRM with Claude Sonnet 4 and GPT-4o.
 - [AWS-Powered Modernization for a Pharma Event Management Enterprise](/case-studies/aws-powered-modernization-for-a-pharma-event-management-enterprise.html): How IncubXperts modernized a pharma event management platform on AWS, adding NetSuite payment automation, real-time budgeting, and responsive UX.
 - [Optimizing Cost Savings with Power BI Analytics](/case-studies/optimizing-cost-savings-with-power-bi-analytics.html): How IncubXperts built Power BI dashboards for a fintech firm, tracking planned versus actual cost savings across infrastructure, personnel, and operations.
 - [Global Risk Management: Building A Unified Enterprise Solution](/case-studies/global-risk-management-building-a-unified-enterprise-solution.html): How IncubXperts built a cloud-hosted, multi-tenant ERM platform for a Big Four consultancy, centralizing risk cataloguing, response, and surveillance.
@@ -133,7 +134,6 @@ AWS Bedrock, Azure AI, Google Vertex AI, OpenAI, Meta open-source LLMs, Claude (
 - [A Mobile Solution to Enhance Engagement for Church Communications](/case-studies/a-mobile-solution-to-enhance-engagement-for-church-communications.html): How IncubXperts built a React Native mobile app and admin tool for the Assembly of Bishops USA to centralize communication with faith community members.
 - [A Feedback Management Tool for Pharmaceutical Program Performance Evaluation](/case-studies/a-feedback-management-tool-for-pharmaceutical-program-performance-evaluation.html): How IncubXperts built a QR-code-driven feedback and analytics tool that helps pharmaceutical program organizers modernize attendee feedback collection.
 - [A Customizable Survey Solution to Assess Customer Satisfaction](/case-studies/a-customizable-survey-solution-to-assess-customer-satisfaction.html): How IncubXperts built a scalable, white-labeled survey platform for a mortgage services fintech to unify branding and capture real-time customer feedback.
-- [7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment](/case-studies/7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment.html): How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.
 <!-- CASE-STUDIES:END -->
 
 ## Pages
