@@ -820,6 +820,15 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .partnership-hero {
   background: linear-gradient(90deg, #0a3076 18.96%, #002a68 100%);
   color: #fff;
+}
+/* Illustration layer on top of the gradient — missed on the first pass
+   (only the outer section's own gradient was checked), same class of
+   miss as ploko-ai.html's hero, caught by an exhaustive backgroundImage
+   sweep. background-size:cover/center/no-repeat confirmed at both
+   375px and 1440px (no mobile repositioning needed here, unlike
+   ploko-ai's hero). */
+.partnership-hero__illustration {
+  background: url("/images/partnerships/partnership-hero.png") center/cover no-repeat;
   padding: calc(var(--header-height) + 56px) 0 60px;
 }
 .partnership-hero__title { color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1; margin: 0 0 16px; }
@@ -829,7 +838,13 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .partner-card { display: flex; flex-direction: column; gap: 24px; padding: 40px 0; border-bottom: 1px solid var(--color-border); }
 @media (min-width: 900px) { .partner-card { padding: 80px 0; } }
 .partner-card:last-child { border-bottom: none; }
-.partner-tag { font-family: var(--font-display); font-weight: 600; font-size: 2rem; color: rgba(0,0,0,.87); }
+/* Gradient text, not flat rgba(0,0,0,.87) — see the HTML comment above
+   this card for how this was missed then caught. */
+.partner-tag {
+  font-family: var(--font-display); font-weight: 600; font-size: 2rem;
+  background: linear-gradient(271deg, #113f91 0%, #1866eb 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
 .partner-heading { font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; line-height: 1; margin: 0; }
 @media (min-width: 900px) { .partner-heading { font-size: 5rem; } }
 .partner-card-row { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
@@ -842,10 +857,15 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .partner-card-right { display: flex; flex-direction: column; gap: 16px; flex: 1; }
 .partner-desc { color: #2a2a2a; font-size: 1rem; line-height: 1.25rem; margin: 0; }
 @media (min-width: 900px) { .partner-desc { font-size: 1.25rem; line-height: 1.5rem; } }
-/* rgb(0,0,238) is literally the browser's unstyled default anchor blue —
-   confirmed via computed style that the live site applies no color
-   override here, so this is matched as-is rather than "fixed". */
-.partner-readmore { display: flex; align-items: center; gap: 16px; color: rgb(0,0,238); font-weight: 600; font-size: 1rem; text-decoration: none; }
+.partner-readmore { display: flex; align-items: center; gap: 16px; font-weight: 600; font-size: 0.75rem; text-decoration: none; }
+@media (min-width: 900px) { .partner-readmore { font-size: 1rem; } }
+/* Gradient text (background-clip:text technique) — confirmed via
+   webkitTextFillColor/backgroundImage after an earlier pass only checked
+   `color` (a red herring here, see the HTML comment above this card). */
+.partner-readmore span {
+  background: linear-gradient(270deg, #113f91, #196cfa);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
 .partner-readmore img { width: 24px; height: 24px; }
 
 /* ---------- Job listings ---------- */

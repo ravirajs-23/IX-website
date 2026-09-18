@@ -101,27 +101,37 @@
      background, own 32px→80px title and 20px/500 Inter subtitle) —
      confirmed via computed style against the live page, which does not
      reuse .page-hero here. Breadcrumb is 2-level (About Us > Partnerships),
-     matching the live site's own breadcrumb on this page. -->
+     matching the live site's own breadcrumb on this page. The illustration
+     layer (a full-bleed photo on top of the gradient, via a nested wrapper)
+     was missed on the first pass — same class of miss as ploko-ai.html's
+     hero, caught by the same exhaustive backgroundImage sweep. -->
 <section class="partnership-hero">
-  <div class="container">
-    <nav class="page-breadcrumb" aria-label="breadcrumb">
-      <a href="/index.html" class="breadcrumb-home"><img src="/images/icons/home.svg" alt="Home" width="20" height="20" /></a>
-      <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
-      <a href="/about.html" style="color:#fff;">About Us</a>
-      <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
-      <span>Partnerships</span>
-    </nav>
-    <h1 class="partnership-hero__title">Our Partners</h1>
-    <p class="partnership-hero__subtitle">Strategic alliances that extend our capabilities and help clients solve broader challenges.</p>
+  <div class="partnership-hero__illustration">
+    <div class="container">
+      <nav class="page-breadcrumb" aria-label="breadcrumb">
+        <a href="/index.html" class="breadcrumb-home"><img src="/images/icons/home.svg" alt="Home" width="20" height="20" /></a>
+        <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
+        <a href="/about.html" style="color:#fff;">About Us</a>
+        <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
+        <span>Partnerships</span>
+      </nav>
+      <h1 class="partnership-hero__title">Our Partners</h1>
+      <p class="partnership-hero__subtitle">Strategic alliances that extend our capabilities and help clients solve broader challenges.</p>
+    </div>
   </div>
 </section>
 
 <!-- Card layout (tag + heading, then logo/description side by side on
      desktop, stacked on mobile) confirmed via computed style — including
      the logo's fixed 376x188/214x107 box with object-fit:fill (the live
-     site really does stretch both logos into an identical box) and the
-     "Read More" link's unstyled default blue (rgb(0,0,238) — no color
-     override exists on the live site for this link). -->
+     site really does stretch both logos into an identical box). The tag
+     ("PLOKO"/"SUSTAINITY") and "Read More" link are BOTH gradient text
+     (-webkit-text-fill-color:transparent + background-clip:text) — an
+     earlier pass here checked only `color` (which reads back a plausible
+     but irrelevant rgba(0,0,0,.87)/rgb(0,0,238), since text-fill-color
+     overrides what's actually painted) and missed it; caught on a later
+     exhaustive backgroundImage sweep, the same documented red herring
+     this project has hit before. -->
 <section class="section">
   <div class="container">
     <div class="partner-card">
@@ -131,7 +141,7 @@
         <img class="partner-logo" src="/images/partnerships/ploko-logo.png" alt="Ploko logo" />
         <div class="partner-card-right">
           <p class="partner-desc">Our European AI implementation partner, based in the Netherlands. Together, we help European businesses move from AI strategy to adoption, combining IncubXperts&rsquo; engineering depth with Ploko&rsquo;s implementation, automation, and digital growth expertise.</p>
-          <a class="partner-readmore" href="/ploko-ai.html">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
+          <a class="partner-readmore" href="/ploko-ai.html"><span>READ MORE</span> <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
         </div>
       </div>
     </div>
@@ -145,7 +155,7 @@
           <!-- Live site links this card to /industries/environment-and-sustainability
                (a page we haven't built) — pointing to our own closest local
                equivalent, the Industries anchor on the homepage. -->
-          <a class="partner-readmore" href="/index.html#industries">READ MORE <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
+          <a class="partner-readmore" href="/index.html#industries"><span>READ MORE</span> <img src="/images/icons/arrow-forward-theme.svg" alt="" width="24" height="24" /></a>
         </div>
       </div>
     </div>

@@ -368,12 +368,18 @@ const SCENARIOS = [
     props: ["fontSize", "color", "fontWeight"],
   },
   {
-    name: "Partnerships: partner tag (PLOKO)",
+    // Was checking `color` (a red herring here — see the HTML comment
+    // above the card in partnerships.html for how that was caught):
+    // this is gradient text via -webkit-text-fill-color:transparent, so
+    // `color` reads back a plausible-looking but irrelevant value on
+    // both sides and "passes" without ever checking what's really
+    // painted. webkitTextFillColor/backgroundImage are the real signal.
+    name: "Partnerships: partner tag (PLOKO) is gradient text",
     livePath: "/partnerships",
     oursPath: "/partnerships.html",
     liveMatchText: "PLOKO",
     oursSelector: ".partner-tag",
-    props: ["fontSize", "color", "fontWeight", "textTransform"],
+    props: ["fontSize", "fontWeight", "webkitTextFillColor", "backgroundImage"],
   },
   {
     name: "Partnerships: partner heading",
@@ -392,12 +398,23 @@ const SCENARIOS = [
     props: ["height", "objectFit"],
   },
   {
-    name: "Partnerships: read-more link (unstyled default blue)",
+    // Same red-herring fix as the tag above — this is gradient text too,
+    // not the "unstyled default blue" an earlier pass concluded from
+    // checking only `color`.
+    name: "Partnerships: read-more link is gradient text",
     livePath: "/partnerships",
     oursPath: "/partnerships.html",
     liveMatchText: "READ MORE",
-    oursSelector: ".partner-readmore",
-    props: ["color", "textDecoration"],
+    oursMatchText: "READ MORE",
+    props: ["webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    name: "Partnerships: hero illustration layer (background-size)",
+    livePath: "/partnerships",
+    oursPath: "/partnerships.html",
+    liveSelector: ".partnership-hero-wrapper",
+    oursSelector: ".partnership-hero__illustration",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
   },
   // Ploko AI detail page (new 2026-09-18): a bespoke design distinct from
   // every other page's shared .page-hero/.card patterns — confirmed via
