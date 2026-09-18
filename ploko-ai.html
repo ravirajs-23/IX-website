@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ploko AI | IncubXperts' European AI Implementation Partner</title>
+<meta name="description" content="Ploko is IncubXperts' European AI implementation partner — a Netherlands-based digital agency specializing in AI implementation, automation, SEO, and web development." />
+<link rel="canonical" href="https://www.incubxperts.com/ploko-ai.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Ploko AI | IncubXperts' European AI Implementation Partner" />
+<meta property="og:description" content="Ploko is IncubXperts' European AI implementation partner — a Netherlands-based digital agency specializing in AI implementation, automation, SEO, and web development." />
+<meta property="og:url" content="https://www.incubxperts.com/ploko-ai.html" />
+<meta property="og:site_name" content="IncubXperts" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Ploko AI | IncubXperts' European AI Implementation Partner" />
+<meta name="twitter:description" content="Ploko is IncubXperts' European AI implementation partner — a Netherlands-based digital agency specializing in AI implementation, automation, SEO, and web development." />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- SITE-HEADER:START -->
+<header class="site-header">
+  <div class="container nav">
+    <a href="/index.html" class="logo">
+      <img class="logo-dark" src="/images/logo-black.svg" alt="IncubXperts" />
+      <img class="logo-light" src="/images/logo-white.svg" alt="IncubXperts" />
+    </a>
+    <nav class="nav-links">
+      <!-- Real site's About Us flyout is a distinct "mega menu" component
+           (class __menu-mega-view-about-us), confirmed via its actual
+           computed style/CSS rules (getComputedStyle + document.styleSheets
+           — the live hover flyout resisted every simulated-hover technique,
+           so it was forced open via its React onClick handler, dispatched
+           as a real bubbling DOM click event, to get a genuine render to
+           inspect): a light-blue rounded list (#EBF3FF bg, 8px radius,
+           16px padding, 20px gap, 24px/32px margin) of Company/Leadership/
+           Partnerships, each item 16px/600/Inter black text that on hover
+           becomes a blue-gradient (270deg #113F91→#196CFA) pill with white
+           text and a revealed white 16x16 arrow-icon chip on the right.
+           Company and Leadership are anchors within about.html (both
+           sections already exist there); Partnerships is a real standalone
+           page, /partnerships on the live site, rebuilt locally as
+           partnerships.html. -->
+      <div class="nav-dropdown">
+        <a href="/about.html" class="nav-dropdown-toggle">About Us</a>
+        <div class="nav-dropdown-menu about-us-menu">
+          <ul class="about-us-menu__list">
+            <li class="about-us-menu__list-item"><a href="/about.html">Company</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/about.html#leadership">Leadership</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+            <li class="about-us-menu__list-item"><a href="/partnerships.html">Partnerships</a><img class="about-us-menu__list-item-icon" src="/images/icons/partnership-arrow.svg" alt="" width="16" height="16" /></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="/services.html" class="nav-dropdown-toggle">Our Expertise</a>
+        <div class="nav-dropdown-menu">
+          <a href="/services/ai-adoption-and-strategy.html">AI Adoption &amp; Strategy</a>
+          <a href="/services/agentic-solutions.html">Agentic Solutions</a>
+          <a href="/services/workflow-automation.html">Workflow Automation</a>
+          <a href="/services.html">AI-Augmented Product Engineering</a>
+          <a href="/services.html">AI-Augmented QA</a>
+          <a href="/services.html">Predictive Analytics &amp; BI</a>
+          <a href="/services.html">Cloud &amp; AI Infrastructure</a>
+          <!-- Relocated here from the old About Us dropdown to match the live
+               site's mobile-menu structure (Services/Horizontals/Platforms/
+               Differentiators under Our Expertise) — kept reachable rather
+               than orphaned now that About Us no longer lists it. -->
+          <a href="/index.html#differentiators">Differentiators</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="/index.html#industries" class="nav-dropdown-toggle">Industries</a>
+        <div class="nav-dropdown-menu">
+          <a href="/index.html#industries">Fintech</a>
+          <a href="/index.html#industries">Healthcare</a>
+          <a href="/index.html#industries">Public Safety</a>
+          <a href="/index.html#industries">Social Networking</a>
+          <a href="/index.html#industries">Hospitality</a>
+          <a href="/index.html#industries">Legal</a>
+          <a href="/index.html#industries">Manufacturing</a>
+          <a href="/index.html#industries">Environment &amp; Sustainability</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="/blog.html" class="nav-dropdown-toggle">Insights</a>
+        <div class="nav-dropdown-menu">
+          <a href="/blog.html">Blog</a>
+          <a href="/outlook.html">Outlook</a>
+        </div>
+      </div>
+      <a href="/careers.html">Careers</a>
+      <a href="/index.html#ai-lab" class="nav-ai-lab">AI Lab</a>
+    </nav>
+    <div class="nav-cta"><a href="/contact.html" class="btn btn-primary">Contact Us</a></div>
+    <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<!-- SITE-HEADER:END -->
+
+<!-- All sections below use dedicated ploko-* classes (not the shared
+     .page-hero/.card patterns), matching the live /ploko-ai page which is
+     its own bespoke design — confirmed via computed style, same rigor as
+     partnerships.html. Breadcrumb is 3-level (Home > About Us > Ploko). -->
+<section class="ploko-hero">
+  <div class="container">
+    <nav class="page-breadcrumb" aria-label="breadcrumb">
+      <a href="/index.html" class="breadcrumb-home"><img src="/images/icons/home.svg" alt="Home" width="20" height="20" /></a>
+      <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
+      <a href="/about.html" style="color:#fff;">About Us</a>
+      <img src="/images/icons/separator.svg" alt="" class="breadcrumb-sep" width="16" height="16" />
+      <span>Ploko</span>
+    </nav>
+    <span class="ploko-hero__badge">European AI Implementation Partner</span>
+    <h1 class="ploko-hero__title">Ploko: Driving Digital Growth through AI</h1>
+    <p class="ploko-hero__subtitle">Accelerating enterprise AI adoption across Europe with end-to-end implementation, digital strategy, and automation expertise.</p>
+    <a class="ploko-hero__visit-link" href="https://ploko.nl/en/" target="_blank" rel="noopener noreferrer">VISIT PLOKO <img src="/images/ploko/arrow-forward.svg" alt="" width="24" height="24" /></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-ploko">
+    <img class="about-ploko__logo-mobile" src="/images/partnerships/ploko-logo.png" alt="Ploko logo" />
+    <div class="about-ploko__left">
+      <h2 class="about-ploko__title">About Ploko</h2>
+      <p class="about-ploko__description">Ploko is a Netherlands-based digital agency specializing in AI implementation, business automation, web development, SEO, and performance marketing.<br /><br />Founded by Giovanni Pira and Erik Plomp, Ploko helps businesses across Europe accelerate growth by combining emerging technologies with practical digital strategy.<br /><br />As the European implementation partner of IncubXperts, Ploko helps bridge the gap between advanced engineering capabilities and successful business adoption.<br /><br />IncubXperts provides AI-native software engineering expertise, while Ploko supports organizations across the Netherlands and Europe in integrating, implementing, and maximizing the value of these technologies.</p>
+    </div>
+    <img class="about-ploko__logo" src="/images/partnerships/ploko-logo.png" alt="Ploko logo" />
+  </div>
+</section>
+
+<section class="section partnership-section">
+  <div class="container">
+    <img class="partnership__strok" src="/images/ploko/rhombus-strok.svg" alt="" width="283" height="283" />
+    <div class="partnership__top">
+      <h2 class="partnership__title">A Partnership Built on Complementary Expertise</h2>
+      <p class="partnership__description">IncubXperts brings expertise in AI Consulting and Transformation, Agentic AI, AI-augmented product engineering and workflow automation. Ploko contributes deep experience in implementation, user adoption, search visibility, digital marketing, and business growth.<br /><br />Together, both organizations support the journey from strategy and implementation to measurable business outcomes.<br />Clients benefit from technical depth and practical execution, helping ensure that technology investments yield impressive ROI.</p>
+    </div>
+    <div class="partnership__middle">
+      <div class="partnership__col">
+        <h3 class="partnership__col-title">IncubXperts</h3>
+        <div class="partnership__points">
+          <div class="partnership__point"><img src="/images/ploko/software-delivery.svg" alt="" width="48" height="48" /><span>Software Delivery and Modernization</span></div>
+          <div class="partnership__point"><img src="/images/ploko/ai-governance.svg" alt="" width="48" height="48" /><span>Data, Integration and Solution Architecture</span></div>
+          <div class="partnership__point"><img src="/images/ploko/cloud.svg" alt="" width="48" height="48" /><span>Cloud and Platform Engineering</span></div>
+          <div class="partnership__point"><img src="/images/ploko/intelligent-knowledge.svg" alt="" width="48" height="48" /><span>Intelligent Knowledge and Automation Systems</span></div>
+        </div>
+      </div>
+      <hr class="partnership__divider" />
+      <div class="partnership__col">
+        <h3 class="partnership__col-title">Ploko</h3>
+        <div class="partnership__points">
+          <div class="partnership__point"><img src="/images/ploko/ai-adoption.svg" alt="" width="48" height="48" /><span>AI Adoption Consulting</span></div>
+          <div class="partnership__point"><img src="/images/ploko/seo.svg" alt="" width="48" height="48" /><span>SEO and Organic Growth</span></div>
+          <div class="partnership__point"><img src="/images/ploko/web-design.svg" alt="" width="48" height="48" /><span>Web Design and Development</span></div>
+          <div class="partnership__point"><img src="/images/ploko/performance-marketing1.svg" alt="" width="48" height="48" /><span>Performance Marketing</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="partnership__bottom">
+      <p>Together, we combine European market insight with global technology leadership to deliver transformative AI solutions.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section euro-expertise-section">
+  <div class="container euro-expertise">
+    <img class="euro-expertise__strok" src="/images/ploko/rhombus-strok-left.svg" alt="" width="400" height="400" />
+    <h2 class="euro-expertise__title">European Expertise in AI Adoption and Implementation</h2>
+    <p class="euro-expertise__description">One of the most common challenges organizations face is not building AI but implementing it in a way that actually works for their business. Ploko helps businesses across the Netherlands and Europe move beyond experimentation. As a dedicated AI implementation partner, Ploko guides organizations through the full adoption process: from strategy development and workflow automation to AI agent deployment and process optimization.</p>
+    <div class="euro-expertise__points">
+      <div class="euro-expertise__point"><img src="/images/ploko/ai-adoption-consulting.svg" alt="" width="48" height="48" /><span>AI Adoption Consulting</span></div>
+      <div class="euro-expertise__point"><img src="/images/ploko/ai-agents.svg" alt="" width="48" height="48" /><span>AI agents and Productivity Solutions</span></div>
+      <div class="euro-expertise__point"><img src="/images/ploko/ai-powered-workflow.svg" alt="" width="48" height="48" /><span>AI-Powered Workflow Automation</span></div>
+      <div class="euro-expertise__point"><img src="/images/ploko/lead-gen.svg" alt="" width="48" height="48" /><span>Support and Lead Gen Automation</span></div>
+      <div class="euro-expertise__point"><img src="/images/ploko/business-process.svg" alt="" width="48" height="48" /><span>Business Process Optimization</span></div>
+      <div class="euro-expertise__point"><img src="/images/ploko/knowledge-management.svg" alt="" width="48" height="48" /><span>Knowledge Management Systems</span></div>
+    </div>
+    <div class="euro-expertise__approach">
+      <p>This practical approach to implementation is what distinguishes Ploko as a trusted European AI agency focused on business outcomes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="digital-growth__title">Digital Growth: SEO, Performance Marketing &amp; Web Development</h2>
+    <p class="digital-growth__intro">Beyond AI, Ploko supports European businesses with the full range of digital growth services.</p>
+
+    <div class="digital-growth__row">
+      <h3 class="digital-growth__title-mobile">Marketing Excellence</h3>
+      <img class="digital-growth__image" src="/images/ploko/marketing-excellence.png" alt="Marketing excellence illustration" width="432" height="412" />
+      <div class="digital-growth__col">
+        <h3 class="digital-growth__col-title">Marketing Excellence</h3>
+        <div class="digital-growth__points">
+          <div class="digital-growth__point"><img src="/images/ploko/seo-content.svg" alt="" width="48" height="48" /><div><span>SEO &amp; Content Strategy</span><p>Boosting organic visibility through data-driven keyword research and high-value content.</p></div></div>
+          <div class="digital-growth__point"><img src="/images/ploko/performance-marketing.svg" alt="" width="48" height="48" /><div><span>Performance Marketing</span><p>Optimizing ad spend across social and search platforms for maximum ROI.</p></div></div>
+          <div class="digital-growth__point"><img src="/images/ploko/web-dev.svg" alt="" width="48" height="48" /><div><span>Web Development &amp; WordPress</span><p>Building high-conversion enterprise websites on the world&rsquo;s most flexible CMS.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="digital-growth__row digital-growth__row--reverse">
+      <h3 class="digital-growth__title-mobile">Technical Innovation</h3>
+      <img class="digital-growth__image" src="/images/ploko/technical-innovation.png" alt="Technical innovation illustration" width="432" height="412" />
+      <div class="digital-growth__col">
+        <h3 class="digital-growth__col-title">Technical Innovation</h3>
+        <div class="digital-growth__points">
+          <div class="digital-growth__point"><img src="/images/ploko/web-design.svg" alt="" width="48" height="48" /><div><span>Custom Software Development</span><p>Tailored applications designed to solve unique enterprise challenges.</p></div></div>
+          <div class="digital-growth__point"><img src="/images/ploko/api-integration.svg" alt="" width="48" height="48" /><div><span>API Integration &amp; Middleware</span><p>Connecting disparate systems into a unified, high-performance ecosystem.</p></div></div>
+          <div class="digital-growth__point"><img src="/images/ploko/business-automation.svg" alt="" width="48" height="48" /><div><span>Business Automation Solutions</span><p>Streamlining complex manual processes into efficient automated flows.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="ploko-supports__title">Ploko supports organizations across a wide range of sectors</h2>
+    <div class="ploko-supports__domains">
+      <div class="ploko-supports__domain"><img src="/images/ploko/health-care.svg" alt="" width="32" height="32" /><span>Healthcare &amp; Life Sciences</span></div>
+      <div class="ploko-supports__domain"><img src="/images/ploko/building.svg" alt="" width="32" height="32" /><span>Professional Services</span></div>
+      <div class="ploko-supports__domain"><img src="/images/ploko/e-commerce.svg" alt="" width="32" height="32" /><span>Retail &amp; E-Commerce</span></div>
+      <div class="ploko-supports__domain"><img src="/images/ploko/technology.svg" alt="" width="32" height="32" /><span>Technology</span></div>
+      <div class="ploko-supports__domain"><img src="/images/ploko/consulting.svg" alt="" width="32" height="32" /><span>Consulting</span></div>
+      <div class="ploko-supports__domain"><img src="/images/ploko/edtech.svg" alt="" width="32" height="32" /><span>Education &amp; EdTech</span></div>
+    </div>
+    <p class="ploko-supports__description">Every engagement is tailored to the specific objectives, challenges and growth ambitions of the organization.</p>
+
+    <div class="ploko-supports__banner">
+      <h2 class="ploko-supports__banner-title">Turning Opportunity Into Outcomes</h2>
+      <p class="ploko-supports__banner-desc">The collaboration between IncubXperts and Ploko represents a complementary partnership alignment between technical excellence and European business know-how. Together, we help organizations move from ideas and opportunity to practical implementation, combining engineering depth, business understanding, and execution expertise. Whether the objective is modernization, growth, automation, or AI adoption, the partnership is designed to help organizations realize tangible outcomes from their technology investments.</p>
+      <div class="ploko-supports__banner-bottom">
+        <div class="ploko-supports__location">
+          <span>EUROPE HQ</span>
+          <span class="ploko-supports__location-sub">Netherlands | ploko.nl</span>
+        </div>
+        <div class="ploko-supports__banner-links">
+          <a class="ploko-supports__banner-link" href="https://ploko.nl/en/ai-agency/" target="_blank" rel="noopener noreferrer">EXPLORE PLOKO <img src="/images/ploko/arrow-forward.svg" alt="" width="24" height="24" /></a>
+          <a class="ploko-supports__banner-link" href="/contact.html">LET&rsquo;S TALK <img src="/images/ploko/arrow-forward.svg" alt="" width="24" height="24" /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SITE-FOOTER:START -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="footer-logo"><img src="/images/logo-white.svg" alt="IncubXperts" /></div>
+      <p>AI-native engineering and software partner helping enterprises innovate, scale, and thrive.</p>
+      <p>Pune, India (HQ) &middot; Delaware, USA</p>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul><li><a href="/about.html">About Us</a></li><li><a href="/index.html#differentiators">Differentiators</a></li><li><a href="/careers.html">Careers</a></li></ul>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <ul><li><a href="/case-studies.html">Case Stories</a></li><li><a href="/blog.html">Blog</a></li><li><a href="/outlook.html">Outlook</a></li></ul>
+    </div>
+    <div>
+      <h4>Contact Us</h4>
+      <ul><li>Business Enquiry: <a href="mailto:engage@incubxperts.com">engage@incubxperts.com</a><br />+91 70283 34754</li><li>Job Enquiry: <a href="mailto:careers@incubxperts.com">careers@incubxperts.com</a><br />+91 82081 07030</li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 IncubXperts TechnoConsulting Pvt. Ltd. All Rights Reserved.</div>
+</footer>
+<!-- SITE-FOOTER:END -->
+
+<script src="js/script.js"></script>
+</body>
+</html>

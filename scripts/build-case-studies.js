@@ -69,6 +69,7 @@ const STATIC_PAGES = [
   { loc: "/careers.html", priority: "0.6" },
   { loc: "/contact.html", priority: "0.7" },
   { loc: "/partnerships.html", priority: "0.5" },
+  { loc: "/ploko-ai.html", priority: "0.4" },
 ];
 
 // ---------------------------------------------------------------------------

@@ -399,6 +399,77 @@ const SCENARIOS = [
     oursSelector: ".partner-readmore",
     props: ["color", "textDecoration"],
   },
+  // Ploko AI detail page (new 2026-09-18): a bespoke design distinct from
+  // every other page's shared .page-hero/.card patterns — confirmed via
+  // computed style, same rigor as partnerships.html. Caught two real
+  // font-size mistakes during that verification (a wrong mobile step for
+  // the closing banner title, and a wrong desktop size for the
+  // gradient-text column headings) that these scenarios would have
+  // caught automatically had they existed first.
+  {
+    name: "Ploko AI: hero title",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: "h1",
+    oursSelector: ".ploko-hero__title",
+    props: ["fontSize", "color", "fontWeight", "lineHeight"],
+  },
+  {
+    name: "Ploko AI: hero badge",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveMatchText: "European AI Implementation Partner",
+    oursSelector: ".ploko-hero__badge",
+    props: ["fontSize", "color", "borderRadius"],
+  },
+  {
+    // Not checking size/object-fit here: confirmed this box's live size
+    // is itself DPR-dependent (437x125 at DPR 1.25, 640x320 via
+    // puppeteer's DPR 1, a different Next.js Image variant each time) —
+    // an unstable ground truth on the live site, so asserting one exact
+    // value would just be a coin-flip mismatch. display:none-on-mobile
+    // is the one stable, real property here.
+    name: "Ploko AI: about logo hidden on mobile",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: ".about-ploko__logo",
+    oursSelector: ".about-ploko__logo",
+    props: ["display"],
+  },
+  {
+    name: "Ploko AI: partnership column title (gradient text)",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveMatchText: "IncubXperts",
+    oursSelector: ".partnership__col-title",
+    props: ["fontSize", "webkitTextFillColor"],
+  },
+  {
+    name: "Ploko AI: European Expertise approach banner text",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveMatchText: "This practical approach to implementation is what distinguishes Ploko as a trusted European AI agency focused on business outcomes.",
+    oursSelector: ".euro-expertise__approach p",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Ploko AI: closing banner title",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveMatchText: "Turning Opportunity Into Outcomes",
+    oursSelector: ".ploko-supports__banner-title",
+    props: ["fontSize", "color", "fontWeight"],
+  },
+  {
+    name: "Ploko AI: closing banner link",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveMatchText: "LET'S TALK",
+    oursMatchText: "TALK",
+    matchIncludes: true,
+    oursSelector: ".ploko-supports__banner-link",
+    props: ["color", "backgroundColor", "borderRadius"],
+  },
 ];
 
 function findChrome() {

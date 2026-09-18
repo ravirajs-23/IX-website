@@ -1550,3 +1550,166 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   .container { padding: 0 18px; }
   .avatar { width: 80px; height: 80px; font-size: 1.25rem; }
 }
+
+/* ---------- Ploko AI partner detail page (ploko-ai.html) ----------
+   Every value below confirmed via computed style against the live
+   /ploko-ai page at both 375px and 1440px (a bespoke design, not reusing
+   .page-hero/.card) — same rigor as partnerships.html. Breakpoint is
+   900px, matching this site's own convention elsewhere. */
+.ploko-hero {
+  background: linear-gradient(90deg, #0a3076 18.96%, #002a68 100%);
+  color: #fff;
+  padding: calc(var(--header-height) + 56px) 0 60px;
+}
+.ploko-hero__badge {
+  display: inline-block;
+  color: #ffe8e2;
+  /* Confirmed via computed style: this badge is actually LARGER on mobile
+     (18px) than desktop (14px) — an unusual but real, deliberate-looking
+     step, not a mistake to "fix" into the more typical direction. */
+  font-size: 1.125rem;
+  font-weight: 500;
+  border: 1px solid #deebff;
+  border-radius: 24px;
+  padding: 8px 16px;
+  margin: 8px 0 16px;
+}
+@media (min-width: 900px) { .ploko-hero__badge { font-size: 0.875rem; } }
+.ploko-hero__title { color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1; margin: 0 0 16px; }
+@media (min-width: 900px) { .ploko-hero__title { font-size: 5rem; } }
+.ploko-hero__subtitle { color: #fff; font-size: 1.25rem; font-weight: 400; max-width: 660px; margin: 0 0 24px; }
+.ploko-hero__visit-link { display: inline-flex; align-items: center; gap: 16px; color: #fff; font-weight: 600; font-size: 1rem; text-decoration: none; }
+
+/* About Ploko */
+.about-ploko { display: flex; flex-direction: column; gap: 40px; align-items: flex-start; }
+@media (min-width: 900px) { .about-ploko { flex-direction: row; align-items: center; gap: 80px; } }
+/* aspect-ratio:511/146 for the same reason as .about-ploko__logo below —
+   our real logo file's true ratio (1600x800) differs from the ratio the
+   live site's box was measured at (confirmed 343.2x98.05 = 511:146). */
+.about-ploko__logo-mobile { display: block; width: 100%; aspect-ratio: 511 / 146; object-fit: contain; }
+@media (min-width: 900px) { .about-ploko__logo-mobile { display: none; } }
+.about-ploko__left { flex: 1; }
+.about-ploko__title { font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; margin: 0 0 16px; }
+@media (min-width: 900px) { .about-ploko__title { font-size: 3.75rem; } }
+.about-ploko__description { color: rgba(0,0,0,.87); font-size: 1rem; line-height: 1.5; margin: 0; }
+@media (min-width: 900px) { .about-ploko__description { font-size: 1.25rem; line-height: 1.2; } }
+.about-ploko__logo { display: none; }
+/* This box's exact size turned out to be genuinely unstable on the live
+   site itself: measured directly (devicePixelRatio 1.25) it was a
+   precise 437x124.875 (511:146 ratio) at 1440px and 443x126.6 at 1536px
+   — but re-checked via scripts/style-diff.js's puppeteer (DPR 1) it
+   instead loaded a differently-processed image variant and rendered at
+   a flat 640x320 (that variant's own natural size, a 2:1 ratio matching
+   this project's downloaded source file). Since the two legitimate
+   measurement methods disagree with each other on the live site (a
+   DPR-dependent Next.js Image responsive-loading quirk, not something
+   this static rebuild can reproduce), pinning an exact px box would be
+   asserting false precision — sized here as a percentage of the flex
+   row instead, using object-fit:contain against our real file's actual
+   2:1 ratio so nothing gets stretched. */
+@media (min-width: 900px) { .about-ploko__logo { display: block; width: 35%; max-width: 460px; height: auto; aspect-ratio: 2 / 1; object-fit: contain; flex-shrink: 0; } }
+
+/* Partnership (INCUBXPERTS/PLOKO two-column complementary-expertise block) */
+.partnership-section { background: #deebff; position: relative; overflow: hidden; }
+.partnership-section .container { position: relative; }
+.partnership__strok { position: absolute; top: 0; right: 0; z-index: 0; pointer-events: none; }
+.partnership__top { position: relative; z-index: 1; text-align: center; max-width: 900px; margin: 0 auto 64px; }
+.partnership__title { font-family: var(--font-display); font-weight: 600; color: rgba(0,0,0,.87); font-size: 1.25rem; margin: 0 0 16px; }
+@media (min-width: 900px) { .partnership__title { font-size: 3.75rem; } }
+.partnership__description { color: rgba(0,0,0,.87); font-size: 1rem; line-height: 1.5; margin: 0; }
+@media (min-width: 900px) { .partnership__description { font-size: 1.25rem; line-height: 1.2; } }
+.partnership__middle { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
+@media (min-width: 900px) { .partnership__middle { grid-template-columns: 1fr 1px 1fr; gap: 64px; align-items: start; } }
+.partnership__divider { display: none; border: none; background: #808080; width: 1px; height: 100%; margin: 0; }
+@media (min-width: 900px) { .partnership__divider { display: block; } }
+.partnership__col-title {
+  font-family: var(--font-display); font-weight: 600; font-size: 2rem; margin: 0 0 24px;
+  background: linear-gradient(243.36deg, #113f91 72.02%, #196cfa 90.32%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
+.partnership__points { display: flex; flex-direction: column; gap: 24px; }
+.partnership__point { display: flex; align-items: center; gap: 16px; }
+.partnership__point img { width: 48px; height: 48px; flex-shrink: 0; }
+.partnership__point span { color: rgba(0,0,0,.87); font-size: 1rem; }
+.partnership__bottom {
+  position: relative; z-index: 1;
+  background: linear-gradient(90deg, #196cfa, #113f91);
+  border-radius: 8px; padding: 24px; text-align: center;
+}
+@media (min-width: 900px) { .partnership__bottom { padding: 40px 0; } }
+.partnership__bottom p { color: #fff; font-size: 1rem; font-weight: 500; margin: 0; }
+@media (min-width: 900px) { .partnership__bottom p { font-size: 1.5rem; } }
+
+/* European Expertise */
+.euro-expertise-section { position: relative; overflow: hidden; }
+.euro-expertise { position: relative; }
+.euro-expertise__strok { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
+.euro-expertise__title { position: relative; z-index: 1; text-align: center; font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; max-width: 900px; margin: 0 auto 16px; }
+@media (min-width: 900px) { .euro-expertise__title { font-size: 3.75rem; } }
+.euro-expertise__description { position: relative; z-index: 1; text-align: center; color: #424242; font-size: 1rem; max-width: 900px; margin: 0 auto 40px; }
+@media (min-width: 900px) { .euro-expertise__description { font-size: 1.125rem; } }
+.euro-expertise__points { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 40px; }
+@media (min-width: 900px) { .euro-expertise__points { grid-template-columns: 1fr 1fr; gap: 24px 48px; } }
+.euro-expertise__point { display: flex; align-items: center; gap: 16px; }
+.euro-expertise__point img { width: 48px; height: 48px; flex-shrink: 0; }
+.euro-expertise__point span { color: rgba(0,0,0,.87); font-size: 1rem; }
+.euro-expertise__approach {
+  position: relative; z-index: 1;
+  background: url("/images/ploko/appraoch-layer.png") center/cover;
+  border-radius: 24px; padding: 24px;
+}
+@media (min-width: 900px) { .euro-expertise__approach { padding: 98px 110px; } }
+.euro-expertise__approach p { color: #fff; font-size: 1rem; font-weight: 500; text-align: center; margin: 0; }
+@media (min-width: 900px) { .euro-expertise__approach p { font-size: 1.75rem; font-weight: 600; } }
+
+/* Digital Growth (Marketing Excellence / Technical Innovation rows) */
+.digital-growth__title { text-align: center; font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; margin: 0 0 16px; }
+@media (min-width: 900px) { .digital-growth__title { font-size: 3.75rem; } }
+.digital-growth__intro { text-align: center; color: #424242; font-size: 1rem; margin: 0 0 40px; }
+.digital-growth__row { display: flex; flex-direction: column; gap: 24px; align-items: center; margin-bottom: 48px; }
+@media (min-width: 900px) { .digital-growth__row { flex-direction: row; gap: 80px; } }
+.digital-growth__row--reverse { flex-direction: column; }
+@media (min-width: 900px) { .digital-growth__row--reverse { flex-direction: row-reverse; } }
+.digital-growth__title-mobile { font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; margin: 0; text-align: center; }
+@media (min-width: 900px) { .digital-growth__title-mobile { display: none; } }
+.digital-growth__image { width: 100%; max-width: 432px; height: auto; flex-shrink: 0; }
+@media (min-width: 900px) { .digital-growth__image { width: 432px; } }
+.digital-growth__col { flex: 1; }
+.digital-growth__col-title { display: none; font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 2.5rem; margin: 0 0 24px; }
+@media (min-width: 900px) { .digital-growth__col-title { display: block; } }
+.digital-growth__points { display: flex; flex-direction: column; gap: 24px; }
+.digital-growth__point { display: flex; gap: 16px; align-items: flex-start; }
+.digital-growth__point img { width: 48px; height: 48px; flex-shrink: 0; }
+.digital-growth__point span { display: block; color: #2a2a2a; font-size: 1.125rem; font-weight: 600; margin-bottom: 4px; }
+.digital-growth__point p { color: #42526e; font-size: 0.875rem; margin: 0; }
+
+/* Ploko supports (industry pills + closing "Turning Opportunity" banner) */
+.ploko-supports__title { text-align: center; color: #424242; font-size: 1.25rem; font-weight: 600; max-width: 900px; margin: 0 auto 24px; }
+@media (min-width: 900px) { .ploko-supports__title { font-size: 2.75rem; } }
+.ploko-supports__domains { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 24px; }
+.ploko-supports__domain { display: flex; align-items: center; gap: 12px; border: 1px solid #d3cdf4; border-radius: 30px; padding: 12px 20px; }
+.ploko-supports__domain img { width: 32px; height: 32px; }
+.ploko-supports__domain span { color: rgba(0,0,0,.87); font-size: 1rem; }
+.ploko-supports__description { text-align: center; color: #424242; font-size: 1rem; max-width: 800px; margin: 0 auto 64px; }
+@media (min-width: 900px) { .ploko-supports__description { font-size: 1.25rem; } }
+.ploko-supports__banner {
+  background: url("/images/ploko/partnership-banner.png") center/cover;
+  border-radius: 24px; padding: 32px;
+}
+@media (min-width: 900px) { .ploko-supports__banner { padding: 80px; } }
+.ploko-supports__banner-title { color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; margin: 0 0 16px; }
+@media (min-width: 900px) { .ploko-supports__banner-title { font-size: 3.75rem; } }
+.ploko-supports__banner-desc { color: #fff; font-size: 1rem; margin: 0 0 32px; }
+@media (min-width: 900px) { .ploko-supports__banner-desc { font-size: 1.25rem; } }
+.ploko-supports__banner-bottom { display: flex; flex-direction: column; gap: 24px; }
+@media (min-width: 900px) { .ploko-supports__banner-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.ploko-supports__location { display: flex; flex-direction: column; gap: 4px; }
+.ploko-supports__location span:first-child { color: #fff; font-size: 1rem; }
+.ploko-supports__location-sub { color: #fff; font-size: 1.5rem; }
+.ploko-supports__banner-links { display: flex; flex-wrap: wrap; gap: 16px; }
+.ploko-supports__banner-link {
+  display: flex; align-items: center; gap: 16px;
+  color: #fff; font-size: 1rem; text-decoration: none;
+  background: rgba(255,255,255,0.2); border-radius: 8px; padding: 16px;
+}
+.ploko-supports__banner-link img { width: 24px; height: 24px; }
