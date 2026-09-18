@@ -1559,8 +1559,20 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .ploko-hero {
   background: linear-gradient(90deg, #0a3076 18.96%, #002a68 100%);
   color: #fff;
+}
+/* This illustration layer was missed on the first pass (only the plain
+   gradient on the outer section was checked) — the live site actually
+   layers a full-bleed AI/circuitry photo (hero-section.png) on TOP of
+   that gradient via a nested wrapper div, confirmed via computed style
+   after being flagged by a visual side-by-side. background-size:cover,
+   no-repeat, confirmed on the live element — position is right-aligned
+   on mobile (100% 50%, keeping the illustration's content in frame) and
+   centered from 900px up (both confirmed). */
+.ploko-hero__illustration {
+  background: url("/images/ploko/hero-section.png") 100% 50%/cover no-repeat;
   padding: calc(var(--header-height) + 56px) 0 60px;
 }
+@media (min-width: 900px) { .ploko-hero__illustration { background-position: 50% 50%; } }
 .ploko-hero__badge {
   display: inline-block;
   color: #ffe8e2;
@@ -1620,7 +1632,10 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (min-width: 900px) { .partnership__description { font-size: 1.25rem; line-height: 1.2; } }
 .partnership__middle { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
 @media (min-width: 900px) { .partnership__middle { grid-template-columns: 1fr 1px 1fr; gap: 64px; align-items: start; } }
-.partnership__divider { display: none; border: none; background: #808080; width: 1px; height: 100%; margin: 0; }
+/* Gradient line (not a plain gray divider — missed on the first pass,
+   confirmed via an exhaustive backgroundImage sweep after a visual
+   side-by-side flagged the hero illustration miss). */
+.partnership__divider { display: none; border: none; background: linear-gradient(271deg, #113f91 10.02%, #196cfa 105.32%); width: 1px; height: 100%; margin: 0; }
 @media (min-width: 900px) { .partnership__divider { display: block; } }
 .partnership__col-title {
   font-family: var(--font-display); font-weight: 600; font-size: 2rem; margin: 0 0 24px;
@@ -1650,7 +1665,18 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 @media (min-width: 900px) { .euro-expertise__description { font-size: 1.125rem; } }
 .euro-expertise__points { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 40px; }
 @media (min-width: 900px) { .euro-expertise__points { grid-template-columns: 1fr 1fr; gap: 24px 48px; } }
-.euro-expertise__point { display: flex; align-items: center; gap: 16px; }
+/* Each point is a bordered card, not a plain icon+text row — the border
+   is a gradient (double-background + background-clip technique), missed
+   on the first pass, same as the divider above. */
+.euro-expertise__point {
+  display: flex; align-items: center; gap: 16px;
+  border-radius: 12px;
+  padding: 24px 26px;
+  border: 1px solid transparent;
+  background-image: linear-gradient(#fff, #fff), linear-gradient(271deg, #113f91 10.02%, #196cfa 105.32%);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+}
 .euro-expertise__point img { width: 48px; height: 48px; flex-shrink: 0; }
 .euro-expertise__point span { color: rgba(0,0,0,.87); font-size: 1rem; }
 .euro-expertise__approach {
@@ -1662,7 +1688,10 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
 .euro-expertise__approach p { color: #fff; font-size: 1rem; font-weight: 500; text-align: center; margin: 0; }
 @media (min-width: 900px) { .euro-expertise__approach p { font-size: 1.75rem; font-weight: 600; } }
 
-/* Digital Growth (Marketing Excellence / Technical Innovation rows) */
+/* Digital Growth (Marketing Excellence / Technical Innovation rows) —
+   its own #DEEBFF light-blue background, confirmed via computed style;
+   NOT the site-wide .section-alt gray (#F5F7FB), which was wrong here. */
+.digital-growth-section { background: #deebff; }
 .digital-growth__title { text-align: center; font-family: var(--font-display); font-weight: 600; color: #2a2a2a; font-size: 1.25rem; margin: 0 0 16px; }
 @media (min-width: 900px) { .digital-growth__title { font-size: 3.75rem; } }
 .digital-growth__intro { text-align: center; color: #424242; font-size: 1rem; margin: 0 0 40px; }

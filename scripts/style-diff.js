@@ -470,6 +470,46 @@ const SCENARIOS = [
     oursSelector: ".ploko-supports__banner-link",
     props: ["color", "backgroundColor", "borderRadius"],
   },
+  // These 4 were caught by a user-reported visual side-by-side AFTER the
+  // first "confirmed" pass — an exhaustive backgroundImage sweep across
+  // every element (not just the ones assumed to have one) turned up a
+  // whole extra illustration layer plus two gradient-border effects that
+  // targeted getComputedStyle checks had missed entirely. Not comparing
+  // raw backgroundImage url()s here (hostnames differ between live/ours
+  // so they'd never string-match) — backgroundSize/gradient values don't
+  // embed a host and compare directly.
+  {
+    name: "Ploko AI: hero illustration layer (background-size)",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: ".ploko-hero-wrapper",
+    oursSelector: ".ploko-hero__illustration",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
+  },
+  {
+    name: "Ploko AI: Digital Growth section background (not the site-wide alt gray)",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: ".digital-growth-main",
+    oursSelector: ".digital-growth-section",
+    props: ["backgroundColor"],
+  },
+  {
+    name: "Ploko AI: partnership divider is a gradient, not solid gray",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: ".partnership__divider",
+    oursSelector: ".partnership__divider",
+    props: ["backgroundImage"],
+  },
+  {
+    name: "Ploko AI: European Expertise point has a gradient border",
+    livePath: "/ploko-ai",
+    oursPath: "/ploko-ai.html",
+    liveSelector: ".europian-expertise__middle-point",
+    oursSelector: ".euro-expertise__point",
+    props: ["backgroundImage", "borderRadius"],
+  },
 ];
 
 function findChrome() {
