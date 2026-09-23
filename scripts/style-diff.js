@@ -527,6 +527,183 @@ const SCENARIOS = [
     oursSelector: ".euro-expertise__point",
     props: ["backgroundImage", "borderRadius"],
   },
+  // ---- about.html (added 2026-09-18, exhaustive backgroundImage/
+  // boxShadow sweep — the same technique that found ploko-ai.html and
+  // partnerships.html's missing hero illustrations, run here after the
+  // user asked for the same check on every hand-built page) ----
+  {
+    // "ENGAGEMENT MODELS" is a distinct component (class __engagement_title)
+    // with its own 243deg gradient, not the standard .section-title 270deg
+    // one it visually resembles — missed on the original about.html pass.
+    name: "About-us: Engagement Models heading (distinct 243deg gradient)",
+    livePath: "/about-us",
+    oursPath: "/about.html",
+    liveMatchText: "ENGAGEMENT MODELS",
+    oursSelector: ".engagement-title",
+    props: ["fontSize", "webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    name: "About-us: timeline card shadow",
+    livePath: "/about-us",
+    oursPath: "/about.html",
+    liveSelector: ".timeline-content",
+    oursSelector: ".history-card ul",
+    props: ["boxShadow"],
+  },
+  {
+    // Live's final computed shadow/padding turned out to be a single soft
+    // shadow + 20px padding, not the MuiPaper-elevation1 compound shadow
+    // + base .card's 24px an earlier pass had assumed.
+    name: "About-us: Engagement Models card shadow/padding",
+    livePath: "/about-us",
+    oursPath: "/about.html",
+    liveSelector: ".__card-subwrap",
+    oursSelector: "#engagement .card",
+    props: ["boxShadow", "padding"],
+  },
+  {
+    // .person-card was inheriting the base .card's border instead of the
+    // live site's real border:none + MuiPaper-elevation1 shadow.
+    name: "About-us: Leadership card shadow (not the base .card border)",
+    livePath: "/about-us",
+    oursPath: "/about.html",
+    liveSelector: ".__leadership-card",
+    oursSelector: ".person-card",
+    props: ["boxShadow", "border"],
+  },
+  // ---- careers.html/contact.html/blog.html/outlook.html (added
+  // 2026-09-18, same exhaustive sweep extended to every remaining
+  // hand-built page) ----
+  {
+    // All four page-hero pages share the live __banner-wrap component;
+    // not comparing raw backgroundImage url()s since hostnames differ.
+    name: "Careers: page-hero photo layer (background-size/position)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveSelector: ".__banner-wrap",
+    oursSelector: ".page-hero",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
+  },
+  {
+    name: "Careers: Chart Your Path heading gradient",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveMatchText: "Chart Your Path at IncubXperts",
+    oursSelector: ".chart-path-title",
+    props: ["fontSize", "webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    name: "Careers: Chart Your Path decorative background image (size/position)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveSelector: ".__chart-bg-image",
+    oursSelector: ".chart-path-section",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
+  },
+  {
+    // Was var(--color-primary)/var(--color-primary-dark) at 120deg, a
+    // never-actually-verified "close enough" stand-in — real value is the
+    // literal brand hex pair at 271.36deg.
+    name: "Careers: benefits band gradient (exact hex, not the color vars)",
+    livePath: "/careers",
+    oursPath: "/careers.html",
+    liveSelector: ".__main-benefits-wrap",
+    oursSelector: ".benefits-band",
+    props: ["backgroundImage"],
+  },
+  {
+    name: "Contact: page-hero photo layer (background-size/position)",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".__banner-wrap",
+    oursSelector: ".page-hero",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
+  },
+  {
+    name: "Contact: \"Got a Question?\" heading gradient (contact-subhead--lg)",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".__main-title-right",
+    oursSelector: ".contact-subhead--lg",
+    props: ["webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    name: "Contact: GET DIRECTIONS link gradient",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".__direction",
+    oursSelector: ".office-directions",
+    props: ["webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    name: "Contact: SUBMIT button gradient (not the flat btn-primary)",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".__read-btn",
+    oursSelector: ".btn-submit-gradient",
+    props: ["backgroundImage"],
+  },
+  {
+    // Decorative vector layered on the whole right-side card wrapper, not
+    // a plain white card — checking layout props since the url() itself
+    // never string-matches across hostnames.
+    name: "Contact: form card background layer (position/repeat/color)",
+    livePath: "/contact-us",
+    oursPath: "/contact.html",
+    liveSelector: ".__right",
+    oursSelector: ".contact-form-card",
+    props: ["backgroundPosition", "backgroundRepeat", "backgroundColor"],
+  },
+  {
+    name: "Blog: VIEW MORE link gradient (was plain .btn-outline)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveSelector: ".explore-btn",
+    oursSelector: ".blog-view-more span",
+    props: ["webkitTextFillColor", "backgroundImage"],
+  },
+  {
+    // Was var(--color-primary)/var(--color-primary-dark) at 120deg; real
+    // value is the literal brand hex pair at 270deg.
+    name: "Blog/Outlook: closing CTA band gradient (exact hex, not the color vars)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveSelector: ".__main-culture-wrap",
+    oursSelector: ".cta-band--insights",
+    props: ["backgroundImage"],
+  },
+  {
+    // Two decorative vector overlays missed entirely on the original pass.
+    // Live paints both as a single element's two-layer background-image;
+    // ours recreates the same visual with ::before/::after pseudo-elements
+    // (a deliberately simpler structural match, same technique as the
+    // case-study card's gradient bar above) — comparing position/repeat
+    // since the two sides' element widths aren't structurally comparable.
+    name: "Blog/Outlook: closing CTA left vector overlay (position/repeat)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveSelector: ".__cultural-and-growth",
+    oursSelector: ".cta-band--insights",
+    oursPseudo: "::before",
+    props: ["backgroundRepeat"],
+  },
+  {
+    name: "Blog/Outlook: closing CTA right vector overlay (position/repeat)",
+    livePath: "/blogs",
+    oursPath: "/blog.html",
+    liveSelector: ".__cultural-and-growth",
+    oursSelector: ".cta-band--insights",
+    oursPseudo: "::after",
+    props: ["backgroundRepeat"],
+  },
+  {
+    name: "Outlook: page-hero photo layer (background-size/position)",
+    livePath: "/outlooks",
+    oursPath: "/outlook.html",
+    liveSelector: ".__banner-wrap",
+    oursSelector: ".page-hero",
+    props: ["backgroundSize", "backgroundPosition", "backgroundRepeat"],
+  },
 ];
 
 function findChrome() {
