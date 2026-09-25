@@ -107,9 +107,15 @@
 
 <section class="section">
   <div class="container">
+    <!-- The live site's blog filter defaults to "AI" selected, not "All" —
+         confirmed directly (ruled out sticky localStorage from prior manual
+         testing by clearing it and reloading; the site re-selects "AI" on
+         a clean load, so this is the actual hardcoded default, not
+         incidental state). Matching it as-is per this project's convention
+         of matching real behavior even when it's an unusual UX choice. -->
     <div class="pill-row blog-filter-row">
-      <span class="tag-pill active">All</span>
-      <span class="tag-pill">AI</span>
+      <span class="tag-pill">All</span>
+      <span class="tag-pill active">AI</span>
       <span class="tag-pill">Technology &amp; Innovation</span>
       <span class="tag-pill">Agile &amp; Business Strategy</span>
       <span class="tag-pill">UX &amp; Design</span>
