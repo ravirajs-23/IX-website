@@ -32,6 +32,7 @@ loadDotEnv(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 const { buildSite } = require("./build-case-studies");
+const { buildServices } = require("./build-services");
 
 const MANIFEST_PATH = path.join(ROOT, "data", "case-studies-manifest.json");
 
@@ -67,10 +68,17 @@ async function main() {
 
   console.log("Regenerating site output (testimonials appear on every case-study page)…");
   buildSite();
+  // buildSite()'s buildSitemap() rewrites sitemap.xml from scratch, which
+  // drops the services block build-services.js appends — re-run it so
+  // sitemap.xml matches what a full `npm run build` produces (otherwise the
+  // pre-push hook's rebuild-drift check fails).
+  buildServices();
 
-  execFileSync("git", ["add", "data/case-studies-manifest.json", "case-studies", "case-studies.html", "llms.txt"], {
-    cwd: ROOT,
-  });
+  execFileSync(
+    "git",
+    ["add", "data/case-studies-manifest.json", "case-studies", "case-studies.html", "llms.txt", "sitemap.xml"],
+    { cwd: ROOT }
+  );
 
   const storyCount = Object.keys(manifest.stories).length;
   console.log(

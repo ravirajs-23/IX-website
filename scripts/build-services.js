@@ -291,7 +291,7 @@ function updateSitemap() {
 // Main
 // ---------------------------------------------------------------------------
 
-function main() {
+function buildServices() {
   const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
   const partials = {
     header: fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf8").trim(),
@@ -323,8 +323,11 @@ function main() {
   }
 
   updateSitemap();
-
-  console.log("\nDone.");
 }
 
-main();
+module.exports = { buildServices };
+
+if (require.main === module) {
+  buildServices();
+  console.log("\nDone.");
+}

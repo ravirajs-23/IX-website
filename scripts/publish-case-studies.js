@@ -38,6 +38,7 @@ loadDotEnv(ROOT);
 const source = require("./lib/case-studies-strapi-source");
 const environments = require("./case-study-environments");
 const { buildSite } = require("./build-case-studies");
+const { buildServices } = require("./build-services");
 
 const MANIFEST_PATH = path.join(ROOT, "data", "case-studies-manifest.json");
 
@@ -143,6 +144,12 @@ async function main() {
 
   console.log("Regenerating site output from the updated manifest…");
   buildSite();
+  // build-case-studies.js's buildSitemap() rewrites sitemap.xml from scratch
+  // (static pages + case studies only), which drops the <!-- SERVICES:...
+  // --> block build-services.js appends — re-run it too so sitemap.xml
+  // matches what a full `npm run build` produces, or the pre-push hook's
+  // rebuild-drift check fails on every publish (found via real testing).
+  buildServices();
 
   const pathsToStage = [
     "data/case-studies-manifest.json",

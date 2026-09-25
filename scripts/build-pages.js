@@ -77,7 +77,7 @@ function replaceBlock(html, block, content) {
   throw new Error(`Could not find a <${block.name}> block or its sentinel markers to replace.`);
 }
 
-function main() {
+function buildPages() {
   const content = {
     header: loadPartial("header.html"),
     footer: loadPartial("footer.html"),
@@ -101,8 +101,11 @@ function main() {
     fs.writeFileSync(filePath, html, "utf8");
     console.log(`✓ synced ${page}${notes.length ? ` (${notes.join(", ")})` : ""}`);
   }
-
-  console.log("\nDone.");
 }
 
-main();
+module.exports = { buildPages };
+
+if (require.main === module) {
+  buildPages();
+  console.log("\nDone.");
+}
