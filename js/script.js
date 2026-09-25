@@ -246,4 +246,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyFilters();
   }
+
+  // Events page: All/Upcoming/Past filter pills + per-card image galleries.
+  const eventFilterRow = document.querySelector(".event-filter-row");
+  if (eventFilterRow) {
+    const pills = [...eventFilterRow.querySelectorAll(".tag-pill")];
+    const cards = [...document.querySelectorAll("#events-list .event-card")];
+    pills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        pills.forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        const filter = pill.dataset.filter;
+        cards.forEach((card) => {
+          card.hidden = filter !== "all" && card.dataset.status !== filter;
+        });
+      });
+    });
+  }
+
+  document.querySelectorAll(".event-gallery").forEach((gallery) => {
+    const images = JSON.parse(gallery.dataset.images || "[]");
+    const mainImg = gallery.querySelector(".event-gallery-main img");
+    const counter = gallery.querySelector(".event-gallery-counter");
+    const thumbsWrap = gallery.querySelector(".event-gallery-thumbs");
+
+    function show(index) {
+      mainImg.src = images[index];
+      if (counter) counter.textContent = `${index + 1} / ${images.length}`;
+      if (thumbsWrap) {
+        [...thumbsWrap.children].forEach((btn, i) => btn.classList.toggle("active", i === index));
+      }
+    }
+
+    if (images.length > 1 && thumbsWrap) {
+      images.forEach((src, i) => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `<img src="${src}" alt="" />`;
+        btn.addEventListener("click", () => show(i));
+        thumbsWrap.appendChild(btn);
+      });
+    }
+    if (images.length) show(0);
+  });
 });

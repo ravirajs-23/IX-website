@@ -37,6 +37,10 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://www.incubxperts.com/events.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.incubxperts.com/case-studies.html</loc>
     <priority>0.7</priority>
   </url>

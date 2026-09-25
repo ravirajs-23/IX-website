@@ -36,6 +36,7 @@ const PAGES = [
   "contact.html",
   "partnerships.html",
   "ploko-ai.html",
+  "events.html",
 ];
 
 const BLOCKS = [

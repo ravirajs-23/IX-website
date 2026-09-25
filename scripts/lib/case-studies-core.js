@@ -20,6 +20,7 @@ const STATIC_PAGES = [
   { loc: "/contact.html", priority: "0.7" },
   { loc: "/partnerships.html", priority: "0.5" },
   { loc: "/ploko-ai.html", priority: "0.4" },
+  { loc: "/events.html", priority: "0.6" },
 ];
 
 const DEFAULT_BENEFIT_ICON = "/images/case-studies/_benefit-icon-default.svg";

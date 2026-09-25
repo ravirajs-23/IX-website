@@ -1927,3 +1927,67 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--color-prima
   background: rgba(255,255,255,0.2); border-radius: 8px; padding: 16px;
 }
 .ploko-supports__banner-link img { width: 24px; height: 24px; }
+
+/* ---------- Events page ----------
+   New page, no live-site or Strapi reference to match against (confirmed:
+   /events and /api/events both 404). Layout structure validated separately
+   against a Figma reference; this reuses the site's EXISTING styling
+   (.page-hero, .card, .grid, .tag-pill, .stat, .btn-outline) rather than
+   introducing a new component system, per instruction. */
+.page-hero--events { background-image: url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1200&fit=crop&auto=format"); }
+.page-hero--events { background-position: 50% 100%; }
+.event-stats { display: flex; gap: 32px; margin-top: 32px; }
+/* .stat .num/.label default to blue-on-white (their other uses are all on
+   light backgrounds) — this hero is a dark photo like every other
+   .page-hero, so they need the same white treatment as the hero h1/p. */
+.page-hero .event-stats .num { color: #fff; }
+.page-hero .event-stats .label { color: rgba(255,255,255,0.75); }
+
+.event-filter-row { justify-content: flex-start; margin-bottom: 32px; }
+.tag-pill { cursor: pointer; }
+
+.event-card { margin-bottom: 20px; }
+.event-card-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+@media (min-width: 900px) { .event-card-grid { grid-template-columns: 1fr 2fr; gap: 48px; } }
+
+.event-meta .tag {
+  display: inline-block;
+  background: rgba(24,104,240,0.1);
+  color: var(--color-primary);
+  font-size: 0.78rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 999px;
+}
+.event-meta .tag.tag-past { background: var(--color-bg-alt); color: var(--color-text-muted); }
+.event-type { color: var(--color-text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 0; }
+.event-date { color: var(--color-text); font-weight: 600; font-size: 0.95rem; margin: 10px 0 0; }
+.event-loc { color: var(--color-text-muted); font-size: 0.9rem; margin: 2px 0 0; }
+.event-meta-label { color: var(--color-text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 20px 0 6px; }
+.event-speakers { list-style: none; margin: 0; padding: 0; }
+.event-speakers li { color: var(--color-text); font-size: 0.9rem; line-height: 1.6; }
+.event-attendees { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--color-text); margin: 0; }
+
+.event-content h3 { margin: 0 0 4px; }
+.event-subtitle { color: var(--color-text-muted); font-style: italic; margin: 0 0 12px; }
+
+.event-gallery { margin-top: 20px; }
+.event-gallery-main {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+}
+.event-gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.event-gallery-counter {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,0,0,0.6); color: #fff;
+  font-size: 0.75rem; padding: 3px 8px; border-radius: 4px;
+}
+.event-gallery-thumbs { display: flex; gap: 8px; margin-top: 8px; }
+.event-gallery-thumbs button {
+  flex: 1; aspect-ratio: 16 / 9; padding: 0; border: none; border-radius: 6px;
+  overflow: hidden; cursor: pointer; opacity: 0.5; transition: opacity var(--transition);
+}
+.event-gallery-thumbs button:hover { opacity: 0.8; }
+.event-gallery-thumbs button.active { opacity: 1; box-shadow: 0 0 0 2px var(--color-primary); }
+.event-gallery-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
