@@ -26,6 +26,7 @@ incubxperts-website/
 │   ├── review-case-studies.js               # Strapi vs. manifest: what's new/updated, with diffs
 │   ├── publish-case-studies.js              # approve slugs -> update manifest -> render -> git add
 │   ├── seed-case-studies-manifest.js        # one-time: bootstrap the manifest from current Strapi
+│   ├── refresh-testimonials.js              # explicit, separate step to update the sitewide carousel
 │   ├── case-study-environments.js           # publish targets (today: just Production/main)
 │   └── lib/case-studies-core.js,
 │       lib/case-studies-strapi-source.js    # shared rendering / Strapi-fetching modules
@@ -160,10 +161,25 @@ it down by hand if that's ever needed.
 the live site (two unrelated case stories rendered byte-identical
 testimonial carousels, same order): it's the exact same full list on every
 case-study page. So it's built from Strapi's separate, standalone
-`testimonial` collection (`/api/testimonials`, fetched once per build by
-`fetchAllTestimonials()`) rather than any relation on the case-story entry
-itself — a case-story's own `testimonials` relation field (if you see one
-in the Strapi admin) is not used by this site at all.
+`testimonial` collection (`/api/testimonials`) rather than any relation on
+the case-story entry itself — a case-story's own `testimonials` relation
+field (if you see one in the Strapi admin) is not used by this site at all.
+
+Because it's sitewide (shared by every case-study page, not tied to any one
+approved story), it's **deliberately not refreshed automatically** by
+`publish-case-studies.js` — that was tried and caused a real incident during
+testing: approving a couple of stories from a near-empty local Strapi
+instance silently overwrote the real 19-testimonial carousel on all 100 live
+pages with that instance's 3 test entries, as a side effect of an unrelated
+approval. Update testimonials with its own explicit step instead:
+```bash
+node scripts/refresh-testimonials.js   # or: npm run case-studies:refresh-testimonials
+```
+Same pattern as everything else here: it stages the change (manifest +
+regenerated pages) but doesn't commit/push — review `git diff --cached
+--stat` before committing. It refuses to run if Strapi returns zero
+testimonials, but a smaller-than-expected (not zero) count won't be caught
+automatically — check the count it prints before committing.
 
 **Known limitations of the current mapping** (fine for now, worth revisiting
 if they become real gaps):

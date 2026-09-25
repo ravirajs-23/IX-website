@@ -88,7 +88,9 @@ async function main() {
   console.log("Next: run `npm run build:case-studies` and confirm it produces no diff vs. the current committed output.");
 }
 
-main().catch((err) => {
-  console.error(err.message || err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+}
