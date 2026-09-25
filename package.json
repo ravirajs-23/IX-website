@@ -12,7 +12,8 @@
     "style-diff:fast": "node scripts/style-diff.js --fast",
     "postinstall": "node scripts/install-hooks.js",
     "case-studies:seed-manifest": "node scripts/seed-case-studies-manifest.js",
-    "case-studies:review": "node scripts/review-case-studies.js"
+    "case-studies:review": "node scripts/review-case-studies.js",
+    "case-studies:refresh-testimonials": "node scripts/refresh-testimonials.js"
   },
   "dependencies": {
     "marked": "12.0.2"

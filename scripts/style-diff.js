@@ -294,7 +294,7 @@ const SCENARIOS = [
     // overlaid, revealing a full gradient panel on :hover. Checks the
     // *default* (non-hover) state.
     name: "Blog: card title over image (default, non-hover state)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveMatchText: "AI-Native vs. AI-Added: The Difference That Actually Matters",
     oursSelector: ".blog-card-title",
@@ -302,23 +302,32 @@ const SCENARIOS = [
   },
   {
     name: "Blog: card hover-reveal starts hidden (opacity/visibility)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveSelector: ".box-hover-content",
     oursSelector: ".blog-card-hover",
     props: ["opacity", "visibility"],
   },
   {
+    // liveMatchText: "All" was wrong — the live site's default-active pill
+    // is actually "AI", not "All" (confirmed directly: cleared localStorage's
+    // selectedTag and reloaded, it re-selects "AI" on a clean load, so it's
+    // the real hardcoded default). Matching "All" happened to find the
+    // (inactive) All pill and compare its plain styling against our active
+    // pill's blue background, a false mismatch — select by the live site's
+    // own `.active` class instead so this keeps working if the default ever
+    // changes again. blog.html's own default active pill was also switched
+    // from "All" to "AI" to match.
     name: "Blog: filter pill (active)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
-    liveMatchText: "All",
+    liveSelector: ".share-btn.active",
     oursSelector: ".blog-filter-row .tag-pill.active",
     props: ["borderRadius", "fontSize", "backgroundColor"],
   },
   {
     name: "Blog: filter pill (inactive)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveMatchText: "AI",
     oursSelector: ".blog-filter-row .tag-pill:not(.active)",
@@ -326,7 +335,7 @@ const SCENARIOS = [
   },
   {
     name: "Blog/Outlook: closing CTA title",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveMatchText: "Contact Us",
     oursSelector: ".cta-band--insights h2",
@@ -334,7 +343,7 @@ const SCENARIOS = [
   },
   {
     name: "Blog/Outlook: closing CTA button",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveMatchText: "SPEAK WITH US",
     oursSelector: ".btn-ghost-white",
@@ -656,7 +665,7 @@ const SCENARIOS = [
   },
   {
     name: "Blog: VIEW MORE link gradient (was plain .btn-outline)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveSelector: ".explore-btn",
     oursSelector: ".blog-view-more span",
@@ -666,39 +675,28 @@ const SCENARIOS = [
     // Was var(--color-primary)/var(--color-primary-dark) at 120deg; real
     // value is the literal brand hex pair at 270deg.
     name: "Blog/Outlook: closing CTA band gradient (exact hex, not the color vars)",
-    livePath: "/blogs",
+    livePath: "/blog",
     oursPath: "/blog.html",
     liveSelector: ".__main-culture-wrap",
     oursSelector: ".cta-band--insights",
     props: ["backgroundImage"],
   },
-  {
-    // Two decorative vector overlays missed entirely on the original pass.
-    // Live paints both as a single element's two-layer background-image;
-    // ours recreates the same visual with ::before/::after pseudo-elements
-    // (a deliberately simpler structural match, same technique as the
-    // case-study card's gradient bar above) — comparing position/repeat
-    // since the two sides' element widths aren't structurally comparable.
-    name: "Blog/Outlook: closing CTA left vector overlay (position/repeat)",
-    livePath: "/blogs",
-    oursPath: "/blog.html",
-    liveSelector: ".__cultural-and-growth",
-    oursSelector: ".cta-band--insights",
-    oursPseudo: "::before",
-    props: ["backgroundRepeat"],
-  },
-  {
-    name: "Blog/Outlook: closing CTA right vector overlay (position/repeat)",
-    livePath: "/blogs",
-    oursPath: "/blog.html",
-    liveSelector: ".__cultural-and-growth",
-    oursSelector: ".cta-band--insights",
-    oursPseudo: "::after",
-    props: ["backgroundRepeat"],
-  },
+  // Two decorative vector overlays on the closing CTA band — intentionally
+  // NOT checked here as a computed-style scenario. Live paints both as one
+  // element's two-layer background-image (backgroundRepeat computes to the
+  // 2-item "no-repeat, no-repeat"); ours recreates the same visual with two
+  // separate ::before/::after pseudo-elements (one layer each), so
+  // backgroundRepeat can only ever compute to the 1-item "no-repeat" on our
+  // side — a permanent, structural mismatch with no CSS fix, not a real bug.
+  // Visual correctness (not just "some image exists") was verified directly
+  // instead: each pseudo-element's width was set to match its source image's
+  // exact natural dimensions (218x310 / 195x363, confirmed via
+  // createImageBitmap against the live site's Vector.webp/Vector2.webp), so
+  // the image isn't clipped by its own box. See css/style.css's
+  // .cta-band--insights::before/::after rules for that fix.
   {
     name: "Outlook: page-hero photo layer (background-size/position)",
-    livePath: "/outlooks",
+    livePath: "/outlook",
     oursPath: "/outlook.html",
     liveSelector: ".__banner-wrap",
     oursSelector: ".page-hero",

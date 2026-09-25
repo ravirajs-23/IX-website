@@ -5,9 +5,20 @@
  * Takes a human-approved list of slugs and actually publishes them: re-fetches
  * Strapi fresh (never trusts the earlier review's possibly-stale view),
  * mirrors media for just those slugs, freezes each into
- * data/case-studies-manifest.json, refreshes the testimonials snapshot, then
- * regenerates the site (via build-case-studies.js's buildSite()) and
- * `git add`s exactly the changed paths.
+ * data/case-studies-manifest.json, then regenerates the site (via
+ * build-case-studies.js's buildSite()) and `git add`s exactly the changed
+ * paths.
+ *
+ * Deliberately does NOT touch manifest.testimonials — that's a sitewide
+ * value shared by every case-study page, and this script trusts whatever
+ * Strapi is currently configured in .env for just the slugs being approved.
+ * Coupling a sitewide value to "whichever Strapi happens to be configured
+ * right now" is exactly the kind of mistake that bit this project once
+ * already (approving 3 stories from a near-empty local test instance nearly
+ * overwrote the real testimonials carousel on all 100 live pages with 3
+ * test entries). See scripts/refresh-testimonials.js for updating
+ * testimonials — a separate, deliberate action, never a side effect of this
+ * script.
  *
  * Deliberately does NOT `git commit` or `git push` — that's the actual
  * "go live" action and stays a separate, explicit, visible step (see the
@@ -27,6 +38,7 @@ loadDotEnv(ROOT);
 const source = require("./lib/case-studies-strapi-source");
 const environments = require("./case-study-environments");
 const { buildSite } = require("./build-case-studies");
+const { buildServices } = require("./build-services");
 
 const MANIFEST_PATH = path.join(ROOT, "data", "case-studies-manifest.json");
 
@@ -127,19 +139,17 @@ async function main() {
     console.log(`✓ ${existing ? "updated" : "added"} manifest entry for "${slug}"`);
   }
 
-  console.log("Refreshing testimonials snapshot…");
-  const testimonials = await source.fetchAllTestimonials();
-  if (testimonials) {
-    manifest.testimonials = { fetchedAt: now, items: testimonials };
-  } else {
-    console.log("  (Strapi testimonials fetch failed — keeping the previous snapshot.)");
-  }
-
   manifest.generatedAt = now;
   writeManifest(manifest);
 
   console.log("Regenerating site output from the updated manifest…");
   buildSite();
+  // build-case-studies.js's buildSitemap() rewrites sitemap.xml from scratch
+  // (static pages + case studies only), which drops the <!-- SERVICES:...
+  // --> block build-services.js appends — re-run it too so sitemap.xml
+  // matches what a full `npm run build` produces, or the pre-push hook's
+  // rebuild-drift check fails on every publish (found via real testing).
+  buildServices();
 
   const pathsToStage = [
     "data/case-studies-manifest.json",
@@ -161,7 +171,13 @@ async function main() {
   console.log("\nNOT committed or pushed yet — review `git diff --cached --stat`, then commit and push explicitly.");
 }
 
-main().catch((err) => {
-  console.error(err.message || err);
-  process.exit(1);
-});
+// Guarded so `require`-ing this module (e.g. from a test/debug script) can
+// never trigger a real publish as a side effect — this exact mistake is what
+// caused the testimonials incident described above. Only runs when invoked
+// directly: `node scripts/publish-case-studies.js ...`.
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+}

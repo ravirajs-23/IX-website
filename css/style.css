@@ -612,7 +612,10 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
   text-transform: uppercase;
   margin: 0;
   color: #113f91; /* fallback */
-  background: linear-gradient(243deg, #113f91 72%, #196cfa 90%);
+  /* Exact stops confirmed via computed style (243.36deg, 72.02%/90.32%) —
+     was rounded to 243deg/72%/90%, close enough to look right but not a
+     byte-for-byte match. */
+  background: linear-gradient(243.36deg, #113f91 72.02%, #196cfa 90.32%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -674,7 +677,11 @@ body.is-home .nav-links.open a:hover, body.is-home .nav-links.open a.active { co
    rule's border was left in place uncorrected here; caught by the same
    exhaustive boxShadow sweep that found ploko-ai.html/partnerships.html's
    missing hero illustrations. */
-.person-card { text-align: left; padding: 0; overflow: hidden; border: none; box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12); }
+/* border-color confirmed via computed style (rgba(0,0,0,.87), MUI's default
+   text color reused as the border-color even though border-width is 0 and
+   it's never actually visible) — was resolving to the page's body color
+   (#2a2a2a) instead, since border:none doesn't set border-color itself. */
+.person-card { text-align: left; padding: 0; overflow: hidden; border: none; border-color: rgba(0,0,0,0.87); box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12); }
 .person-photo-wrap { position: relative; }
 .person-photo { width: 100%; height: 290px; object-fit: cover; display: block; }
 .person-linkedin {

@@ -19,13 +19,14 @@ incubxperts-website/
 │   ├── template.html                        # shared shell for case-study pages
 │   └── partials/header.html, footer.html    # SINGLE SOURCE OF TRUTH for nav
 │                                             & footer — used by every page
-├── .claude/skills/publish-case-studies/     # Claude Code skill: review + approve + publish
+├── .claude/skills/review-case-studies/      # Claude Code skill: review + approve + open a PR
 ├── scripts/
 │   ├── build-pages.js                       # syncs partials into the 7 hand-written pages
 │   ├── build-case-studies.js                # renders the site FROM the manifest (no Strapi access)
 │   ├── review-case-studies.js               # Strapi vs. manifest: what's new/updated, with diffs
 │   ├── publish-case-studies.js              # approve slugs -> update manifest -> render -> git add
 │   ├── seed-case-studies-manifest.js        # one-time: bootstrap the manifest from current Strapi
+│   ├── refresh-testimonials.js              # explicit, separate step to update the sitewide carousel
 │   ├── case-study-environments.js           # publish targets (today: just Production/main)
 │   └── lib/case-studies-core.js,
 │       lib/case-studies-strapi-source.js    # shared rendering / Strapi-fetching modules
@@ -38,7 +39,7 @@ incubxperts-website/
 `data/case-studies-manifest.json`** — they're generated/written by the
 scripts above, and any page whose manifest entry is removed is deleted
 automatically on the next build. Edit content in Strapi, then go through the
-`publish-case-studies` approval workflow (see "Case studies" below).
+`review-case-studies` approval workflow (see "Case studies" below).
 
 **Never hand-edit the `<header>`/`<footer>` blocks inside any page** — edit
 `templates/partials/header.html` or `footer.html` instead, then run:
@@ -53,7 +54,7 @@ that up rather than hand-editing N files.
 
 ---
 
-## Case studies: Strapi content, approved through a manifest (as of 2026-09-23)
+## Case studies: Strapi content, approved through a manifest (as of 2026-09-25)
 
 `case-studies/*.html`, `case-studies.html`, `sitemap.xml`'s case-study
 entries, and `llms.txt`'s case-study block are all generated purely from
@@ -65,29 +66,65 @@ the mandatory pre-push rebuild-drift check meaningful.
 
 Strapi (Content Manager → Case Stories) is still where you author/edit case
 studies — it's just no longer built directly. New or changed Strapi content
-only reaches the live site after going through the **publish-case-studies**
-workflow, which requires an explicit approval step (nothing publishes
-silently):
+only ever reaches a **Pull Request** after going through the
+**review-case-studies** workflow — never a direct push to `main`, so a
+developer always reviews the actual diff before anything goes live:
 
 ```bash
 node scripts/review-case-studies.js     # what's new/updated in Strapi vs. the manifest
 node scripts/publish-case-studies.js --slugs=<a,b,c> --env=production --approved-by="you"
-git diff --cached --stat                # see what's about to go live
-git commit -m "..." && git push         # the actual "go live" step
+# (the two commands above only stage files - commit/branch/push/PR are a separate, visible step)
+git checkout -b case-studies/publish-<timestamp>
+git commit -m "..."
+git push origin case-studies/publish-<timestamp>   # triggers the pre-push hook
+gh pr create --base main --title "..." --body "..."
 ```
 
-If you use Claude Code, the **`publish-case-studies`** skill
-(`.claude/skills/publish-case-studies/SKILL.md`) drives this whole flow
+If you use Claude Code, the **`review-case-studies`** skill
+(`.claude/skills/review-case-studies/SKILL.md`) drives this whole flow
 conversationally — it runs the review script, presents new/updated stories
-and their diffs, asks what to approve, runs the publish script, and only
-commits/pushes after you explicitly confirm. Just ask Claude to "review and
-publish case studies" (or similar).
+and their diffs in plain language, asks what to approve, runs the publish
+script, and only creates a branch/commit/PR after you explicitly confirm.
+Just ask Claude to "review case studies" (or similar). It's designed to be
+usable by a non-technical person, not just a developer — see "Rolling this
+out to a non-technical teammate" below.
 
 **One-time setup** (per repo, not per person):
 1. Copy `.env.example` to `.env` (gitignored) and fill in `STRAPI_URL` /
-   `STRAPI_API_TOKEN` (read access is enough).
-2. Run `node scripts/seed-case-studies-manifest.js` once — this treats every
+   `STRAPI_API_TOKEN` (read access is enough) for whichever Strapi instance
+   you want this to check — any URL works, there's no hardcoded assumption
+   about which instance it is.
+2. Install and authenticate the [GitHub CLI](https://cli.github.com/)
+   (`gh auth login`) — needed to open Pull Requests.
+3. Run `node scripts/seed-case-studies-manifest.js` once — this treats every
    story currently live as pre-approved, so it doesn't show up as "new."
+
+### Rolling this out to a non-technical teammate
+
+This skill is meant to work for someone who can edit Strapi but doesn't
+write code. Their part of the setup, done once (probably with an
+engineer's help):
+1. Install Node.js, git, [Claude Code](https://claude.com/claude-code), and
+   the [GitHub CLI](https://cli.github.com/).
+2. Clone this repo and run `npm install`.
+3. Copy `.env.example` to `.env`, fill in `STRAPI_URL`/`STRAPI_API_TOKEN`.
+4. `gh auth login` with a GitHub account that can create branches and open
+   Pull Requests on this repo (it does **not** need push access to `main`
+   itself — this workflow never pushes there directly. If you want to grant
+   zero write access to this repo at all, a fork-based PR flow is a more
+   restrictive alternative, not set up by default here).
+
+Day to day: open Claude Code in the project folder and ask it to "review
+case studies." It walks through what's new/changed, asks what to approve,
+and — if anything's approved — opens a Pull Request. **That's the end of
+their part.** A developer reviews and merges the PR; merging is what
+actually deploys it. If the automated push-time check fails, the skill will
+say so plainly and stop — that's a signal to loop in a developer, not
+something to work around.
+
+This local-setup model is the starting point, not necessarily the end
+state — a hosted version of this tool (no local clone/`.env` required) is a
+reasonable next step if this gets used often enough to justify it.
 
 **How approval works:** `data/case-studies-manifest.json` freezes each
 approved story's content (including a diff-friendly "source snapshot" used
@@ -124,10 +161,25 @@ it down by hand if that's ever needed.
 the live site (two unrelated case stories rendered byte-identical
 testimonial carousels, same order): it's the exact same full list on every
 case-study page. So it's built from Strapi's separate, standalone
-`testimonial` collection (`/api/testimonials`, fetched once per build by
-`fetchAllTestimonials()`) rather than any relation on the case-story entry
-itself — a case-story's own `testimonials` relation field (if you see one
-in the Strapi admin) is not used by this site at all.
+`testimonial` collection (`/api/testimonials`) rather than any relation on
+the case-story entry itself — a case-story's own `testimonials` relation
+field (if you see one in the Strapi admin) is not used by this site at all.
+
+Because it's sitewide (shared by every case-study page, not tied to any one
+approved story), it's **deliberately not refreshed automatically** by
+`publish-case-studies.js` — that was tried and caused a real incident during
+testing: approving a couple of stories from a near-empty local Strapi
+instance silently overwrote the real 19-testimonial carousel on all 100 live
+pages with that instance's 3 test entries, as a side effect of an unrelated
+approval. Update testimonials with its own explicit step instead:
+```bash
+node scripts/refresh-testimonials.js   # or: npm run case-studies:refresh-testimonials
+```
+Same pattern as everything else here: it stages the change (manifest +
+regenerated pages) but doesn't commit/push — review `git diff --cached
+--stat` before committing. It refuses to run if Strapi returns zero
+testimonials, but a smaller-than-expected (not zero) count won't be caught
+automatically — check the count it prints before committing.
 
 **Known limitations of the current mapping** (fine for now, worth revisiting
 if they become real gaps):

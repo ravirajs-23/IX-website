@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-23T08:51:36.077Z",
+  "generatedAt": "2026-09-25T10:46:22.032Z",
   "testimonials": {
     "fetchedAt": "2026-09-23T06:29:42.745Z",
     "items": [
@@ -121,6 +121,277 @@
     ]
   },
   "stories": {
+    "7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment": {
+      "strapiEntryId": 10,
+      "story": {
+        "slug": "7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment",
+        "title": "7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment",
+        "category": "Fintech",
+        "client": "",
+        "publishDate": "2026-09-07",
+        "heroSummary": "How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.",
+        "metaDescription": "How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.",
+        "heroImage": "/images/case-studies/strapi/Astute_AI_d5380a89e0_3247d7ad8d.webp",
+        "ogImage": "/images/case-studies/strapi/Content_5187328c87_822a06a947.webp",
+        "detailImage": {
+          "url": "/images/case-studies/strapi/12032025_Astute_c134652998_d095a7c27c.svg",
+          "isVideo": false
+        },
+        "tags": [
+          "Fintech",
+          "AI",
+          "Credit Risk Automation",
+          "Financial Compliance",
+          "Predictive Analytics",
+          "AI Adoption & Strategy",
+          "Integrations",
+          "Credit Risk Management",
+          "Predictive Loan Approval",
+          "Analytics",
+          "Offline Functionality",
+          "Web and Mobile App",
+          "Automated Business Rule Engine"
+        ],
+        "stats": [],
+        "benefits": [
+          {
+            "title": "40% Efficiency Gain",
+            "description": "Automated workflows and notifications reduced processing times for document approvals.",
+            "icon": null
+          },
+          {
+            "title": "Streamlined Collaboration",
+            "description": "Live co-editing and chat eliminated email-based bottlenecks, improving team productivity.",
+            "icon": null
+          }
+        ],
+        "bodyHtml": "\n<section class=\"section\">\n  <div class=\"container\">\n    <div class=\"cs-content-section\">\n      <h3>Business Problem</h3>\n      <p>A financial services company, managing over half of the national credit risk assessment market, struggled with inefficiencies and revenue leakage due to outdated legacy systems. To remain competitive, they required a modern, AI-powered platform to streamline credit risk workflows, reduce operational bottlenecks, and improve financial performance.</p>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Solution</h3>\n      <p>IncubXperts developed a robust, AI-driven web and mobile platform using a Disconnected Architecture to modernize the credit risk assessment process. The solution automates workflows, enhances user engagement, and improves operational efficiency with key features:</p>\n<ul><li><strong>Cross-Platform Development:</strong> Used MAUI to build a mobile app with reusable code for iOS and Android, reducing development efforts.</li><li><strong>AI-Powered Survey Automation:</strong> Automated the conversion of field survey findings into structured audit reports using Generative AI, reducing back-office processing time and enhancing accuracy.</li><li><strong>Predictive Analytics for Loan Approval: </strong>Leveraged AI to calculate loan approval probabilities based on survey and user data, enabling faster and data-driven decisions.</li><li><strong>Offline Sync and Geo Tracking:</strong> Provided uninterrupted app usage and integrated geocoordinate mapping for data authentication and workforce tracking.</li><li><strong>Dynamic and Intuitive UI:</strong> Implemented dynamic form rendering for a flexible, user-friendly interface tailored to business needs.</li><li><strong>AI-Driven Business Rule Engine:</strong> Automated contract verification, ensured adherence to turnaround times, and detected anomalies or potential fraud risks.</li><li><strong>Real-Time Reporting:</strong> Delivered actionable insights with near real-time reporting in multiple formats (PDF, Excel, dashboards) to optimize decision-making and operations.</li></ul>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Stack</h3>\n      <ul><li><strong>Core Technologies: </strong>ASP.NET MVC, MS SQL Server, Web API, MAUI, Azure Functions, Google Maps</li><li><strong>AI and Data Services:</strong> Azure Cognitive Services, OpenAI GPT Models, Azure Machine Learning</li><li><strong>Data Management: </strong>Azure SQL, Azure Blob Storage, Azure Cosmos DB</li></ul>\n    </div>\n  </div>\n</section>",
+        "sourceFile": "strapi:7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment"
+      },
+      "sourceSnapshot": {
+        "title": "7 Million Cases, 3000 Users — An AI-Driven Phenomenon in Credit Risk Assessment",
+        "categoryName": "Fintech",
+        "heroImageUrl": "/uploads/Astute_AI_d5380a89e0_3247d7ad8d.webp",
+        "ogImageUrl": "/uploads/Content_5187328c87_822a06a947.webp",
+        "detailImageUrl": "/uploads/12032025_Astute_c134652998_d095a7c27c.svg",
+        "detailImageIsVideo": false,
+        "tags": [
+          "Fintech",
+          "AI",
+          "Credit Risk Automation",
+          "Financial Compliance",
+          "Predictive Analytics",
+          "AI Adoption & Strategy",
+          "Integrations",
+          "Credit Risk Management",
+          "Predictive Loan Approval",
+          "Analytics",
+          "Offline Functionality",
+          "Web and Mobile App",
+          "Automated Business Rule Engine"
+        ],
+        "heroSummary": "How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.",
+        "metaDescription": "How IncubXperts built an AI-driven, cross-platform credit risk platform serving 3000+ users across 7 million cases for a financial services firm.",
+        "benefits": [
+          {
+            "title": "40% Efficiency Gain",
+            "description": "Automated workflows and notifications reduced processing times for document approvals.",
+            "iconUrl": null
+          },
+          {
+            "title": "Streamlined Collaboration",
+            "description": "Live co-editing and chat eliminated email-based bottlenecks, improving team productivity.",
+            "iconUrl": null
+          }
+        ],
+        "bodySource": {
+          "kind": "blocks",
+          "raw": "[{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Business Problem\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"A financial services company, managing over half of the national credit risk assessment market, struggled with inefficiencies and revenue leakage due to outdated legacy systems. To remain competitive, they required a modern, AI-powered platform to streamline credit risk workflows, reduce operational bottlenecks, and improve financial performance.\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Solution\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"IncubXperts developed a robust, AI-driven web and mobile platform using a Disconnected Architecture to modernize the credit risk assessment process. The solution automates workflows, enhances user engagement, and improves operational efficiency with key features:\",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Cross-Platform Development:\",\"type\":\"text\"},{\"text\":\" Used MAUI to build a mobile app with reusable code for iOS and Android, reducing development efforts.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI-Powered Survey Automation:\",\"type\":\"text\"},{\"text\":\" Automated the conversion of field survey findings into structured audit reports using Generative AI, reducing back-office processing time and enhancing accuracy.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Predictive Analytics for Loan Approval: \",\"type\":\"text\"},{\"text\":\"Leveraged AI to calculate loan approval probabilities based on survey and user data, enabling faster and data-driven decisions.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Offline Sync and Geo Tracking:\",\"type\":\"text\"},{\"text\":\" Provided uninterrupted app usage and integrated geocoordinate mapping for data authentication and workforce tracking.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Dynamic and Intuitive UI:\",\"type\":\"text\"},{\"text\":\" Implemented dynamic form rendering for a flexible, user-friendly interface tailored to business needs.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI-Driven Business Rule Engine:\",\"type\":\"text\"},{\"text\":\" Automated contract verification, ensured adherence to turnaround times, and detected anomalies or potential fraud risks.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Real-Time Reporting:\",\"type\":\"text\"},{\"text\":\" Delivered actionable insights with near real-time reporting in multiple formats (PDF, Excel, dashboards) to optimize decision-making and operations.\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Stack\",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Core Technologies: \",\"type\":\"text\"},{\"text\":\"ASP.NET MVC, MS SQL Server, Web API, MAUI, Azure Functions, Google Maps\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI and Data Services:\",\"type\":\"text\"},{\"text\":\" Azure Cognitive Services, OpenAI GPT Models, Azure Machine Learning\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Data Management: \",\"type\":\"text\"},{\"text\":\"Azure SQL, Azure Blob Storage, Azure Cosmos DB\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]}]"
+        },
+        "publishDate": "2026-09-07"
+      },
+      "contentHash": "sha256:11e0452d99d30edf1c68d39e537bf18ce4d4dd00421e70b4f6a1e9bba42d28ac",
+      "approval": {
+        "approvedAt": "2026-09-25T10:46:22.032Z",
+        "approvedBy": "Raviraj Suryavanshi",
+        "environment": "production",
+        "action": "new",
+        "previousContentHash": null
+      }
+    },
+    "Ravi-7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment": {
+      "strapiEntryId": 11,
+      "story": {
+        "slug": "Ravi-7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment",
+        "title": "Ravi's Test case story",
+        "category": "Fintech",
+        "client": "",
+        "publishDate": "2026-09-07",
+        "heroSummary": "Ravi's Test case story",
+        "metaDescription": "Ravi's Test case story",
+        "heroImage": "/images/case-studies/strapi/Memoforge_37629f98c8.webp",
+        "ogImage": "/images/case-studies/strapi/Content_5187328c87_5ee8a71e86.webp",
+        "detailImage": null,
+        "tags": [
+          "Fintech",
+          "AI",
+          "Credit Risk Automation",
+          "Financial Compliance",
+          "Predictive Analytics",
+          "AI Adoption & Strategy",
+          "Integrations",
+          "Credit Risk Management",
+          "Predictive Loan Approval",
+          "Analytics",
+          "Offline Functionality",
+          "Web and Mobile App",
+          "Automated Business Rule Engine"
+        ],
+        "stats": [],
+        "benefits": [
+          {
+            "title": "20% Boost in NPS",
+            "description": "Real-time feedback enabled businesses to address service gaps and improve customer satisfaction.",
+            "icon": null
+          },
+          {
+            "title": "35% Increase in Feedback Participation",
+            "description": "Multi-channel distribution ensured higher response rates and comprehensive insights.",
+            "icon": null
+          },
+          {
+            "title": "Regulatory Compliance",
+            "description": "Immutable change history and activity logs ensured full compliance with audit standards.",
+            "icon": null
+          }
+        ],
+        "bodyHtml": "\n<section class=\"section\">\n  <div class=\"container\">\n    <div class=\"cs-content-section\">\n      <h3>Business Problem</h3>\n      <p>A financial services company, managing over half of the national credit risk assessment market, struggled with inefficiencies and revenue leakage due to outdated legacy systems. To remain competitive, they required a modern, AI-powered platform to streamline credit risk workflows, reduce operational bottlenecks, and improve financial performance.</p>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Solution</h3>\n      <p>IncubXperts developed a robust, AI-driven web and mobile platform using a Disconnected Architecture to modernize the credit risk assessment process. The solution automates workflows, enhances user engagement, and improves operational efficiency with key features:</p>\n<ul><li><strong>Cross-Platform Development:</strong> Used MAUI to build a mobile app with reusable code for iOS and Android, reducing development efforts.</li><li><strong>AI-Powered Survey Automation:</strong> Automated the conversion of field survey findings into structured audit reports using Generative AI, reducing back-office processing time and enhancing accuracy.</li><li><strong>Predictive Analytics for Loan Approval: </strong>Leveraged AI to calculate loan approval probabilities based on survey and user data, enabling faster and data-driven decisions.</li><li><strong>Offline Sync and Geo Tracking:</strong> Provided uninterrupted app usage and integrated geocoordinate mapping for data authentication and workforce tracking.</li><li><strong>Dynamic and Intuitive UI:</strong> Implemented dynamic form rendering for a flexible, user-friendly interface tailored to business needs.</li><li><strong>AI-Driven Business Rule Engine:</strong> Automated contract verification, ensured adherence to turnaround times, and detected anomalies or potential fraud risks.</li><li><strong>Real-Time Reporting:</strong> Delivered actionable insights with near real-time reporting in multiple formats (PDF, Excel, dashboards) to optimize decision-making and operations.</li></ul>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Stack</h3>\n      <ul><li><strong>Core Technologies: </strong>ASP.NET MVC, MS SQL Server, Web API, MAUI, Azure Functions, Google Maps</li><li><strong>AI and Data Services:</strong> Azure Cognitive Services, OpenAI GPT Models, Azure Machine Learning</li><li><strong>Data Management: </strong>Azure SQL, Azure Blob Storage, Azure Cosmos DB</li></ul>\n    </div>\n  </div>\n</section>",
+        "sourceFile": "strapi:Ravi-7-million-cases-3000-users-an-ai-driven-phenomenon-in-credit-risk-assessment"
+      },
+      "sourceSnapshot": {
+        "title": "Ravi's Test case story",
+        "categoryName": "Fintech",
+        "heroImageUrl": "/uploads/Memoforge_37629f98c8.webp",
+        "ogImageUrl": "/uploads/Content_5187328c87_5ee8a71e86.webp",
+        "detailImageUrl": null,
+        "detailImageIsVideo": false,
+        "tags": [
+          "Fintech",
+          "AI",
+          "Credit Risk Automation",
+          "Financial Compliance",
+          "Predictive Analytics",
+          "AI Adoption & Strategy",
+          "Integrations",
+          "Credit Risk Management",
+          "Predictive Loan Approval",
+          "Analytics",
+          "Offline Functionality",
+          "Web and Mobile App",
+          "Automated Business Rule Engine"
+        ],
+        "heroSummary": "Ravi's Test case story",
+        "metaDescription": "Ravi's Test case story",
+        "benefits": [
+          {
+            "title": "20% Boost in NPS",
+            "description": "Real-time feedback enabled businesses to address service gaps and improve customer satisfaction.",
+            "iconUrl": null
+          },
+          {
+            "title": "35% Increase in Feedback Participation",
+            "description": "Multi-channel distribution ensured higher response rates and comprehensive insights.",
+            "iconUrl": null
+          },
+          {
+            "title": "Regulatory Compliance",
+            "description": "Immutable change history and activity logs ensured full compliance with audit standards.",
+            "iconUrl": null
+          }
+        ],
+        "bodySource": {
+          "kind": "blocks",
+          "raw": "[{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Business Problem\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"A financial services company, managing over half of the national credit risk assessment market, struggled with inefficiencies and revenue leakage due to outdated legacy systems. To remain competitive, they required a modern, AI-powered platform to streamline credit risk workflows, reduce operational bottlenecks, and improve financial performance.\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Solution\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"IncubXperts developed a robust, AI-driven web and mobile platform using a Disconnected Architecture to modernize the credit risk assessment process. The solution automates workflows, enhances user engagement, and improves operational efficiency with key features:\",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Cross-Platform Development:\",\"type\":\"text\"},{\"text\":\" Used MAUI to build a mobile app with reusable code for iOS and Android, reducing development efforts.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI-Powered Survey Automation:\",\"type\":\"text\"},{\"text\":\" Automated the conversion of field survey findings into structured audit reports using Generative AI, reducing back-office processing time and enhancing accuracy.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Predictive Analytics for Loan Approval: \",\"type\":\"text\"},{\"text\":\"Leveraged AI to calculate loan approval probabilities based on survey and user data, enabling faster and data-driven decisions.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Offline Sync and Geo Tracking:\",\"type\":\"text\"},{\"text\":\" Provided uninterrupted app usage and integrated geocoordinate mapping for data authentication and workforce tracking.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Dynamic and Intuitive UI:\",\"type\":\"text\"},{\"text\":\" Implemented dynamic form rendering for a flexible, user-friendly interface tailored to business needs.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI-Driven Business Rule Engine:\",\"type\":\"text\"},{\"text\":\" Automated contract verification, ensured adherence to turnaround times, and detected anomalies or potential fraud risks.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Real-Time Reporting:\",\"type\":\"text\"},{\"text\":\" Delivered actionable insights with near real-time reporting in multiple formats (PDF, Excel, dashboards) to optimize decision-making and operations.\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Stack\",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Core Technologies: \",\"type\":\"text\"},{\"text\":\"ASP.NET MVC, MS SQL Server, Web API, MAUI, Azure Functions, Google Maps\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"AI and Data Services:\",\"type\":\"text\"},{\"text\":\" Azure Cognitive Services, OpenAI GPT Models, Azure Machine Learning\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Data Management: \",\"type\":\"text\"},{\"text\":\"Azure SQL, Azure Blob Storage, Azure Cosmos DB\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]}]"
+        },
+        "publishDate": "2026-09-07"
+      },
+      "contentHash": "sha256:b442ba0c81a3f45ee209af5e239d3ff0697e4a2d9a97eee492f4a0405e80e82f",
+      "approval": {
+        "approvedAt": "2026-09-25T10:46:22.032Z",
+        "approvedBy": "Raviraj Suryavanshi",
+        "environment": "production",
+        "action": "new",
+        "previousContentHash": null
+      }
+    },
+    "a-customizable-survey-solution-to-assess-customer-satisfaction": {
+      "strapiEntryId": 7,
+      "story": {
+        "slug": "a-customizable-survey-solution-to-assess-customer-satisfaction",
+        "title": "A Customizable Survey Solution to Assess Customer Satisfaction",
+        "category": "Fintech",
+        "client": "",
+        "publishDate": "2026-09-07",
+        "heroSummary": "How IncubXperts built a scalable, white-labeled survey platform for a mortgage services fintech to unify branding and capture real-time customer feedback.",
+        "metaDescription": "How IncubXperts built a scalable, white-labeled survey platform for a mortgage services fintech to unify branding and capture real-time customer feedback.",
+        "heroImage": "/images/case-studies/strapi/Software_Lynx_cover_final_563291d300_0a6b8758dc.webp",
+        "ogImage": "/images/case-studies/strapi/Content_5187328c87_5ee8a71e86.webp",
+        "detailImage": {
+          "url": "/images/case-studies/strapi/07032025_Software_Lynx_689a5b2f79_9dacfcc926.webp",
+          "isVideo": false
+        },
+        "tags": [
+          "Fintech",
+          "Custom Survey Solution",
+          "Customer Engagement Platform",
+          "Dashboarding & Analytics",
+          "Real-time Insights",
+          "Survey Customization Platform",
+          "White Labeling Solution",
+          "Customizable Survey Engine",
+          "Automated Survey Creation"
+        ],
+        "stats": [],
+        "benefits": [],
+        "bodyHtml": "\n<section class=\"section\">\n  <div class=\"container\">\n    <div class=\"cs-content-section\">\n      <h3>Business Problem</h3>\n      <p>A leading fintech company in mortgage services struggled with fragmented communication channels, inconsistent branding, and a lack of real-time insights. These challenges hindered their ability to gauge customer satisfaction effectively and align feedback collection with diverse workflows. A scalable, secure, and customizable feedback platform was essential to address these gaps and enhance customer engagement.</p>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Solution</h3>\n      <p>IncubXperts developed a secure, scalable, and domain-agnostic feedback platform tailored to gather actionable customer insights:</p>\n<ul><li><strong>Customizable Survey Engine: </strong>Built a dynamic engine supporting diverse question types and white-labeled templates for seamless branding across industries like insurance and loan verification.</li><li><strong>Multi-Channel Distribution: </strong>Enabled surveys via social media, email, and SMS, while integrating with enterprise systems like loan origination systems (LOS) to streamline workflows.</li><li><strong>Real-Time Insights: </strong>Provided tools for collecting, processing, and visualizing feedback in real-time to drive data-driven strategies.</li><li><strong>Scalable and Secure Architecture:</strong> Designed a robust platform to handle high usage volumes, ensuring data security and compliance with industry regulations.</li></ul>\n    </div>\n\n    <div class=\"cs-content-section\">\n      <h3>Technology Stack</h3>\n      <ul><li><strong>Back-End:</strong> ASP.NET Core</li><li><strong>Front-End:</strong> Vue.js, Vuetify</li><li><strong>UI Design:</strong> Figma, MVC Razor UI</li><li><strong>Project Management: </strong>Jira</li></ul>\n    </div>\n  </div>\n</section>",
+        "sourceFile": "strapi:a-customizable-survey-solution-to-assess-customer-satisfaction"
+      },
+      "sourceSnapshot": {
+        "title": "A Customizable Survey Solution to Assess Customer Satisfaction",
+        "categoryName": "Fintech",
+        "heroImageUrl": "/uploads/Software_Lynx_cover_final_563291d300_0a6b8758dc.webp",
+        "ogImageUrl": "/uploads/Content_5187328c87_5ee8a71e86.webp",
+        "detailImageUrl": "/uploads/07032025_Software_Lynx_689a5b2f79_9dacfcc926.webp",
+        "detailImageIsVideo": false,
+        "tags": [
+          "Fintech",
+          "Custom Survey Solution",
+          "Customer Engagement Platform",
+          "Dashboarding & Analytics",
+          "Real-time Insights",
+          "Survey Customization Platform",
+          "White Labeling Solution",
+          "Customizable Survey Engine",
+          "Automated Survey Creation"
+        ],
+        "heroSummary": "How IncubXperts built a scalable, white-labeled survey platform for a mortgage services fintech to unify branding and capture real-time customer feedback.",
+        "metaDescription": "How IncubXperts built a scalable, white-labeled survey platform for a mortgage services fintech to unify branding and capture real-time customer feedback.",
+        "benefits": [],
+        "bodySource": {
+          "kind": "blocks",
+          "raw": "[{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Business Problem\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"A leading fintech company in mortgage services struggled with fragmented communication channels, inconsistent branding, and a lack of real-time insights. These challenges hindered their ability to gauge customer satisfaction effectively and align feedback collection with diverse workflows. A scalable, secure, and customizable feedback platform was essential to address these gaps and enhance customer engagement.\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Solution\",\"type\":\"text\"}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"IncubXperts developed a secure, scalable, and domain-agnostic feedback platform tailored to gather actionable customer insights:\",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Customizable Survey Engine: \",\"type\":\"text\"},{\"text\":\"Built a dynamic engine supporting diverse question types and white-labeled templates for seamless branding across industries like insurance and loan verification.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Multi-Channel Distribution: \",\"type\":\"text\"},{\"text\":\"Enabled surveys via social media, email, and SMS, while integrating with enterprise systems like loan origination systems (LOS) to streamline workflows.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Real-Time Insights: \",\"type\":\"text\"},{\"text\":\"Provided tools for collecting, processing, and visualizing feedback in real-time to drive data-driven strategies.\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Scalable and Secure Architecture:\",\"type\":\"text\"},{\"text\":\" Designed a robust platform to handle high usage volumes, ensuring data security and compliance with industry regulations.\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]},{\"type\":\"heading\",\"level\":2,\"children\":[{\"bold\":true,\"text\":\"Technology Stack \",\"type\":\"text\"}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Back-End:\",\"type\":\"text\"},{\"text\":\" ASP.NET Core\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Front-End:\",\"type\":\"text\"},{\"text\":\" Vue.js, Vuetify\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"UI Design:\",\"type\":\"text\"},{\"text\":\" Figma, MVC Razor UI\",\"type\":\"text\"}]}]},{\"type\":\"list\",\"format\":\"unordered\",\"children\":[{\"type\":\"list-item\",\"children\":[{\"bold\":true,\"text\":\"Project Management: \",\"type\":\"text\"},{\"text\":\"Jira\",\"type\":\"text\"}]}]},{\"type\":\"paragraph\",\"children\":[{\"text\":\"\",\"type\":\"text\"}]}]"
+        },
+        "publishDate": "2026-09-07"
+      },
+      "contentHash": "sha256:5fbe15832b5f34650ce6a3d72552a9e7a1ff0f86c1f34128f53defdfe7b25083",
+      "approval": {
+        "approvedAt": "2026-09-25T10:46:22.032Z",
+        "approvedBy": "Raviraj Suryavanshi",
+        "environment": "production",
+        "action": "new",
+        "previousContentHash": null
+      }
+    },
     "a-mobile-solution-to-enhance-engagement-for-church-communications": {
       "strapiEntryId": 1251,
       "story": {

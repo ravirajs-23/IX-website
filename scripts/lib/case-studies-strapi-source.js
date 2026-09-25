@@ -17,7 +17,10 @@ const { canonicalStringify } = require("./canonical-json");
 const ROOT = path.join(__dirname, "..", "..");
 const MEDIA_MIRROR_DIR = path.join(ROOT, "images", "case-studies", "strapi");
 
-const STRAPI_URL = () => process.env.STRAPI_URL || "";
+// Strips a trailing slash so every call site can safely do `${STRAPI_URL()}/api/...`
+// without risking a double slash (e.g. STRAPI_URL=http://localhost:1337/ in .env
+// would otherwise produce http://localhost:1337//api/case-stories, a 404).
+const STRAPI_URL = () => (process.env.STRAPI_URL || "").replace(/\/+$/, "");
 const STRAPI_API_TOKEN = () => process.env.STRAPI_API_TOKEN || "";
 
 function truncate(str, max) {
