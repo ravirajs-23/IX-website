@@ -75,5 +75,19 @@
       "https://images.unsplash.com/photo-1582192730841-2a682d7375f9?w=800&h=500&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&h=500&fit=crop&auto=format"
     ]
+  },
+  {
+    "status": "Upcoming",
+    "type": "Webinar",
+    "date": "December 1, 2026",
+    "location": "Virtual",
+    "speakers": ["Test Speaker One", "Test Speaker Two"],
+    "attendees": "50",
+    "title": "[TEST] Publish-Events Pipeline Dry Run",
+    "subtitle": "Verifying the new publish flow end to end",
+    "description": "This is a throwaway test entry used to validate the publish-events skill. Not a real event — safe to ignore/remove.",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format"
+    ]
   }
 ]
