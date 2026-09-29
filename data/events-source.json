@@ -1,0 +1,79 @@
+[
+  {
+    "status": "Upcoming",
+    "type": "Summit",
+    "date": "November 12–14, 2026",
+    "location": "Javits Center, New York",
+    "speakers": ["Dr. Aiyana Redcloud", "Marcus Fernandez", "Yuki Tanaka-Smith"],
+    "attendees": "2,400",
+    "title": "Global Leadership Summit 2026",
+    "subtitle": "Shaping the Future of Enterprise",
+    "description": "Three days of keynotes, workshops, and networking sessions for C-suite executives and senior leaders across industries.",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1730134322176-862f1cf9bc9f?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1582192730841-2a682d7375f9?w=800&h=500&fit=crop&auto=format"
+    ]
+  },
+  {
+    "status": "Upcoming",
+    "type": "Forum",
+    "date": "October 3, 2026",
+    "location": "The Shed, Chicago",
+    "speakers": ["Prof. Leilani Kahananui", "Omar Al-Rashidi", "Svetlana Volkov"],
+    "attendees": "600",
+    "title": "Innovation & Technology Forum",
+    "subtitle": "AI, Automation, and the Next Decade",
+    "description": "A focused half-day forum examining how artificial intelligence is reshaping operations, workforce design, and competitive strategy.",
+    "images": [
+      "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1675716921224-e087a0cca69a?w=800&h=500&fit=crop&auto=format"
+    ]
+  },
+  {
+    "status": "Upcoming",
+    "type": "Roundtable",
+    "date": "September 18, 2026",
+    "location": "The Standard, London",
+    "speakers": ["Chidinma Okonkwo", "Per-Erik Lindqvist"],
+    "attendees": "80",
+    "title": "Sustainability & Impact Roundtable",
+    "subtitle": "Measuring What Matters",
+    "description": "An invitation-only roundtable for sustainability officers and ESG leads to share frameworks, benchmark progress, and align on reporting standards.",
+    "images": [
+      "https://images.unsplash.com/photo-1571645163064-77faa9676a46?w=1200&h=700&fit=crop&auto=format"
+    ]
+  },
+  {
+    "status": "Past",
+    "type": "Investor Event",
+    "date": "April 24, 2025",
+    "location": "Four Seasons, San Francisco",
+    "speakers": ["James Hargreaves, CEO", "Priya Sundaram, CFO"],
+    "attendees": "450",
+    "title": "Annual Investor Day 2025",
+    "subtitle": "Strategy, Growth, and Long-Term Vision",
+    "description": "Our 2025 Investor Day brought together institutional and individual shareholders for a full-day presentation on strategic direction and financial outlook.",
+    "images": [
+      "https://images.unsplash.com/photo-1575029644286-efb9039cac46?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1700514077430-3659e38eb5e7?w=800&h=500&fit=crop&auto=format"
+    ]
+  },
+  {
+    "status": "Past",
+    "type": "Summit",
+    "date": "November 6–8, 2025",
+    "location": "Palais des Congrès, Paris",
+    "speakers": ["Kofi Mensah", "Annalise Brandt", "Tariq Al-Masri", "Dr. Ji-Young Park"],
+    "attendees": "2,200",
+    "title": "Global Leadership Summit 2025",
+    "subtitle": "Leading Through Uncertainty",
+    "description": "The 2025 edition of our flagship summit welcomed 2,200 executives from 44 countries for three days of strategic dialogue on leading through geopolitical volatility.",
+    "images": [
+      "https://images.unsplash.com/photo-1590674680695-8b9efe9b764d?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1582192730841-2a682d7375f9?w=800&h=500&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&h=500&fit=crop&auto=format"
+    ]
+  }
+]
