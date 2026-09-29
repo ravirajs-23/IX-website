@@ -1,6 +1,24 @@
 [
   {
     "status": "Upcoming",
+    "type": "Bootcamp",
+    "date": "October 31, 2026",
+    "location": "Virtual",
+    "speakers": ["Co-Founders"],
+    "attendees": "150+",
+    "title": "AI Bootcamp 04",
+    "subtitle": "",
+    "description": "",
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&h=700&fit=crop&auto=format"
+    ]
+  },
+  {
+    "status": "Upcoming",
     "type": "Summit",
     "date": "November 12–14, 2026",
     "location": "Javits Center, New York",
