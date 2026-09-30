@@ -62,7 +62,7 @@ entries, and `llms.txt`'s case-study block are all generated purely from
 snapshot of case-story content. `scripts/build-case-studies.js` reads only
 that file; it has **no Strapi/network access at all**, which is what makes
 it safe to run anywhere (including Vercel, see "Deployment" below) and keeps
-the mandatory pre-push rebuild-drift check meaningful.
+the rebuild-drift check (see "Optional pre-push check" below) meaningful.
 
 Strapi (Content Manager → Case Stories) is still where you author/edit case
 studies — it's just no longer built directly. New or changed Strapi content
@@ -76,7 +76,7 @@ node scripts/publish-case-studies.js --slugs=<a,b,c> --env=production --approved
 # (the two commands above only stage files - commit/branch/push/PR are a separate, visible step)
 git checkout -b case-studies/publish-<timestamp>
 git commit -m "..."
-git push origin case-studies/publish-<timestamp>   # triggers the pre-push hook
+git push origin case-studies/publish-<timestamp>   # runs the pre-push hook too, if you've installed it
 gh pr create --base main --title "..." --body "..."
 ```
 
@@ -250,33 +250,40 @@ fix a visual bug found by hand (in a chat session or otherwise), add a
 scenario for it here too, so a future change can't silently reintroduce the
 same bug — that's the whole point of the pre-push hook below.
 
-### Mandatory pre-push check
+### Optional pre-push check
 
-`git push` runs `scripts/style-diff.js --fast` automatically (via a
-`pre-push` git hook) and **blocks the push if anything mismatches**. This
-is deliberate, not a suggestion — this project's history is full of things
-that were called "verified" after a visual/screenshot pass and turned out
-wrong once actually diffed against computed style, including entire
-sections built with the wrong component. The hook also refuses to push if
-`npm run build` produces uncommitted output (i.e. a template/script was
-edited without regenerating and committing the built pages).
+`scripts/style-diff.js --fast` can run automatically before every push (via
+a `pre-push` git hook) and block the push if anything mismatches — but
+it's **opt-in, not installed by default**. Install it yourself if you want
+every push gated on this:
+```bash
+npm run hooks:install
+```
+This project's history is full of things that were called "verified" after
+a visual/screenshot pass and turned out wrong once actually diffed against
+computed style, including entire sections built with the wrong component —
+that's the case for having this check exist and run before a push touching
+a rendered page. It's just not forced on every developer/session by
+default, since a check that also depends on the live site being reachable
+can otherwise block an unrelated push on nothing more than a transient
+network hiccup.
 
-- **Installed automatically** by `npm install` (via `postinstall` →
-  `node scripts/install-hooks.js`), since `.git/hooks/` isn't tracked by
-  git and wouldn't otherwise survive a fresh clone. Re-run
-  `node scripts/install-hooks.js` by hand if you ever suspect it's missing.
 - **The hook script itself lives in `scripts/hooks/pre-push`** (tracked,
-  editable) — `.git/hooks/pre-push` is just a copy of it.
-- **Bypass** (use sparingly, and only for a push that genuinely doesn't
-  touch any rendered page — e.g. a README-only change):
+  editable) — once installed, `.git/hooks/pre-push` is just a copy of it.
+- Without installing it, run the check by hand whenever you judge it's
+  warranted:
+  ```bash
+  npm run style-diff:fast
+  ```
+- If you've installed the hook and want to skip it for one push (e.g. a
+  README-only change):
   ```bash
   git push --no-verify
   ```
 - If a scenario itself is stale or wrong (a page was intentionally
   restructured, an element no longer exists) — fix the scenario in
   `scripts/style-diff.js` with a comment explaining why, the same as any
-  other bug fix; don't reach for `--no-verify` to work around a check
-  that's correctly catching something.
+  other bug fix.
 
 ---
 

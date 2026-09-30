@@ -30,10 +30,10 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
-const { loadDotEnv } = require("./lib/env");
+const { loadDotEnvOrExit } = require("./lib/env");
 
 const ROOT = path.join(__dirname, "..");
-loadDotEnv(ROOT);
+loadDotEnvOrExit(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 const environments = require("./case-study-environments");
@@ -88,6 +88,8 @@ async function main() {
   const { slugs, environment, approvedBy } = parseArgs();
   const manifest = loadManifest();
 
+  const { url: checkedUrl } = await source.checkConnection();
+  console.log(`Checking your content source at ${checkedUrl}...`);
   console.log(`Fetching current Strapi entries to re-validate ${slugs.length} requested slug(s)…`);
   const { entries } = await source.fetchStrapiCaseStudies();
   const entryBySlug = new Map(entries.map((e) => [e.slug, e]));
@@ -147,8 +149,9 @@ async function main() {
   // build-case-studies.js's buildSitemap() rewrites sitemap.xml from scratch
   // (static pages + case studies only), which drops the <!-- SERVICES:...
   // --> block build-services.js appends — re-run it too so sitemap.xml
-  // matches what a full `npm run build` produces, or the pre-push hook's
-  // rebuild-drift check fails on every publish (found via real testing).
+  // matches what a full `npm run build` produces, or the (optional,
+  // opt-in) pre-push hook's rebuild-drift check fails if it's installed
+  // (found via real testing).
   buildServices();
 
   const pathsToStage = [

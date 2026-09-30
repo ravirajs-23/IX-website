@@ -4,10 +4,11 @@
  *
  * Copies scripts/hooks/* into .git/hooks/ and marks them executable.
  * .git/hooks isn't tracked by git, so this is what actually makes the
- * pre-push style-diff check apply on a given clone — run automatically via
- * the "postinstall" npm script (so `npm install` re-establishes it after a
- * fresh clone or a `.git` directory that got reset), or by hand:
- *   node scripts/install-hooks.js
+ * pre-push style-diff check apply on a given clone. Opt-in only — run it
+ * yourself when you want the check installed:
+ *   npm run hooks:install
+ * (not run automatically by `npm install`; a developer decides for
+ * themselves whether they want every push gated on this).
  *
  * Never overwrites a hook that wasn't installed by this script (checks for
  * the marker comment first) — so it won't clobber a hook you or another

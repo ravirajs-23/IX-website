@@ -408,6 +408,49 @@ function getContentWarnings(entry, sourceSnapshot) {
 // Fetching from Strapi.
 // ---------------------------------------------------------------------------
 
+/**
+ * A lightweight preflight check, run before any real work: confirms the
+ * content source is reachable and the token is accepted, with a specific,
+ * plain-language reason on failure (unreachable address vs. rejected
+ * credentials) — never a retry, never a guessed fix. Also hands back which
+ * URL was checked, so that fact is always stated rather than left implicit
+ * (a review against the wrong Strapi instance once produced a confusing
+ * pile of "orphaned" stories that were actually just live elsewhere).
+ */
+async function checkConnection() {
+  const strapiUrl = STRAPI_URL();
+  const token = STRAPI_API_TOKEN();
+  if (!strapiUrl || !token) {
+    throw new Error("STRAPI_URL/STRAPI_API_TOKEN not set — copy .env.example to .env and fill them in.");
+  }
+
+  let res;
+  try {
+    res = await fetch(`${strapiUrl}/api/case-stories?pagination[pageSize]=1`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (err) {
+    throw new Error(
+      `Can't reach your content source at ${strapiUrl} (${err.message}). ` +
+        `Check that STRAPI_URL is correct and the server is running.`
+    );
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(
+      `Reached your content source at ${strapiUrl}, but it rejected the API token (HTTP ${res.status}). ` +
+        `Check STRAPI_API_TOKEN in .env for typos or a missing "=" sign.`
+    );
+  }
+  if (!res.ok) {
+    throw new Error(
+      `Your content source at ${strapiUrl} responded with an unexpected error (HTTP ${res.status} ${res.statusText}).`
+    );
+  }
+
+  return { url: strapiUrl };
+}
+
 async function fetchStrapiCaseStudies() {
   const strapiUrl = STRAPI_URL();
   const token = STRAPI_API_TOKEN();
@@ -492,6 +535,7 @@ async function fetchAllTestimonials() {
 }
 
 module.exports = {
+  checkConnection,
   fetchStrapiCaseStudies,
   fetchAllTestimonials,
   mirrorMedia,

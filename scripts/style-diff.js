@@ -50,9 +50,9 @@ const ALL_BREAKPOINTS = [
 // --fast / FAST=1: just the two ends of the range (skips md/lg). Every
 // breakpoint-dependent scenario added so far only actually changes value
 // at one boundary, so two points still catches a regression there — this
-// exists so the mandatory pre-push hook (see scripts/hooks/pre-push)
-// doesn't turn every push into a multi-minute wait. Run the full 4-point
-// sweep by hand (`npm run style-diff`, no flag) after adding a new
+// exists so the optional, opt-in pre-push hook (see scripts/hooks/pre-push)
+// doesn't turn every push into a multi-minute wait if you've installed it.
+// Run the full 4-point sweep by hand (`npm run style-diff`, no flag) after adding a new
 // scenario, so you know which single breakpoint would even catch it.
 const FAST = process.argv.includes("--fast") || process.env.FAST === "1";
 const BREAKPOINTS = FAST ? [ALL_BREAKPOINTS[0], ALL_BREAKPOINTS[3]] : ALL_BREAKPOINTS;
@@ -845,7 +845,15 @@ async function main() {
 
       console.log(fmtRow(scenario.name, live, ours));
       if (!same) {
-        mismatchDetails.push({ breakpoint: bp.label, scenario: scenario.name, live, ours });
+        // A fetch/navigation failure (network hiccup, timeout, live site
+        // briefly down) surfaces as {error: message} on one side, which
+        // then naturally compares unequal — but it isn't a real visual
+        // difference, and reporting it as an ordinary mismatch is exactly
+        // what made a transient network blip look identical to a genuine
+        // regression. Tag it so the final summary can be honest about
+        // which kind of failure this actually is.
+        const isInfraError = Boolean(live?.error || ours?.error);
+        mismatchDetails.push({ breakpoint: bp.label, scenario: scenario.name, live, ours, isInfraError });
       }
     }
   }
@@ -856,11 +864,27 @@ async function main() {
   console.log(`${totalChecks - totalMismatches}/${totalChecks} checks match.\n`);
 
   if (mismatchDetails.length) {
-    console.log("Mismatches:\n");
-    for (const m of mismatchDetails) {
-      console.log(`[${m.breakpoint}] ${m.scenario}`);
-      console.log(`  live: ${JSON.stringify(m.live)}`);
-      console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+    const infraErrors = mismatchDetails.filter((m) => m.isInfraError);
+    const realMismatches = mismatchDetails.filter((m) => !m.isInfraError);
+
+    if (realMismatches.length) {
+      console.log("Real visual differences (the live site and this build genuinely don't match):\n");
+      for (const m of realMismatches) {
+        console.log(`[${m.breakpoint}] ${m.scenario}`);
+        console.log(`  live: ${JSON.stringify(m.live)}`);
+        console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+      }
+    }
+    if (infraErrors.length) {
+      console.log(
+        "Couldn't complete these checks (looks like a network/timeout problem reaching the live site or the " +
+          "local preview, not a real visual difference — this sometimes resolves itself if you try again):\n"
+      );
+      for (const m of infraErrors) {
+        console.log(`[${m.breakpoint}] ${m.scenario}`);
+        console.log(`  live: ${JSON.stringify(m.live)}`);
+        console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+      }
     }
     process.exitCode = 1;
   } else {

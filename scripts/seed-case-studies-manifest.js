@@ -19,10 +19,10 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { loadDotEnv } = require("./lib/env");
+const { loadDotEnvOrExit } = require("./lib/env");
 
 const ROOT = path.join(__dirname, "..");
-loadDotEnv(ROOT);
+loadDotEnvOrExit(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 

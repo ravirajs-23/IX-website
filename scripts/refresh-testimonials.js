@@ -25,10 +25,10 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
-const { loadDotEnv } = require("./lib/env");
+const { loadDotEnvOrExit } = require("./lib/env");
 
 const ROOT = path.join(__dirname, "..");
-loadDotEnv(ROOT);
+loadDotEnvOrExit(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 const { buildSite } = require("./build-case-studies");
@@ -71,7 +71,8 @@ async function main() {
   // buildSite()'s buildSitemap() rewrites sitemap.xml from scratch, which
   // drops the services block build-services.js appends — re-run it so
   // sitemap.xml matches what a full `npm run build` produces (otherwise the
-  // pre-push hook's rebuild-drift check fails).
+  // optional, opt-in pre-push hook's rebuild-drift check fails if it's
+  // installed).
   buildServices();
 
   execFileSync(
