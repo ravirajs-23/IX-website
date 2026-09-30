@@ -1,12 +1,11 @@
 #!/bin/sh
 # Installed by scripts/install-hooks.js
-# pre-push hook — mandatory live-site style-diff check.
+# pre-push hook — optional live-site style-diff check.
 #
-# Installed by scripts/install-hooks.js (run automatically via the
-# "postinstall" npm script, or manually with `node scripts/install-hooks.js`).
-# This file is the source of truth — .git/hooks/pre-push is just a copy of
-# it, so .git/hooks isn't tracked by git and would otherwise silently not
-# apply for a fresh clone or a teammate's machine.
+# Opt-in only: run `npm run hooks:install` yourself if you want every push
+# gated on this (not installed automatically by `npm install`). This file
+# is the source of truth — .git/hooks/pre-push is just a copy of it, so
+# .git/hooks isn't tracked by git and won't have this unless you install it.
 #
 # What it does, and why:
 #   This project's history (see git log / SITE-AUDIT.md) is full of things
@@ -14,8 +13,9 @@
 #   turned out wrong once actually diffed against the live site's computed
 #   style — wrong colors, wrong breakpoints, entire sections built with the
 #   wrong component. scripts/style-diff.js is the tool that catches that
-#   class of bug; this hook makes running it non-optional before code
-#   reaches origin, rather than relying on remembering to run it by hand.
+#   class of bug. Install this hook if you want that check to run
+#   automatically before every push; otherwise run `npm run style-diff` (or
+#   `style-diff:fast`) by hand whenever you judge it's warranted.
 #
 # What it does NOT do:
 #   It only checks the fixed list of scenarios in scripts/style-diff.js —
@@ -23,8 +23,7 @@
 #   visual bug (see that file's own header comment for the format), and it
 #   does not (cannot) verify content accuracy, only computed style.
 #
-# Bypass (use sparingly, and only for a push that genuinely doesn't touch
-# any rendered page — e.g. a README-only change):
+# Bypass (if you've installed this and want to skip it for one push):
 #   git push --no-verify
 
 set -e

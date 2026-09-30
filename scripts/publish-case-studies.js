@@ -149,8 +149,9 @@ async function main() {
   // build-case-studies.js's buildSitemap() rewrites sitemap.xml from scratch
   // (static pages + case studies only), which drops the <!-- SERVICES:...
   // --> block build-services.js appends — re-run it too so sitemap.xml
-  // matches what a full `npm run build` produces, or the pre-push hook's
-  // rebuild-drift check fails on every publish (found via real testing).
+  // matches what a full `npm run build` produces, or the (optional,
+  // opt-in) pre-push hook's rebuild-drift check fails if it's installed
+  // (found via real testing).
   buildServices();
 
   const pathsToStage = [

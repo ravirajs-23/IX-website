@@ -50,9 +50,9 @@ const ALL_BREAKPOINTS = [
 // --fast / FAST=1: just the two ends of the range (skips md/lg). Every
 // breakpoint-dependent scenario added so far only actually changes value
 // at one boundary, so two points still catches a regression there — this
-// exists so the mandatory pre-push hook (see scripts/hooks/pre-push)
-// doesn't turn every push into a multi-minute wait. Run the full 4-point
-// sweep by hand (`npm run style-diff`, no flag) after adding a new
+// exists so the optional, opt-in pre-push hook (see scripts/hooks/pre-push)
+// doesn't turn every push into a multi-minute wait if you've installed it.
+// Run the full 4-point sweep by hand (`npm run style-diff`, no flag) after adding a new
 // scenario, so you know which single breakpoint would even catch it.
 const FAST = process.argv.includes("--fast") || process.env.FAST === "1";
 const BREAKPOINTS = FAST ? [ALL_BREAKPOINTS[0], ALL_BREAKPOINTS[3]] : ALL_BREAKPOINTS;

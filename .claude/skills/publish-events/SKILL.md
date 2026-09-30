@@ -22,7 +22,6 @@ rules below on every step.**
 | branch | private draft workspace |
 | commit | save point |
 | Pull Request | review request |
-| pre-push hook | automatic visual safety check |
 
 ## Ask only when there's a real choice; state everything else as fact
 
@@ -49,9 +48,8 @@ live until the very end of this flow.
   request, then stop.
 
 State upfront, once: "I'll draft the event details with you, save a
-preview, then send it out for review — the last step includes an
-automatic visual safety check that usually takes one to three minutes.
-Nothing goes live until a developer merges the review request."
+preview, then send it out for review. Nothing goes live until a developer
+merges the review request."
 
 ## 2. Gather the event's details
 
@@ -114,19 +112,18 @@ and last real confirmation in this flow.
 ```bash
 git push origin events/publish-<timestamp>
 ```
-This runs the automatic visual safety check (~1-3 minutes, as already
-stated up front). Two outcomes:
+If this fails for any reason, follow the standing rule above: relay
+whatever message it gives exactly and completely, don't retry it yourself,
+don't suggest `--no-verify`, and reassure them nothing was lost. (Some
+developers choose to install an optional visual regression check that runs
+automatically here — if so, its message will already distinguish a genuine
+visual difference from a network/timeout problem; either way, just relay
+it.)
 
-- **It fails**: relay the safety check's own message exactly and
-  completely — it distinguishes a genuine visual difference from a
-  network/timeout problem, and states plainly that nothing was lost.
-  Follow the rule above: don't retry it yourself, don't suggest
-  `--no-verify`. Give the user the complete message to share with a
-  developer, and stop here.
-- **It succeeds**: open the review request —
-  ```bash
-  gh pr create --base main --title "Publish event: <title>" --body "<what changed, plain language>"
-  ```
+Otherwise, open the review request:
+```bash
+gh pr create --base main --title "Publish event: <title>" --body "<what changed, plain language>"
+```
 
 ## 7. Wrap up
 

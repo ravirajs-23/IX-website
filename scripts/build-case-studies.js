@@ -7,9 +7,9 @@
  * (see the publish-case-studies skill / scripts/publish-case-studies.js for
  * how stories get into that manifest). This script itself has NO Strapi or
  * network access at all: it's a deterministic `manifest.json -> rendered
- * site` function, which is what keeps the mandatory pre-push hook's rebuild-
- * drift check meaningful, and means the site build can never silently lose
- * content just because Strapi happens to be unreachable.
+ * site` function, which is what keeps the (optional, opt-in) pre-push
+ * hook's rebuild-drift check meaningful, and means the site build can
+ * never silently lose content just because Strapi happens to be unreachable.
  *
  * Every run:
  *   1. Reads every approved story from the manifest.

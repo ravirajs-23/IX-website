@@ -30,7 +30,6 @@ them.
 | manifest | the official published list |
 | Strapi | your content source |
 | environment | (see below — usually just omit the word) |
-| pre-push hook / style-diff | automatic visual safety check |
 
 ## Ask only when there's a real choice; state everything else as fact
 
@@ -77,10 +76,9 @@ anything broke.
 State upfront, once, before running anything: "I'm going to check your
 content source for anything new or changed, then show you a short list to
 approve. If you approve anything, I'll prepare it in a private draft
-workspace, run an automatic visual safety check (this last part usually
-takes one to three minutes), and open a review request — nothing goes live
-until a developer merges that request." This is the entire plan; you
-won't need to re-explain it later.
+workspace and open a review request — nothing goes live until a developer
+merges that request." This is the entire plan; you won't need to
+re-explain it later.
 
 Run:
 ```bash
@@ -175,19 +173,19 @@ confirmation in this whole flow.
 git push origin case-studies/publish-<timestamp>
 ```
 
-This runs the automatic visual safety check (~1-3 minutes, as already
-stated up front — no need to re-explain the wait). Two outcomes:
+If this fails for any reason, follow the standing rule above: relay
+whatever message it gives exactly and completely, don't retry it yourself,
+don't suggest `--no-verify`, and reassure them nothing was lost — the
+user's approved changes are safely saved in the private draft workspace.
+(Some developers choose to install an optional visual regression check
+that runs automatically here — if so, its message will already distinguish
+a genuine visual difference from a network/timeout problem; either way,
+just relay it.)
 
-- **It fails**: relay the hook's own message exactly and completely — it
-  already distinguishes a genuine visual difference from a network/timeout
-  problem, and states plainly that nothing was lost. Follow the rule
-  above: don't retry it yourself, don't suggest `--no-verify`. The user's
-  approved changes are safely saved in the private draft workspace; give
-  them the complete message to share with a developer, and stop here.
-- **It succeeds**: open the review request —
-  ```bash
-  gh pr create --base main --title "Publish N case studies: <slugs>" --body "<list of new/updated stories, approver name, timestamp>"
-  ```
+Otherwise, open the review request:
+```bash
+gh pr create --base main --title "Publish N case studies: <slugs>" --body "<list of new/updated stories, approver name, timestamp>"
+```
 
 ## 7. Wrap up
 

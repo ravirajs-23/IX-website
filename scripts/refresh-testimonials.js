@@ -71,7 +71,8 @@ async function main() {
   // buildSite()'s buildSitemap() rewrites sitemap.xml from scratch, which
   // drops the services block build-services.js appends — re-run it so
   // sitemap.xml matches what a full `npm run build` produces (otherwise the
-  // pre-push hook's rebuild-drift check fails).
+  // optional, opt-in pre-push hook's rebuild-drift check fails if it's
+  // installed).
   buildServices();
 
   execFileSync(
