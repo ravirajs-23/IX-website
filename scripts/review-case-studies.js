@@ -24,10 +24,10 @@ const { Diff } = (() => {
     return { Diff: null };
   }
 })();
-const { loadDotEnv } = require("./lib/env");
+const { loadDotEnvOrExit } = require("./lib/env");
 
 const ROOT = path.join(__dirname, "..");
-loadDotEnv(ROOT);
+loadDotEnvOrExit(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 const { canonicalStringify } = require("./lib/canonical-json");
@@ -144,6 +144,8 @@ function buildStoryDiff(oldSnapshot, newSnapshot) {
 
 async function main() {
   const manifest = loadManifest();
+  const { url: checkedUrl } = await source.checkConnection();
+  console.error(`Checking your content source at ${checkedUrl}...`);
   const { entries, errors } = await source.fetchStrapiCaseStudies();
 
   if (ONE_SLUG) {
@@ -229,6 +231,14 @@ async function main() {
         approvedAt: manifest.stories[slug].approval?.approvedAt || null,
       });
     }
+  }
+
+  const previouslyApprovedCount = Object.keys(manifest.stories).length;
+  if (previouslyApprovedCount > 0 && result.orphaned.length / previouslyApprovedCount > 0.15) {
+    result.note =
+      `${result.orphaned.length} of ${previouslyApprovedCount} previously-approved stories are orphaned — ` +
+      `if that seems like a lot, double-check that ${checkedUrl} is the content source you meant to check ` +
+      `(a different Strapi instance can have a different set of stories).`;
   }
 
   console.log(JSON.stringify(result, null, 2));

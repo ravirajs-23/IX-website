@@ -845,7 +845,15 @@ async function main() {
 
       console.log(fmtRow(scenario.name, live, ours));
       if (!same) {
-        mismatchDetails.push({ breakpoint: bp.label, scenario: scenario.name, live, ours });
+        // A fetch/navigation failure (network hiccup, timeout, live site
+        // briefly down) surfaces as {error: message} on one side, which
+        // then naturally compares unequal — but it isn't a real visual
+        // difference, and reporting it as an ordinary mismatch is exactly
+        // what made a transient network blip look identical to a genuine
+        // regression. Tag it so the final summary can be honest about
+        // which kind of failure this actually is.
+        const isInfraError = Boolean(live?.error || ours?.error);
+        mismatchDetails.push({ breakpoint: bp.label, scenario: scenario.name, live, ours, isInfraError });
       }
     }
   }
@@ -856,11 +864,27 @@ async function main() {
   console.log(`${totalChecks - totalMismatches}/${totalChecks} checks match.\n`);
 
   if (mismatchDetails.length) {
-    console.log("Mismatches:\n");
-    for (const m of mismatchDetails) {
-      console.log(`[${m.breakpoint}] ${m.scenario}`);
-      console.log(`  live: ${JSON.stringify(m.live)}`);
-      console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+    const infraErrors = mismatchDetails.filter((m) => m.isInfraError);
+    const realMismatches = mismatchDetails.filter((m) => !m.isInfraError);
+
+    if (realMismatches.length) {
+      console.log("Real visual differences (the live site and this build genuinely don't match):\n");
+      for (const m of realMismatches) {
+        console.log(`[${m.breakpoint}] ${m.scenario}`);
+        console.log(`  live: ${JSON.stringify(m.live)}`);
+        console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+      }
+    }
+    if (infraErrors.length) {
+      console.log(
+        "Couldn't complete these checks (looks like a network/timeout problem reaching the live site or the " +
+          "local preview, not a real visual difference — this sometimes resolves itself if you try again):\n"
+      );
+      for (const m of infraErrors) {
+        console.log(`[${m.breakpoint}] ${m.scenario}`);
+        console.log(`  live: ${JSON.stringify(m.live)}`);
+        console.log(`  ours: ${JSON.stringify(m.ours)}\n`);
+      }
     }
     process.exitCode = 1;
   } else {

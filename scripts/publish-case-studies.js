@@ -30,10 +30,10 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
-const { loadDotEnv } = require("./lib/env");
+const { loadDotEnvOrExit } = require("./lib/env");
 
 const ROOT = path.join(__dirname, "..");
-loadDotEnv(ROOT);
+loadDotEnvOrExit(ROOT);
 
 const source = require("./lib/case-studies-strapi-source");
 const environments = require("./case-study-environments");
@@ -88,6 +88,8 @@ async function main() {
   const { slugs, environment, approvedBy } = parseArgs();
   const manifest = loadManifest();
 
+  const { url: checkedUrl } = await source.checkConnection();
+  console.log(`Checking your content source at ${checkedUrl}...`);
   console.log(`Fetching current Strapi entries to re-validate ${slugs.length} requested slug(s)…`);
   const { entries } = await source.fetchStrapiCaseStudies();
   const entryBySlug = new Map(entries.map((e) => [e.slug, e]));

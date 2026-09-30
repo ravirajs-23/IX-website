@@ -71,9 +71,15 @@ fi
 
 if [ "$DIFF_STATUS" -ne 0 ]; then
   echo ""
-  echo "❌ Push blocked: style-diff.js found mismatches against the live site."
-  echo "   Fix the mismatches, or if a scenario itself is stale/wrong, update"
-  echo "   it in scripts/style-diff.js with a comment explaining why."
+  echo "❌ Push blocked: the automatic visual safety check found a problem — see the"
+  echo "   breakdown above, which distinguishes two different kinds of failure:"
+  echo "   - 'Real visual differences' means the live site and this build genuinely"
+  echo "     don't match — a real bug to fix, or a stale scenario to update in"
+  echo "     scripts/style-diff.js."
+  echo "   - 'Couldn't complete these checks' means a network/timeout problem, not"
+  echo "     a real difference — trying the push again sometimes resolves it on its"
+  echo "     own; it is not fixed automatically here."
+  echo "   Nothing has been lost: your changes are safely committed on this branch."
   echo "   Emergency bypass (use sparingly): git push --no-verify"
   exit 1
 fi
