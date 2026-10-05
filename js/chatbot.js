@@ -45,14 +45,33 @@ function initChatbot() {
   const form = document.getElementById("chatbot-form");
   const input = document.getElementById("chatbot-input");
 
-  const history = [];
+  // Conversation survives page navigation: site links open in the SAME tab
+  // (the widget is re-created on the next page), so the open/closed state and
+  // the conversation are kept in sessionStorage — per tab, gone when the tab
+  // closes, never sent anywhere.
+  const STORE_KEY = "ix-chatbot-v1";
+  const MAX_TRANSCRIPT = 40;
+  const history = []; // {role, content} sent to the API as context
+  const transcript = []; // {kind:"text",role,text} | {kind:"visual",visual} — what to redraw
   let sending = false;
 
-  function setOpen(open) {
+  function saveState() {
+    try {
+      sessionStorage.setItem(
+        STORE_KEY,
+        JSON.stringify({ open: !panel.hidden, history, transcript: transcript.slice(-MAX_TRANSCRIPT) })
+      );
+    } catch {
+      // storage unavailable (private mode, quota) — chat still works, just doesn't persist
+    }
+  }
+
+  function setOpen(open, focus = true) {
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
     widget.classList.toggle("chatbot-widget--open", open);
-    if (open) input.focus();
+    if (open && focus) input.focus();
+    saveState();
   }
 
   toggle.addEventListener("click", () => setOpen(panel.hidden));
@@ -82,8 +101,19 @@ function initChatbot() {
   /** Single place that decides how every link in the widget opens. */
   function decorateLink(a, href) {
     a.href = href;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
+    // Site pages navigate in the same tab (the conversation is restored on
+    // the next page); only genuinely external links (e.g. LinkedIn) open a
+    // new tab so the visitor doesn't lose the site they were on.
+    let external = false;
+    try {
+      external = new URL(href, location.href).origin !== location.origin;
+    } catch {
+      external = false;
+    }
+    if (external) {
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+    }
   }
 
   function renderTextWithLinks(container, text) {
@@ -143,7 +173,7 @@ function initChatbot() {
       const showNext = () => {
         for (const item of visual.items.slice(shown, shown + PAGE)) {
           const row = document.createElement("a");
-          decorateLink(row, item.url || "#");
+          decorateLink(row, typeof item.url === "string" && /^\/(?!\/)/.test(item.url) ? item.url : "#");
           row.className = "chatbot-link-item";
           const t = document.createElement("div");
           t.className = "chatbot-link-title";
@@ -251,9 +281,14 @@ function initChatbot() {
     input.disabled = true;
     addMessage("user", message);
     history.push({ role: "user", content: message });
+    transcript.push({ kind: "text", role: "user", text: message });
 
     const assistantP = addMessage("assistant", "");
     let assistantText = "";
+    // Pushed up-front so a visual that arrives mid-answer lands after it.
+    const assistantEntry = { kind: "text", role: "assistant", text: "" };
+    transcript.push(assistantEntry);
+    saveState();
 
     try {
       const res = await fetch("/api/chat", {
@@ -264,7 +299,8 @@ function initChatbot() {
 
       if (!res.ok || !res.body) {
         const err = await res.json().catch(() => ({}));
-        renderTextWithLinks(assistantP, err.error || "Something went wrong — please try again.");
+        assistantEntry.text = err.error || "Something went wrong — please try again.";
+        renderTextWithLinks(assistantP, assistantEntry.text);
         return;
       }
 
@@ -295,6 +331,7 @@ function initChatbot() {
 
           if (eventName === "token") {
             assistantText += data.text;
+            assistantEntry.text = assistantText;
             renderTextWithLinks(assistantP, assistantText);
             scrollToBottom();
             setStatus(null);
@@ -302,8 +339,10 @@ function initChatbot() {
             setStatus(data.text);
           } else if (eventName === "visual") {
             renderVisual(data);
+            transcript.push({ kind: "visual", visual: data });
           } else if (eventName === "error") {
             assistantText = data.message;
+            assistantEntry.text = assistantText;
             renderTextWithLinks(assistantP, assistantText);
           } else if (eventName === "done") {
             setStatus(null);
@@ -313,8 +352,10 @@ function initChatbot() {
 
       if (assistantText) history.push({ role: "assistant", content: assistantText });
     } catch (err) {
-      renderTextWithLinks(assistantP, "Something went wrong — please try again.");
+      assistantEntry.text = "Something went wrong — please try again.";
+      renderTextWithLinks(assistantP, assistantEntry.text);
     } finally {
+      saveState();
       setStatus(null);
       sending = false;
       input.disabled = false;
@@ -329,6 +370,34 @@ function initChatbot() {
     input.value = "";
     sendMessage(message);
   });
+
+  // Restore the conversation from the previous page in this tab, if any.
+  // Everything read from storage is re-validated — it's only ever our own
+  // data, but a corrupt or hand-edited entry must not break the widget.
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(STORE_KEY) || "null");
+    if (saved && typeof saved === "object") {
+      for (const m of Array.isArray(saved.history) ? saved.history : []) {
+        if (m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string") history.push(m);
+      }
+      for (const e of Array.isArray(saved.transcript) ? saved.transcript : []) {
+        if (e && e.kind === "text" && (e.role === "user" || e.role === "assistant") && typeof e.text === "string") {
+          if (e.text) addMessage(e.role, e.text);
+          transcript.push(e);
+        } else if (
+          e && e.kind === "visual" && e.visual && Array.isArray(e.visual.items) &&
+          ["stat_cards", "comparison", "bar_chart", "link_list"].includes(e.visual.type)
+        ) {
+          renderVisual(e.visual);
+          transcript.push(e);
+        }
+      }
+      if (saved.open) setOpen(true, false);
+      scrollToBottom();
+    }
+  } catch {
+    // unreadable saved state — start fresh
+  }
 }
 
 if (document.readyState === "loading") {
