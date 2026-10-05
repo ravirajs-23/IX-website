@@ -289,3 +289,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (images.length) show(0);
   });
 });
+
+// Load the chatbot widget on every page. It lives in its own file so this
+// stays one line; chatbot.js injects the widget markup itself, which means
+// pages need no widget HTML (or per-page script tag) of their own.
+(function () {
+  const s = document.createElement("script");
+  s.src = "/js/chatbot.js";
+  s.defer = true;
+  document.body.appendChild(s);
+})();

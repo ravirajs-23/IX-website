@@ -167,7 +167,7 @@ function getFetchablePaths() {
   return paths;
 }
 
-/** Strips the shared header/footer/chatbot-widget blocks (same content on
+/** Strips the shared header/footer blocks (same content on
  * every page, pure noise for a per-page fetch) and all tags, leaving plain
  * visible text. */
 function extractVisibleText(html) {
@@ -178,7 +178,6 @@ function extractVisibleText(html) {
   body = body
     .replace(/<!-- SITE-HEADER:START -->[\s\S]*?<!-- SITE-HEADER:END -->/, "")
     .replace(/<!-- SITE-FOOTER:START -->[\s\S]*?<!-- SITE-FOOTER:END -->/, "")
-    .replace(/<!-- SITE-CHATBOT:START -->[\s\S]*?<!-- SITE-CHATBOT:END -->/, "")
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<!--[\s\S]*?-->/g, "")

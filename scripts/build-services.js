@@ -241,7 +241,6 @@ function buildServicePage(service, template, partials) {
     JSONLD_BLOCK: "",
     HEADER: partials.header,
     FOOTER: partials.footer,
-    CHATBOT: partials.chatbot,
     HERO_SECTION: renderHero(service),
     MAIN_CONTENT: mainContent,
   };
@@ -297,7 +296,6 @@ function buildServices() {
   const partials = {
     header: fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf8").trim(),
     footer: fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf8").trim(),
-    chatbot: fs.readFileSync(path.join(PARTIALS_DIR, "chatbot-widget.html"), "utf8").trim() + '\n<script src="/js/chatbot.js"></script>',
   };
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });

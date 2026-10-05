@@ -51,7 +51,6 @@ function buildSite() {
   const partials = {
     header: fs.readFileSync(path.join(PARTIALS_DIR, "header.html"), "utf8").trim(),
     footer: fs.readFileSync(path.join(PARTIALS_DIR, "footer.html"), "utf8").trim(),
-    chatbot: fs.readFileSync(path.join(PARTIALS_DIR, "chatbot-widget.html"), "utf8").trim() + '\n<script src="/js/chatbot.js"></script>',
   };
 
   // Secondary sort key (ascending strapiEntryId) matches Strapi's own

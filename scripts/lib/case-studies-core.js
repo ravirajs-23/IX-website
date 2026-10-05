@@ -295,7 +295,6 @@ function buildDetailPage(story, template, allStories, partials, testimonials) {
     JSONLD_BLOCK: jsonLdBlock,
     HEADER: partials.header,
     FOOTER: partials.footer,
-    CHATBOT: partials.chatbot,
     HERO_SECTION: renderDetailHeroSection(story),
     MAIN_CONTENT: mainContent,
   };
@@ -355,7 +354,6 @@ ${renderCtaBand()}`;
     JSONLD_BLOCK: "",
     HEADER: partials.header,
     FOOTER: partials.footer,
-    CHATBOT: partials.chatbot,
     HERO_SECTION: renderListingHeroSection(),
     MAIN_CONTENT: mainContent,
   };

@@ -1,9 +1,41 @@
 // Chatbot widget — talks to /api/chat over a streamed (SSE-shaped) POST
 // response. Keeps conversation history in memory only (tab lifetime),
 // never persisted — matches the v1 scope (no server-side storage either).
-document.addEventListener("DOMContentLoaded", () => {
-  const widget = document.getElementById("chatbot-widget");
-  if (!widget) return;
+
+// The widget's markup lives here (not in each page's HTML) so adding or
+// changing it never touches the ~120 generated pages — js/script.js, which
+// every page already loads, pulls this file in.
+const WIDGET_HTML = `
+<button type="button" class="chatbot-toggle" id="chatbot-toggle" aria-label="Open chat" aria-expanded="false" aria-controls="chatbot-panel">
+  <svg class="chatbot-toggle-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v12H7l-3 3V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
+  <svg class="chatbot-toggle-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+</button>
+<div class="chatbot-panel" id="chatbot-panel" hidden>
+  <div class="chatbot-panel-header">
+    <span>Ask IncubXperts</span>
+    <button type="button" class="chatbot-close" id="chatbot-close" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages">
+    <div class="chatbot-message chatbot-message--assistant">
+      <p>Hi! Ask me anything about IncubXperts — our work, services, industries, or team.</p>
+    </div>
+  </div>
+  <div class="chatbot-status" id="chatbot-status" hidden></div>
+  <form class="chatbot-form" id="chatbot-form">
+    <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question…" autocomplete="off" maxlength="2000" aria-label="Your question" />
+    <button type="submit" class="chatbot-send" aria-label="Send">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.5L21 3l-7.5 18-2.5-7.5L3 11.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+    </button>
+  </form>
+</div>`;
+
+function initChatbot() {
+  if (document.getElementById("chatbot-widget")) return;
+  const widget = document.createElement("div");
+  widget.className = "chatbot-widget";
+  widget.id = "chatbot-widget";
+  widget.innerHTML = WIDGET_HTML;
+  document.body.appendChild(widget);
 
   const toggle = document.getElementById("chatbot-toggle");
   const panel = document.getElementById("chatbot-panel");
@@ -244,4 +276,10 @@ document.addEventListener("DOMContentLoaded", () => {
     input.value = "";
     sendMessage(message);
   });
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initChatbot);
+} else {
+  initChatbot();
+}
