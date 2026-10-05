@@ -79,26 +79,39 @@ function initChatbot() {
   /** Turns a bare URL or markdown-style [text](url) into a real link —
    * the only "formatting" this widget supports, since answers are meant
    * to stay short, plain, and link out to real pages. */
+  /** Single place that decides how every link in the widget opens. */
+  function decorateLink(a, href) {
+    a.href = href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
+
   function renderTextWithLinks(container, text) {
     container.textContent = "";
-    const pattern = /\[([^\]]+)\]\((\/[^\s)]+)\)|(https?:\/\/\S+)|(\/[a-zA-Z0-9/_-]+\.html)/g;
+    // 1: markdown [text](url) with a site path OR full URL
+    // 2: bare https:// URL   3: bare site path ending .html (optional #anchor)
+    const pattern = /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^\s)]+)\)|(https?:\/\/[^\s<>"']+)|(\/[a-zA-Z0-9/_-]+\.html(?:#[\w-]+)?)/g;
     let lastIndex = 0;
     let match;
     while ((match = pattern.exec(text))) {
       if (match.index > lastIndex) container.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
       const a = document.createElement("a");
       if (match[1] && match[2]) {
-        a.href = match[2];
+        decorateLink(a, match[2]);
         a.textContent = match[1];
+        lastIndex = pattern.lastIndex;
       } else {
-        const url = match[3] || match[4];
-        a.href = url;
+        // A bare URL ends where the sentence punctuation around it begins:
+        // "…/anish." or "(…/anish)," must not make the dot/paren part of the
+        // href (that is what produced the 404s). Trim it back to plain text.
+        const raw = match[3] || match[4];
+        const url = raw.replace(/[.,;:!?)\]}'"]+$/, "");
+        decorateLink(a, url);
         a.textContent = url;
+        lastIndex = pattern.lastIndex - (raw.length - url.length);
+        pattern.lastIndex = lastIndex;
       }
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
       container.appendChild(a);
-      lastIndex = pattern.lastIndex;
     }
     if (lastIndex < text.length) container.appendChild(document.createTextNode(text.slice(lastIndex)));
   }
@@ -116,7 +129,47 @@ function initChatbot() {
       card.appendChild(title);
     }
 
-    if (visual.type === "comparison" && visual.items.length >= 2) {
+    if (visual.type === "link_list") {
+      // Paged client-side: show LINK_LIST_PAGE_SIZE at a time so a long result
+      // (e.g. every Fintech case study) never forces a long scroll.
+      const PAGE = 3;
+      const list = document.createElement("div");
+      list.className = "chatbot-link-list";
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "chatbot-link-more";
+      let shown = 0;
+
+      const showNext = () => {
+        for (const item of visual.items.slice(shown, shown + PAGE)) {
+          const row = document.createElement("a");
+          decorateLink(row, item.url || "#");
+          row.className = "chatbot-link-item";
+          const t = document.createElement("div");
+          t.className = "chatbot-link-title";
+          t.textContent = item.label;
+          const d = document.createElement("div");
+          d.className = "chatbot-link-desc";
+          d.textContent = item.value;
+          row.appendChild(t);
+          row.appendChild(d);
+          list.appendChild(row);
+        }
+        shown = Math.min(shown + PAGE, visual.items.length);
+        const left = visual.items.length - shown;
+        if (left > 0) {
+          more.textContent = `Show next ${Math.min(PAGE, left)} (${left} more)`;
+        } else {
+          more.remove();
+        }
+        scrollToBottom();
+      };
+
+      more.addEventListener("click", showNext);
+      card.appendChild(list);
+      card.appendChild(more);
+      showNext();
+    } else if (visual.type === "comparison" && visual.items.length >= 2) {
       const row = document.createElement("div");
       row.className = "chatbot-comparison-row";
       for (const item of visual.items.slice(0, 2)) {

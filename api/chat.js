@@ -26,7 +26,7 @@ const Anthropic = require("@anthropic-ai/sdk");
 const kb = require("../scripts/lib/knowledge-base");
 
 const MODEL = "claude-haiku-4-5";
-const MAX_TOKENS = 1024;
+const MAX_TOKENS = 3000; // a 20-item link_list tool call alone is ~1.4K tokens
 const MAX_ITERATIONS = 4;
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY_TURNS = 10;
@@ -67,21 +67,22 @@ const GET_PAGE_CONTENT_TOOL = {
 const RENDER_VISUAL_TOOL = {
   name: "render_visual",
   description:
-    "Call this ALONGSIDE your text answer, only when the content is genuinely numeric or comparative (listing specific stats, or comparing two things side by side). Never call it for a purely qualitative answer. It doesn't return data to you — it tells the chat widget to draw a small visual next to your text.",
+    "Call this ALONGSIDE your text answer when the content is numeric (stat_cards, bar_chart), comparative (comparison), or a list of 4+ pages/case studies the visitor asked to see (link_list — the widget shows them 3 at a time with a 'Show next 3' button, so never spell a long list out in text). Never call it for a purely qualitative answer. It doesn't return data to you — it tells the chat widget to draw a visual next to your text.",
   input_schema: {
     type: "object",
     properties: {
-      type: { type: "string", enum: ["stat_cards", "comparison", "bar_chart"] },
+      type: { type: "string", enum: ["stat_cards", "comparison", "bar_chart", "link_list"] },
       title: { type: "string" },
       items: {
         type: "array",
         description:
-          "For stat_cards/bar_chart: one entry per stat, {label, value}. For comparison: exactly two entries, one per thing being compared, {label: <name>, value: <short description>}.",
+          "For stat_cards/bar_chart: one entry per stat, {label, value}. For comparison: exactly two entries, one per thing being compared, {label: <name>, value: <short description>}. For link_list: one entry per page/case study, {label: <exact title>, value: <one-line summary>, url: <exact site path from the tool results, e.g. /case-studies/slug.html>}.",
         items: {
           type: "object",
           properties: {
             label: { type: "string" },
             value: { type: "string" },
+            url: { type: "string", description: "link_list only: exact site path starting with /" },
           },
           required: ["label", "value"],
         },
@@ -99,6 +100,7 @@ Rules:
 - If the data doesn't have something, say so plainly and point to /contact.html — never guess or approximate.
 - Keep answers to a short paragraph, not an essay.
 - Write in plain prose only — the chat widget doesn't render markdown. No **bold**, no bullet lists with "-" or "*", no headings. Use real sentences; link text itself (not asterisks) is how something stands out.
+- When the visitor asks to see/list/show case studies or pages and 4 or more match, do NOT write them out in text. Call render_visual with type "link_list" (one item per result: label = exact title, value = one-line summary, url = the exact path from list_case_studies) and write just one short sentence in text — say how many matched and, if list_case_studies reported more than it returned, that more exist. The widget pages them 3 at a time. For 3 or fewer, plain text with links is fine.
 - Whenever your answer lists three or more distinct numbers/stats (percentages, counts, dollar amounts, etc.) across different items, or directly compares two specific things, you MUST call render_visual alongside your text answer — this is not optional when the content qualifies, it's expected every time. Don't call it for a purely qualitative answer with no real numbers to show.
 - Aggregate questions (e.g. "what industries have you worked in", "how many case studies do you have") are already answerable from the knowledge base below — answer directly, no tool call needed.
 - Any question naming or implying a SPECIFIC case study (by category, topic, or keyword) must go through list_case_studies first — the knowledge base below only has category counts, not individual case studies, by design (it stays small and constant-size regardless of how many case studies exist; don't try to work around that by guessing).
@@ -110,12 +112,21 @@ Rules:
 
 function validateVisual(input) {
   if (!input || typeof input !== "object") return null;
-  if (!["stat_cards", "comparison", "bar_chart"].includes(input.type)) return null;
+  if (!["stat_cards", "comparison", "bar_chart", "link_list"].includes(input.type)) return null;
   if (!Array.isArray(input.items)) return null;
+  const isLinkList = input.type === "link_list";
+  // Site-relative paths only ("/x", never "//host" or a full URL) — a
+  // model-supplied URL must never be able to point a visitor off-site.
+  const isSitePath = (u) => typeof u === "string" && /^\/(?!\/)[^\s]*$/.test(u);
   const items = input.items
     .filter((i) => i && typeof i.label === "string" && typeof i.value === "string")
-    .slice(0, 6)
-    .map((i) => ({ label: i.label.slice(0, 120), value: i.value.slice(0, 300) }));
+    .filter((i) => !isLinkList || isSitePath(i.url))
+    .slice(0, isLinkList ? 20 : 6)
+    .map((i) => {
+      const out = { label: i.label.slice(0, 160), value: i.value.slice(0, 300) };
+      if (isLinkList) out.url = i.url.slice(0, 300);
+      return out;
+    });
   if (!items.length) return null;
   const title = typeof input.title === "string" ? input.title.slice(0, 120) : null;
   return { type: input.type, title, items };
