@@ -52,6 +52,14 @@ const BLOCKS = [
     endMarker: "<!-- SITE-FOOTER:END -->",
     rawTagRe: /<footer class="site-footer">[\s\S]*?<\/footer>/,
   },
+  {
+    name: "chatbot",
+    startMarker: "<!-- SITE-CHATBOT:START -->",
+    endMarker: "<!-- SITE-CHATBOT:END -->",
+    // No raw tag to find (brand new, nothing to bootstrap from) — insert
+    // fresh just before </body> the first time instead.
+    insertBeforeRe: /<\/body>/,
+  },
 ];
 
 function loadPartial(filename) {
@@ -59,11 +67,12 @@ function loadPartial(filename) {
 }
 
 /**
- * Replace one block (header or footer) inside `html` with `content`,
- * wrapped in its sentinel markers. If the markers already exist (every
- * run after the first), replace between them. Otherwise, find the raw
- * tag (first run only) and wrap+replace it — self-bootstrapping, no
- * manual one-time edit needed across 7 files.
+ * Replace one block (header/footer/chatbot) inside `html` with `content`,
+ * wrapped in its sentinel markers. If the markers already exist (every run
+ * after the first), replace between them. Otherwise, either find the raw
+ * tag (header/footer, first run only) and wrap+replace it, or insert fresh
+ * before a given anchor (chatbot, which has no prior raw tag to find) —
+ * self-bootstrapping either way, no manual one-time edit needed per file.
  */
 function replaceBlock(html, block, content) {
   const wrapped = `${block.startMarker}\n${content}\n${block.endMarker}`;
@@ -72,16 +81,20 @@ function replaceBlock(html, block, content) {
   if (sentinelRe.test(html)) {
     return { html: html.replace(sentinelRe, wrapped), bootstrapped: false };
   }
-  if (block.rawTagRe.test(html)) {
+  if (block.rawTagRe && block.rawTagRe.test(html)) {
     return { html: html.replace(block.rawTagRe, wrapped), bootstrapped: true };
   }
-  throw new Error(`Could not find a <${block.name}> block or its sentinel markers to replace.`);
+  if (block.insertBeforeRe && block.insertBeforeRe.test(html)) {
+    return { html: html.replace(block.insertBeforeRe, `${wrapped}\n</body>`), bootstrapped: true };
+  }
+  throw new Error(`Could not find a <${block.name}> block, its sentinel markers, or an insertion point.`);
 }
 
 function buildPages() {
   const content = {
     header: loadPartial("header.html"),
     footer: loadPartial("footer.html"),
+    chatbot: loadPartial("chatbot-widget.html") + '\n<script src="/js/chatbot.js"></script>',
   };
 
   for (const page of PAGES) {
