@@ -1,0 +1,37 @@
+{
+  "companyName": "IncubXperts",
+  "tagline": "AI-native engineering and software partner helping enterprises innovate, scale, and thrive.",
+  "presence": [
+    { "location": "Pune, India", "note": "Headquarters" },
+    { "location": "Delaware, USA", "note": "" }
+  ],
+  "geographyNote": "We track our own office locations (above), but we don't yet tag which country or region each client is based in — so a question about where our clients are located can't be answered precisely from this data. Don't guess a client's location from a case study's prose; say this isn't tracked yet and point to /contact.html if the visitor needs a direct answer.",
+  "coFounders": [
+    { "name": "Anish Betawadkar", "role": "Co-Founder & Director", "linkedin": "https://www.linkedin.com/in/anishbetawadkar", "url": "/about.html#leadership" },
+    { "name": "Dr. Preetam Tiwari", "role": "Co-Founder & Director", "linkedin": "https://www.linkedin.com/in/dr-preetam-tiwari-44716bb", "url": "/about.html#leadership" },
+    { "name": "Rahul Bagal", "role": "Co-Founder & Director", "linkedin": "https://www.linkedin.com/in/rahulsbagal", "url": "/about.html#leadership" },
+    { "name": "Amit Dhandal", "role": "Co-Founder & Director", "linkedin": "https://www.linkedin.com/in/amitdhandal", "url": "/about.html#leadership" }
+  ],
+  "services": [
+    { "name": "AI Adoption & Strategy", "url": "/services/ai-adoption-and-strategy.html" },
+    { "name": "Agentic Solutions", "url": "/services/agentic-solutions.html" },
+    { "name": "Workflow Automation", "url": "/services/workflow-automation.html" },
+    { "name": "AI-Augmented Product Engineering", "url": "/services.html" },
+    { "name": "AI-Augmented QA", "url": "/services.html" },
+    { "name": "Predictive Analytics & BI", "url": "/services.html" },
+    { "name": "Cloud & AI Infrastructure", "url": "/services.html" }
+  ],
+  "industries": [
+    "Fintech", "Healthcare", "Public Safety", "Social Networking",
+    "Hospitality", "Legal", "Manufacturing", "Environment & Sustainability"
+  ],
+  "otherPages": [
+    { "title": "Careers", "url": "/careers.html", "summary": "Open roles and culture/benefits information." },
+    { "title": "Partnerships", "url": "/partnerships.html", "summary": "Technology/partner ecosystem (e.g. PLOKO)." },
+    { "title": "Ploko AI", "url": "/ploko-ai.html", "summary": "A specific partnership/product page." },
+    { "title": "Blog", "url": "/blog.html", "summary": "Articles and insights." },
+    { "title": "Outlook", "url": "/outlook.html", "summary": "Perspective pieces." },
+    { "title": "Events", "url": "/events.html", "summary": "Upcoming and past IncubXperts events." },
+    { "title": "Contact", "url": "/contact.html", "summary": "How to get in touch." }
+  ]
+}

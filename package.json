@@ -12,15 +12,18 @@
     "style-diff": "node scripts/style-diff.js",
     "style-diff:fast": "node scripts/style-diff.js --fast",
     "hooks:install": "node scripts/install-hooks.js",
+    "dev": "vercel dev",
     "case-studies:seed-manifest": "node scripts/seed-case-studies-manifest.js",
     "case-studies:review": "node scripts/review-case-studies.js",
     "case-studies:refresh-testimonials": "node scripts/refresh-testimonials.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "marked": "12.0.2"
   },
   "devDependencies": {
+    "diff": "5.2.0",
     "puppeteer-core": "23.11.1",
-    "diff": "5.2.0"
+    "vercel": "^62.1.0"
   }
 }

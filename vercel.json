@@ -2,5 +2,11 @@
   "framework": null,
   "buildCommand": "npm run build:pages",
   "outputDirectory": ".",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 30,
+      "includeFiles": "{*.html,case-studies/*.html,services/*.html,data/*.json}"
+    }
+  }
 }
