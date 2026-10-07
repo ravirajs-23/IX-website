@@ -6,19 +6,30 @@
 // changing it never touches the ~120 generated pages — js/script.js, which
 // every page already loads, pulls this file in.
 const WIDGET_HTML = `
+<div class="chatbot-teaser" id="chatbot-teaser" role="status" hidden>
+  <span id="chatbot-teaser-text"></span>
+  <button type="button" class="chatbot-teaser-close" id="chatbot-teaser-close" aria-label="Dismiss">&times;</button>
+</div>
 <button type="button" class="chatbot-toggle" id="chatbot-toggle" aria-label="Open chat" aria-expanded="false" aria-controls="chatbot-panel">
-  <svg class="chatbot-toggle-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v12H7l-3 3V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
-  <svg class="chatbot-toggle-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v12H7l-3 3V4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /></svg>
+  <span class="chatbot-toggle-label">Ask us anything</span>
 </button>
 <div class="chatbot-panel" id="chatbot-panel" hidden>
   <div class="chatbot-panel-header">
     <span>Ask IncubXperts</span>
-    <button type="button" class="chatbot-close" id="chatbot-close" aria-label="Close chat">&times;</button>
+    <span class="chatbot-header-actions">
+      <button type="button" class="chatbot-expand" id="chatbot-expand" aria-label="Expand chat" aria-pressed="false">
+        <svg class="chatbot-expand-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <svg class="chatbot-expand-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+      <button type="button" class="chatbot-close" id="chatbot-close" aria-label="Close chat">&times;</button>
+    </span>
   </div>
   <div class="chatbot-messages" id="chatbot-messages">
     <div class="chatbot-message chatbot-message--assistant">
       <p>Hi! Ask me anything about IncubXperts — our work, services, industries, or team.</p>
     </div>
+    <div class="chatbot-starters" id="chatbot-starters"></div>
   </div>
   <div class="chatbot-status" id="chatbot-status" hidden></div>
   <form class="chatbot-form" id="chatbot-form">
@@ -28,6 +39,24 @@ const WIDGET_HTML = `
     </button>
   </form>
 </div>`;
+
+// Tappable first questions shown in a fresh conversation. Edit here to change them.
+const STARTER_QUESTIONS = [
+  "Our healthcare work",
+  "Services we offer",
+  "Meet the founders",
+];
+const STARTER_PROMPTS = {
+  "Our healthcare work": "Have you worked in the healthcare domain?",
+  "Services we offer": "What are your different services?",
+  "Meet the founders": "Who are the co-founders?",
+};
+
+// One dismissible nudge, shown once per tab session after a short delay.
+const TEASER_DELAY_MS = 8000;
+const TEASER_TEXT = "Curious about our work? Ask me anything.";
+// Pages with forms: a floating bubble could sit on a submit button.
+const NO_TEASER_PAGES = ["/contact", "/careers"];
 
 function initChatbot() {
   if (document.getElementById("chatbot-widget")) return;
@@ -44,6 +73,11 @@ function initChatbot() {
   const statusEl = document.getElementById("chatbot-status");
   const form = document.getElementById("chatbot-form");
   const input = document.getElementById("chatbot-input");
+  const expandBtn = document.getElementById("chatbot-expand");
+  const startersEl = document.getElementById("chatbot-starters");
+  const teaserEl = document.getElementById("chatbot-teaser");
+  const teaserClose = document.getElementById("chatbot-teaser-close");
+  document.getElementById("chatbot-teaser-text").textContent = TEASER_TEXT;
 
   // Conversation survives page navigation: site links open in the SAME tab
   // (the widget is re-created on the next page), so the open/closed state and
@@ -54,28 +88,70 @@ function initChatbot() {
   const history = []; // {role, content} sent to the API as context
   const transcript = []; // {kind:"text",role,text} | {kind:"visual",visual} — what to redraw
   let sending = false;
+  let expanded = false;
+  let teaserDismissed = false;
 
   function saveState() {
     try {
       sessionStorage.setItem(
         STORE_KEY,
-        JSON.stringify({ open: !panel.hidden, history, transcript: transcript.slice(-MAX_TRANSCRIPT) })
+        JSON.stringify({
+          open: !panel.hidden,
+          expanded,
+          teaserDismissed,
+          history,
+          transcript: transcript.slice(-MAX_TRANSCRIPT),
+        })
       );
     } catch {
       // storage unavailable (private mode, quota) — chat still works, just doesn't persist
     }
   }
 
+  function hideTeaser(remember) {
+    teaserEl.hidden = true;
+    if (remember) {
+      teaserDismissed = true;
+      saveState();
+    }
+  }
+
+  function setExpanded(value) {
+    expanded = value;
+    widget.classList.toggle("chatbot-widget--expanded", value);
+    expandBtn.setAttribute("aria-pressed", String(value));
+    expandBtn.setAttribute("aria-label", value ? "Collapse chat" : "Expand chat");
+    saveState();
+  }
+
   function setOpen(open, focus = true) {
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
     widget.classList.toggle("chatbot-widget--open", open);
+    if (open) hideTeaser(true);
     if (open && focus) input.focus();
     saveState();
   }
 
   toggle.addEventListener("click", () => setOpen(panel.hidden));
   closeBtn.addEventListener("click", () => setOpen(false));
+  expandBtn.addEventListener("click", () => setExpanded(!expanded));
+  teaserClose.addEventListener("click", () => hideTeaser(true));
+  teaserEl.addEventListener("click", (e) => {
+    if (e.target !== teaserClose) setOpen(true);
+  });
+
+  // Starter questions only make sense before the conversation begins.
+  for (const label of STARTER_QUESTIONS) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chatbot-starter";
+    chip.textContent = label;
+    chip.addEventListener("click", () => {
+      if (!sending) sendMessage(STARTER_PROMPTS[label] || label);
+    });
+    startersEl.appendChild(chip);
+  }
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !panel.hidden) setOpen(false);
   });
@@ -279,6 +355,7 @@ function initChatbot() {
   async function sendMessage(message) {
     sending = true;
     input.disabled = true;
+    startersEl.hidden = true;
     addMessage("user", message);
     history.push({ role: "user", content: message });
     transcript.push({ kind: "text", role: "user", text: message });
@@ -392,11 +469,23 @@ function initChatbot() {
           transcript.push(e);
         }
       }
+      if (transcript.length) startersEl.hidden = true;
+      teaserDismissed = saved.teaserDismissed === true;
+      if (saved.expanded === true) setExpanded(true);
       if (saved.open) setOpen(true, false);
       scrollToBottom();
     }
   } catch {
     // unreadable saved state — start fresh
+  }
+
+  // The nudge: once per tab session, never over the open chat, never on form pages.
+  const path = location.pathname.replace(/\.html$/, "");
+  const formPage = NO_TEASER_PAGES.some((p) => path === p || path.startsWith(p + "/"));
+  if (!teaserDismissed && panel.hidden && !formPage) {
+    setTimeout(() => {
+      if (!teaserDismissed && panel.hidden) teaserEl.hidden = false;
+    }, TEASER_DELAY_MS);
   }
 }
 
